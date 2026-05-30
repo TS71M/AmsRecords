@@ -22,6 +22,18 @@ public static class MobileFeedbackDtos
         [property: JsonPropertyName("idiom")] string? Idiom,
         [property: JsonPropertyName("occurredAtUtc")] DateTime OccurredAtUtc);
 
+    public sealed record MobileDebugLogSubmitDto(
+        [property: JsonPropertyName("source")] string Source,
+        [property: JsonPropertyName("eventName")] string EventName,
+        [property: JsonPropertyName("occurredAtUtc")] DateTime OccurredAtUtc,
+        [property: JsonPropertyName("isDebugBuild")] bool IsDebugBuild,
+        [property: JsonPropertyName("message")] string Message,
+        [property: JsonPropertyName("properties")] IReadOnlyDictionary<string, string?>? Properties,
+        [property: JsonPropertyName("deviceModel")] string? DeviceModel,
+        [property: JsonPropertyName("manufacturer")] string? Manufacturer,
+        [property: JsonPropertyName("osVersion")] string? OsVersion,
+        [property: JsonPropertyName("idiom")] string? Idiom);
+
     public sealed record MobileBugReportSubmittedDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("submittedAtUtc")] DateTime SubmittedAtUtc);

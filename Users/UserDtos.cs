@@ -1,4 +1,5 @@
 using static AmsRecords.AppImages.AppImageDtos;
+using static AmsRecords.Authentication.AuthenticationDtos;
 using static AmsRecords.ContactDetails.ContactDetailDtos;
 using static AmsRecords.Name.NameDtos;
 using static AmsRecords.Roles.RoleDtos;
@@ -62,6 +63,7 @@ public static class UserDtos
         [property: JsonPropertyName("accessProfilePubId")] Guid? AccessProfilePubId,
         [property: JsonPropertyName("accessProfileName")] string? AccessProfileName,
         [property: JsonPropertyName("role")] List<RoleDto> Roles,
+        [property: JsonPropertyName("passwordResetEmailJob")] PasswordResetEmailJobStatusDto? PasswordResetEmailJob = null,
         [property: JsonPropertyName("visualizationTempUnitPubId")] Guid? VisualizationTempUnitPubId = default,
         [property: JsonPropertyName("visualizationRainUnitPubId")] Guid? VisualizationRainUnitPubId = default,
         [property: JsonPropertyName("visualizationWindUnitPubId")] Guid? VisualizationWindUnitPubId = default

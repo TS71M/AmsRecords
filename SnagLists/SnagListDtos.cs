@@ -46,7 +46,8 @@ public static class SnagListDtos
         [property: JsonPropertyName("snagDate")] DateTime? SnagDate,
         [property: JsonPropertyName("longitude")] double Longitude,
         [property: JsonPropertyName("latitude")] double Latitude,
-        [property: JsonPropertyName("priority")] int Priority);
+        [property: JsonPropertyName("priority")] int Priority,
+        [property: JsonPropertyName("clientSubmissionId")] string? ClientSubmissionId = null);
 
     public sealed record SnagListUpdateDto(
         [property: JsonPropertyName("areaPubId")] Guid AreaPubId,

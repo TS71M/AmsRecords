@@ -40,4 +40,46 @@ public static class AuthenticationDtos
        [property: JsonPropertyName("userId")] int UserId,
        [property: JsonPropertyName("code")] string Code
    );
+
+    public enum PasswordResetEmailJobState
+    {
+        Queued = 1,
+        RetryScheduled = 2,
+        Processing = 3,
+        Sent = 4,
+        Failed = 5,
+        Cancelled = 6
+    }
+
+    public enum PasswordResetQueueRequestOutcome
+    {
+        Queued = 1,
+        AlreadyQueued = 2
+    }
+
+    public sealed record PasswordResetEmailJobStatusDto(
+        [property: JsonPropertyName("jobPubId")] Guid JobPubId,
+        [property: JsonPropertyName("state")] PasswordResetEmailJobState State,
+        [property: JsonPropertyName("requestedUtc")] DateTime RequestedUtc,
+        [property: JsonPropertyName("expiresUtc")] DateTime ExpiresUtc,
+        [property: JsonPropertyName("nextAttemptUtc")] DateTime? NextAttemptUtc,
+        [property: JsonPropertyName("lastAttemptUtc")] DateTime? LastAttemptUtc,
+        [property: JsonPropertyName("sentUtc")] DateTime? SentUtc,
+        [property: JsonPropertyName("failedUtc")] DateTime? FailedUtc,
+        [property: JsonPropertyName("cancelledUtc")] DateTime? CancelledUtc,
+        [property: JsonPropertyName("attemptCount")] int AttemptCount,
+        [property: JsonPropertyName("canCancel")] bool CanCancel,
+        [property: JsonPropertyName("lastError")] string? LastError
+    )
+    {
+        [JsonPropertyName("isActive")]
+        public bool IsActive => State is PasswordResetEmailJobState.Queued
+            or PasswordResetEmailJobState.RetryScheduled
+            or PasswordResetEmailJobState.Processing;
+    }
+
+    public sealed record PasswordResetQueueResultDto(
+        [property: JsonPropertyName("outcome")] PasswordResetQueueRequestOutcome Outcome,
+        [property: JsonPropertyName("job")] PasswordResetEmailJobStatusDto Job
+    );
 }

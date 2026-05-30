@@ -16,6 +16,8 @@ public static class LoginLogExtensions
             IbuName: ibuName,
             UserPubId: userPubId,
             UserDisplayName: userDisplayName,
+            AttemptedUserNameMasked: e.AttemptedUserNameMasked,
+            AttemptedUserNameHash: e.AttemptedUserNameHash,
             OccuredUtc: e.OccuredUtc,
             Succeeded: e.Succeeded,
             FailureCode: e.FailureCode,

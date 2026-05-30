@@ -8,6 +8,8 @@ public static class LoginLogDtos
         [property: JsonPropertyName("ibuName")] string? IbuName,
         [property: JsonPropertyName("userPubId")] Guid? UserPubId,
         [property: JsonPropertyName("userDisplayName")] string? UserDisplayName,
+        [property: JsonPropertyName("attemptedUserNameMasked")] string? AttemptedUserNameMasked,
+        [property: JsonPropertyName("attemptedUserNameHash")] string? AttemptedUserNameHash,
         [property: JsonPropertyName("occuredUtc")] DateTime OccuredUtc,
         [property: JsonPropertyName("succeeded")] bool Succeeded,
         [property: JsonPropertyName("failureCode")] string? FailureCode,
