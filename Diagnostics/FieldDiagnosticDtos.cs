@@ -69,6 +69,25 @@ public static class FieldDiagnosticDtos
         [property: JsonPropertyName("correctionNote")] string? CorrectionNote
     );
 
+    public sealed record FieldDiagnosticRerunRequestDto(
+        [property: JsonPropertyName("diagnosticRequestPubId")] Guid DiagnosticRequestPubId
+    );
+
+    public sealed record FieldDiagnosticRerunComparisonDto(
+        [property: JsonPropertyName("diagnosticRequestPubId")] Guid DiagnosticRequestPubId,
+        [property: JsonPropertyName("original")] FieldDiagnosticReviewItemDto Original,
+        [property: JsonPropertyName("rerunResult")] FieldDiagnosticResultDto RerunResult,
+        [property: JsonPropertyName("rerunEvidence")] FieldDiagnosticEvidenceDto? RerunEvidence,
+        [property: JsonPropertyName("rerunAtUtc")] DateTimeOffset RerunAtUtc
+    );
+
+    public sealed record FieldDiagnosticReplaceWithRerunDto(
+        [property: JsonPropertyName("diagnosticRequestPubId")] Guid DiagnosticRequestPubId,
+        [property: JsonPropertyName("rerunResult")] FieldDiagnosticResultDto RerunResult,
+        [property: JsonPropertyName("rerunEvidence")] FieldDiagnosticEvidenceDto? RerunEvidence,
+        [property: JsonPropertyName("reviewNote")] string? ReviewNote = null
+    );
+
     public sealed record FieldDiagnosticCorrectionDto(
         [property: JsonPropertyName("correctedAtUtc")] DateTime CorrectedAtUtc,
         [property: JsonPropertyName("correctedRiskKey")] string CorrectedRiskKey,
