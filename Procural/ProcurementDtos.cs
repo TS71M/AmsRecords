@@ -5,18 +5,28 @@ namespace AmsRecords.Procural;
 
 public static class ProcurementDtos
 {
+    public record ProcurementScopeIbuDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("name")] string Name,
+        [property: JsonPropertyName("isFieldOwner")] bool IsFieldOwner
+    );
+
     public record FieldProcurementSettingDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
         [property: JsonPropertyName("fieldName")] string FieldName,
         [property: JsonPropertyName("procurementMode")] ProcurementMode ProcurementMode,
+        [property: JsonPropertyName("procurementHubIbuPubId")] Guid? ProcurementHubIbuPubId,
+        [property: JsonPropertyName("procurementHubIbuName")] string ProcurementHubIbuName,
         [property: JsonPropertyName("procurementSupplierPubId")] Guid? ProcurementSupplierPubId,
         [property: JsonPropertyName("procurementSupplierName")] string ProcurementSupplierName,
         [property: JsonPropertyName("procurementManagerUserPubId")] Guid? ProcurementManagerUserPubId,
         [property: JsonPropertyName("procurementManagerName")] string ProcurementManagerName,
         [property: JsonPropertyName("allowDirectSupplierOrdering")] bool AllowDirectSupplierOrdering,
         [property: JsonPropertyName("consolidateRequisitions")] bool ConsolidateRequisitions,
-        [property: JsonPropertyName("notes")] string Notes
+        [property: JsonPropertyName("notes")] string Notes,
+        [property: JsonPropertyName("procurementScopeIbuPubIds")] IReadOnlyList<Guid> ProcurementScopeIbuPubIds,
+        [property: JsonPropertyName("procurementScopeIbus")] IReadOnlyList<ProcurementScopeIbuDto> ProcurementScopeIbus
     );
 
     public record FieldProcurementSettingUpdateDto(
@@ -24,6 +34,7 @@ public static class ProcurementDtos
         [property: JsonPropertyName("procurementMode")]
         [property: DisplayName("Procurement Mode")]
         ProcurementMode ProcurementMode,
+        [property: JsonPropertyName("procurementHubIbuPubId")] Guid? ProcurementHubIbuPubId,
         [property: JsonPropertyName("procurementSupplierPubId")] Guid? ProcurementSupplierPubId,
         [property: JsonPropertyName("procurementManagerUserPubId")] Guid? ProcurementManagerUserPubId,
         [property: JsonPropertyName("allowDirectSupplierOrdering")] bool AllowDirectSupplierOrdering,
@@ -65,6 +76,8 @@ public static class ProcurementDtos
         [property: JsonPropertyName("needByDate")] DateTime? NeedByDate,
         [property: JsonPropertyName("requestedByUserPubId")] Guid RequestedByUserPubId,
         [property: JsonPropertyName("requestedByName")] string RequestedByName,
+        [property: JsonPropertyName("procurementHubIbuPubId")] Guid? ProcurementHubIbuPubId,
+        [property: JsonPropertyName("procurementHubIbuName")] string ProcurementHubIbuName,
         [property: JsonPropertyName("procurementManagerUserPubId")] Guid? ProcurementManagerUserPubId,
         [property: JsonPropertyName("procurementManagerName")] string ProcurementManagerName,
         [property: JsonPropertyName("lineCount")] int LineCount,
@@ -84,6 +97,8 @@ public static class ProcurementDtos
         [property: JsonPropertyName("reviewedDt")] DateTime? ReviewedDt,
         [property: JsonPropertyName("requestedByUserPubId")] Guid RequestedByUserPubId,
         [property: JsonPropertyName("requestedByName")] string RequestedByName,
+        [property: JsonPropertyName("procurementHubIbuPubId")] Guid? ProcurementHubIbuPubId,
+        [property: JsonPropertyName("procurementHubIbuName")] string ProcurementHubIbuName,
         [property: JsonPropertyName("procurementManagerUserPubId")] Guid? ProcurementManagerUserPubId,
         [property: JsonPropertyName("procurementManagerName")] string ProcurementManagerName,
         [property: JsonPropertyName("notes")] string Notes,

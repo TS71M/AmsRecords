@@ -10,6 +10,7 @@ public static class WeatherDiaryRuleDtos
         public const string PrecipMm = "precipMm";
         public const string DewHours = "dewHours";
         public const string HumidityMeanPct = "humidityMeanPct";
+        public const string GpPct = "gpPct";
 
         public static readonly string[] All =
         [
@@ -18,7 +19,8 @@ public static class WeatherDiaryRuleDtos
             TempMeanC,
             PrecipMm,
             DewHours,
-            HumidityMeanPct
+            HumidityMeanPct,
+            GpPct
         ];
     }
 

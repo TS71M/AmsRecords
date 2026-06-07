@@ -123,7 +123,11 @@ public static class FieldDiagnosticDtos
         [property: JsonPropertyName("imageFileName")] string? ImageFileName,
         [property: JsonPropertyName("roleLabel")] string? RoleLabel,
         [property: JsonPropertyName("imageThumbnailUrl")] string? ImageThumbnailUrl
-    );
+    )
+    {
+        [JsonPropertyName("captureMetadata")]
+        public AmsRecords.AppImages.AppImageDtos.AppImageCaptureMetadataDto? CaptureMetadata { get; init; }
+    }
 
     public sealed record FieldDiagnosticReviewItemDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,

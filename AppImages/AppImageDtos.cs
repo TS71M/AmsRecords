@@ -2,6 +2,14 @@ namespace AmsRecords.AppImages;
 
 public class AppImageDtos
 {
+    public sealed record AppImageCaptureMetadataDto(
+        [property: JsonPropertyName("capturedAtUtc")] DateTimeOffset? CapturedAtUtc = null,
+        [property: JsonPropertyName("latitude")] double? Latitude = null,
+        [property: JsonPropertyName("longitude")] double? Longitude = null,
+        [property: JsonPropertyName("locationAccuracyMeters")] double? LocationAccuracyMeters = null,
+        [property: JsonPropertyName("source")] string? Source = null
+    );
+
     public record AppImageDto(
         [property: JsonPropertyName("id")] int Id,
         [property: JsonPropertyName("base64Image")] string? Base64Image,
@@ -12,7 +20,11 @@ public class AppImageDtos
         [property: JsonPropertyName("fileSize")] long FileSize,
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("relativePath")] string? RelativePath
-        );
+        )
+    {
+        [JsonPropertyName("captureMetadata")]
+        public AppImageCaptureMetadataDto? CaptureMetadata { get; init; }
+    }
 
     public record GetAppImageWithThumbnailDto(
         [property: JsonPropertyName("id")] int Id,
@@ -25,6 +37,9 @@ public class AppImageDtos
         [property: JsonPropertyName("fileSize")] long FileSize
         )
     {
+        [JsonPropertyName("captureMetadata")]
+        public AppImageCaptureMetadataDto? CaptureMetadata { get; init; }
+
         [JsonIgnore]
         public string Base64ImageUrl =>
             string.IsNullOrWhiteSpace(Base64Image)
@@ -49,6 +64,9 @@ public class AppImageDtos
         [property: JsonPropertyName("fileSize")] long FileSize
         )
     {
+        [JsonPropertyName("captureMetadata")]
+        public AppImageCaptureMetadataDto? CaptureMetadata { get; init; }
+
         [JsonIgnore]
         public string ThumbnailDataUrl =>
             string.IsNullOrWhiteSpace(Base64Thumbnail)
@@ -59,7 +77,11 @@ public class AppImageDtos
     public record AppImageCreateDto(
         [property: JsonPropertyName("base64Image")] string? Base64Image = null,
         [property: JsonPropertyName("category")] string Category = ImageCategories.Grasses
-        );
+        )
+    {
+        [JsonPropertyName("captureMetadata")]
+        public AppImageCaptureMetadataDto? CaptureMetadata { get; init; }
+    }
 
     public record AppImageInfoDto(
         [property: JsonPropertyName("mimeType")] string MimeType,
@@ -83,7 +105,11 @@ public class AppImageDtos
         [property: JsonPropertyName("width")] uint Width,
         [property: JsonPropertyName("height")] uint Height,
         [property: JsonPropertyName("fileSize")] long FileSize
-        );
+        )
+    {
+        [JsonPropertyName("captureMetadata")]
+        public AppImageCaptureMetadataDto? CaptureMetadata { get; init; }
+    }
 
     public sealed record ImageThumbResult(string? Url, string? Error)
     {

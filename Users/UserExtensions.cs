@@ -19,24 +19,6 @@ public static class UserExtensions
             IbuPubId: user.Ibu!.PubId,
             Name: user.Name?.ToDto(),
             ImagePubId: user.UserImg?.PubId,
-            Tolerance: user.Tolerance,
-            WkOfWarn: user.WkOfWarn,
-            ConsiderMlsn: user.ConsiderMlsn,
-            CheckApps: user.CheckApps,
-            CheckOrders: user.CheckOrders,
-            CheckEt: user.CheckEt,
-            ShowLastDays: user.ShowLastDays,
-            ShowProgress: user.ShowProgress,
-            ConsiderSkills: user.ConsiderSkills,
-            RandomizeAssignments: user.RandomizeAssignments,
-            ThisWeek: user.ThisWeek,
-            NextWeek: user.NextWeek,
-            Irrigation: user.Irrigation,
-            Stock: user.Stock,
-            Today: user.Today,
-            History: user.History,
-            PlanningYearPubId: user.Year?.PubId,
-            LoadYears: user.LoadYears,
             PreferredCountryPubId: user.PreferredCountry?.PubId,
             PreferredCountryCode: user.PreferredCountry?.CountryCode,
             PreferredCountryName: user.PreferredCountry?.CountryName,
@@ -71,25 +53,8 @@ public static class UserExtensions
                 : null,
             Active = true,
             IbuId = ibuId,
-            Tolerance = dto.Tolerance,
-            WkOfWarn = dto.WkOfWarn,
-            ConsiderMlsn = dto.ConsiderMlsn,
-            CheckApps = dto.CheckApps,
-            CheckOrders = dto.CheckOrders,
-            CheckEt = dto.CheckEt,
-            ShowLastDays = dto.ShowLastDays,
-            ShowProgress = dto.ShowProgress,
-            ConsiderSkills = dto.ConsiderSkills,
-            RandomizeAssignments = dto.RandomizeAssignments,
-            ThisWeek = dto.ThisWeek,
-            NextWeek = dto.NextWeek,
-            Irrigation = dto.Irrigation,
-            Stock = dto.Stock,
-            Today = dto.Today,
-            History = dto.History,
             PreferredCountryId = countryId,
             ManagerUserId = null,
-            LoadYears = dto.LoadYears,
             EmailConfirmed = true // Admin-created users are treated as already verified by the creating administrator
         };
 
@@ -102,24 +67,6 @@ public static class UserExtensions
             LockedOut: dto.LockedOut,
             Name: dto.Name,
             ImagePubId: dto.ImagePubId,
-            Tolerance: dto.Tolerance,
-            WkOfWarn: dto.WkOfWarn,
-            ConsiderMlsn: dto.ConsiderMlsn,
-            CheckApps: dto.CheckApps,
-            CheckOrders: dto.CheckOrders,
-            CheckEt: dto.CheckEt,
-            ShowLastDays: dto.ShowLastDays,
-            ShowProgress: dto.ShowProgress,
-            ConsiderSkills: dto.ConsiderSkills,
-            RandomizeAssignments: dto.RandomizeAssignments,
-            ThisWeek: dto.ThisWeek,
-            NextWeek: dto.NextWeek,
-            Irrigation: dto.Irrigation,
-            Stock: dto.Stock,
-            Today: dto.Today,
-            History: dto.History,
-            PlanningYearPubId: dto.PlanningYearPubId,
-            LoadYears: dto.LoadYears,
             PreferredCountryPubId: dto.PreferredCountryPubId,
             PreferredLanguagePubId: dto.PreferredLanguagePubId,
             Contact: dto.Contact,
@@ -173,24 +120,6 @@ public static class UserExtensions
             UserName: dto.UserName,
             LockedOut: dto.LockedOut,
             IbuPubId: dto.IbuPubId != Guid.Empty ? dto.IbuPubId : ibuPubId,
-            Tolerance: dto.Tolerance,
-            WkOfWarn: dto.WkOfWarn,
-            ConsiderMlsn: dto.ConsiderMlsn,
-            CheckApps: dto.CheckApps,
-            CheckOrders: dto.CheckOrders,
-            CheckEt: dto.CheckEt,
-            ShowLastDays: dto.ShowLastDays,
-            ShowProgress: dto.ShowProgress,
-            ConsiderSkills: dto.ConsiderSkills,
-            RandomizeAssignments: dto.RandomizeAssignments,
-            ThisWeek: dto.ThisWeek,
-            NextWeek: dto.NextWeek,
-            Irrigation: dto.Irrigation,
-            Stock: dto.Stock,
-            Today: dto.Today,
-            History: dto.History,
-            PlanningYearPubId: dto.PlanningYearPubId,
-            LoadYears: dto.LoadYears,
             PreferredCountryPubId: dto.PreferredCountryPubId,
             PreferredLanguagePubId: dto.PreferredLanguagePubId,
             AppImageCreateDto: dto.AppImageCreateDto,
@@ -206,7 +135,7 @@ public static class UserExtensions
             ManagerUserPubIds = [.. dto.ManagerUserPubIds]
         };
 
-    public static void UpdateEntity(this User user, UserUpdateDto dto, Ibu ibu, Year? year = null)
+    public static void UpdateEntity(this User user, UserUpdateDto dto, Ibu ibu)
     {
         user.Email = dto.Email;
         user.UserName = dto.UserName;
@@ -217,29 +146,10 @@ public static class UserExtensions
         if (!dto.LockedOut)
             user.AccessFailedCount = 0;
 
-        // ✅ FK only (avoid nav assignment)
+        // FK only (avoid nav assignment)
         user.IbuId = ibu.IbuId;
 
-        user.Tolerance = dto.Tolerance;
-        user.WkOfWarn = dto.WkOfWarn;
-        user.ConsiderMlsn = dto.ConsiderMlsn;
-        user.CheckApps = dto.CheckApps;
-        user.CheckOrders = dto.CheckOrders;
-        user.CheckEt = dto.CheckEt;
-        user.ShowLastDays = dto.ShowLastDays;
-        user.ShowProgress = dto.ShowProgress;
-        user.ConsiderSkills = dto.ConsiderSkills;
-        user.RandomizeAssignments = dto.RandomizeAssignments;
-        user.ThisWeek = dto.ThisWeek;
-        user.NextWeek = dto.NextWeek;
-        user.Irrigation = dto.Irrigation;
-        user.Stock = dto.Stock;
-        user.Today = dto.Today;
-        user.History = dto.History;
-        user.LoadYears = dto.LoadYears;
         user.ManagerUserId = null;
-
-        user.PlanningYearId = year?.YearId;
     }
 
     static string? ResolveDisplayName(User? user)

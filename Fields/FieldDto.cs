@@ -179,6 +179,13 @@ public sealed record FieldDto
     [JsonPropertyName("primaryRiskAreaName")]
     public string? PrimaryRiskAreaName { get; init; }
 
+    [JsonPropertyName("growthPotentialAreaPubId")]
+    [DisplayName("Growth Potential Area")]
+    public Guid? GrowthPotentialAreaPubId { get; init; }
+
+    [JsonPropertyName("growthPotentialAreaName")]
+    public string? GrowthPotentialAreaName { get; init; }
+
     [JsonPropertyName("active")]
     public bool Active { get; init; }
 

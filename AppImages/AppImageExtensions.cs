@@ -30,7 +30,10 @@ public static class AppImageExtensions
             imageInfo.FileSize,
             appImage.PubId,
             appImage.RelativePath
-        );
+        )
+        {
+            CaptureMetadata = appImage.ToCaptureMetadataDto()
+        };
     }
 
     public static GetAppImageWithThumbnailDto ToAppImageWithThumbnailsDto(this AppImage appImage)
@@ -50,7 +53,10 @@ public static class AppImageExtensions
             imageInfo.Width,
             imageInfo.Height,
             imageInfo.FileSize
-        );
+        )
+        {
+            CaptureMetadata = appImage.ToCaptureMetadataDto()
+        };
     }
 
     public static GetAppImageThumbnailDto ToAppImageThumbnailDto(this AppImage appImage)
@@ -69,7 +75,32 @@ public static class AppImageExtensions
             imageInfo.Width,
             imageInfo.Height,
             imageInfo.FileSize
-        );
+        )
+        {
+            CaptureMetadata = appImage.ToCaptureMetadataDto()
+        };
+    }
+
+    public static AppImageCaptureMetadataDto? ToCaptureMetadataDto(this AppImage? appImage)
+    {
+        if (appImage is null
+            || (appImage.CapturedAtUtc is null
+                && appImage.CaptureLatitude is null
+                && appImage.CaptureLongitude is null
+                && appImage.CaptureLocationAccuracyMeters is null
+                && string.IsNullOrWhiteSpace(appImage.CaptureMetadataSource)))
+        {
+            return null;
+        }
+
+        return new AppImageCaptureMetadataDto(
+            appImage.CapturedAtUtc.HasValue
+                ? new DateTimeOffset(DateTime.SpecifyKind(appImage.CapturedAtUtc.Value, DateTimeKind.Utc))
+                : null,
+            appImage.CaptureLatitude.HasValue ? (double)appImage.CaptureLatitude.Value : null,
+            appImage.CaptureLongitude.HasValue ? (double)appImage.CaptureLongitude.Value : null,
+            appImage.CaptureLocationAccuracyMeters.HasValue ? (double)appImage.CaptureLocationAccuracyMeters.Value : null,
+            string.IsNullOrWhiteSpace(appImage.CaptureMetadataSource) ? null : appImage.CaptureMetadataSource.Trim());
     }
 
     public static AppImageInfoDto AnalyzeBase64Image(this string base64Image)

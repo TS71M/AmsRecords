@@ -155,6 +155,10 @@ public sealed record FieldUpdateDto(
     [property: DisplayName("Primary Risk Area")]
     Guid? PrimaryRiskAreaPubId = null,
 
+    [property: JsonPropertyName("growthPotentialAreaPubId")]
+    [property: DisplayName("Growth Potential Area")]
+    Guid? GrowthPotentialAreaPubId = null,
+
     [property: JsonPropertyName("appImagePubId")]
     Guid? AppImagePubId = null
 )

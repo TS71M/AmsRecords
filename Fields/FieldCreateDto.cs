@@ -150,7 +150,11 @@ public sealed record FieldCreateDto(
 
     [property: JsonPropertyName("primaryRiskAreaPubId")]
     [property: DisplayName("Primary Risk Area")]
-    Guid? PrimaryRiskAreaPubId=default
+    Guid? PrimaryRiskAreaPubId=default,
+
+    [property: JsonPropertyName("growthPotentialAreaPubId")]
+    [property: DisplayName("Growth Potential Area")]
+    Guid? GrowthPotentialAreaPubId=default
 )
 {
     public AppImageCreateDto? ImageCreateDto { get; set; } = null;

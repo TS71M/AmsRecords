@@ -61,6 +61,8 @@ public static class FieldDtoExtensions
             ClimateZoneName = field.ClimateZone?.ZoneName,
             PrimaryRiskAreaPubId = field.PrimaryRiskArea?.PubId,
             PrimaryRiskAreaName = field.PrimaryRiskArea?.AreaName,
+            GrowthPotentialAreaPubId = field.GrowthPotentialArea?.PubId,
+            GrowthPotentialAreaName = field.GrowthPotentialArea?.AreaName,
             TotalSurface = field.TotalSurface,
             TotalSurfaceTxt = field.TotalSurfaceTxt,
         };
@@ -232,6 +234,7 @@ public static class FieldDtoExtensions
             CoordinatePubId: dto.CoordinatePubId,
             CommonStartTime: dto.CommonStartTime,
             PrimaryRiskAreaPubId: dto.PrimaryRiskAreaPubId,
+            GrowthPotentialAreaPubId: dto.GrowthPotentialAreaPubId,
             AppImagePubId: dto.AppImagePubId
         );
 
@@ -273,6 +276,7 @@ public static class FieldDtoExtensions
             CoordinatePubId: dto.CoordinatePubId,
             IbuPubId: dto.IbuPubId,
             CommonStartTime: dto.CommonStartTime,
-            PrimaryRiskAreaPubId: dto.PrimaryRiskAreaPubId
+            PrimaryRiskAreaPubId: dto.PrimaryRiskAreaPubId,
+            GrowthPotentialAreaPubId: dto.GrowthPotentialAreaPubId
         );
 }

@@ -82,4 +82,21 @@ public static class AuthenticationDtos
         [property: JsonPropertyName("outcome")] PasswordResetQueueRequestOutcome Outcome,
         [property: JsonPropertyName("job")] PasswordResetEmailJobStatusDto Job
     );
+
+    public sealed record PasswordResetLinkDto(
+        [property: JsonPropertyName("email")] string Email,
+        [property: JsonPropertyName("url")] string Url
+    );
+
+    public sealed record PasswordResetLinkPayloadDto(
+        [property: JsonPropertyName("email")] string Email,
+        [property: JsonPropertyName("code")] string Code,
+        [property: JsonPropertyName("env")] string? Env
+    );
+
+    public sealed record PasswordResetWithTokenDto(
+        [property: JsonPropertyName("email")] string Email,
+        [property: JsonPropertyName("code")] string Code,
+        [property: JsonPropertyName("password")] string Password
+    );
 }

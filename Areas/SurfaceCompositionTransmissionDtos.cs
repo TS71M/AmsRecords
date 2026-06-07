@@ -30,7 +30,11 @@ public static class SurfaceCompositionTransmissionDtos
         [property: JsonPropertyName("name")] string Name,
         [property: JsonPropertyName("percent")] decimal Percent,
         [property: JsonPropertyName("confidence")] decimal Confidence,
-        [property: JsonPropertyName("notes")] string? Notes
+        [property: JsonPropertyName("notes")] string? Notes,
+        [property: JsonPropertyName("chartGroupKey")] string? ChartGroupKey = null,
+        [property: JsonPropertyName("chartGroupName")] string? ChartGroupName = null,
+        [property: JsonPropertyName("taxonRank")] string? TaxonRank = null,
+        [property: JsonPropertyName("isChartable")] bool IsChartable = true
     );
 
     public sealed record SurfaceCompositionAnalysisAdminQueryDto(
@@ -68,11 +72,35 @@ public static class SurfaceCompositionTransmissionDtos
         [property: JsonPropertyName("rerunLastModelUsed")] string? RerunLastModelUsed,
         [property: JsonPropertyName("rerunLastConfidence")] decimal? RerunLastConfidence,
         [property: JsonPropertyName("rerunDecisionAtUtc")] DateTime? RerunDecisionAtUtc,
-        [property: JsonPropertyName("rerunReviewNote")] string? RerunReviewNote
+        [property: JsonPropertyName("rerunReviewNote")] string? RerunReviewNote,
+        [property: JsonPropertyName("hasPendingRerunResult")] bool HasPendingRerunResult
+    );
+
+    public sealed record SurfaceCompositionAnalysisDetailDto(
+        [property: JsonPropertyName("transmissionPubId")] Guid TransmissionPubId,
+        [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
+        [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
+        [property: JsonPropertyName("fieldName")] string FieldName,
+        [property: JsonPropertyName("ibuName")] string IbuName,
+        [property: JsonPropertyName("areaName")] string AreaName,
+        [property: JsonPropertyName("holeNumber")] int HoleNumber,
+        [property: JsonPropertyName("surfaceName")] string SurfaceName,
+        [property: JsonPropertyName("original")] SurfaceCompositionTransmissionDto Original,
+        [property: JsonPropertyName("photos")] IReadOnlyList<AreaCompositionPhotoDtos.AreaCompositionPhotoDto> Photos,
+        [property: JsonPropertyName("rerunStatus")] string RerunStatus,
+        [property: JsonPropertyName("rerunStatusName")] string RerunStatusName,
+        [property: JsonPropertyName("hasPendingRerunResult")] bool HasPendingRerunResult
     );
 
     public sealed record SurfaceCompositionRerunRequestDto(
         [property: JsonPropertyName("transmissionPubId")] Guid TransmissionPubId
+    );
+
+    public sealed record SurfaceCompositionRerunQueuedDto(
+        [property: JsonPropertyName("transmissionPubId")] Guid TransmissionPubId,
+        [property: JsonPropertyName("rerunStatus")] string RerunStatus,
+        [property: JsonPropertyName("rerunStatusName")] string RerunStatusName,
+        [property: JsonPropertyName("queuedAtUtc")] DateTimeOffset QueuedAtUtc
     );
 
     public sealed record SurfaceCompositionRerunComparisonDto(
@@ -96,16 +124,20 @@ public static class SurfaceCompositionTransmissionDtos
     public static class SurfaceCompositionRerunStatuses
     {
         public const string NotChecked = "not_checked";
+        public const string Running = "running";
         public const string PendingDecision = "pending_decision";
         public const string Accepted = "accepted";
         public const string OriginalKept = "original_kept";
+        public const string Failed = "failed";
 
         public static string DisplayName(string? status)
             => status switch
             {
+                Running => "Rerun running",
                 PendingDecision => "Rerun pending",
                 Accepted => "Rerun accepted",
                 OriginalKept => "Original kept",
+                Failed => "Rerun failed",
                 _ => "Not checked"
             };
     }

@@ -4,19 +4,25 @@ namespace AmsRecords.Procural;
 
 public static class ProcurementExtensions
 {
-    public static FieldProcurementSettingDto ToDto(this FieldProcurementSetting setting)
+    public static FieldProcurementSettingDto ToDto(
+        this FieldProcurementSetting setting,
+        IReadOnlyList<ProcurementScopeIbuDto>? procurementScopeIbus = null)
         => new(
             PubId: setting.PubId,
             FieldPubId: setting.Field.PubId,
             FieldName: setting.Field.FieldName,
             ProcurementMode: setting.ProcurementMode,
+            ProcurementHubIbuPubId: setting.ProcurementHubIbu?.PubId,
+            ProcurementHubIbuName: setting.ProcurementHubIbu?.BusinessUnitName ?? string.Empty,
             ProcurementSupplierPubId: setting.ProcurementSupplier?.PubId,
             ProcurementSupplierName: setting.ProcurementSupplier?.SupNam ?? string.Empty,
             ProcurementManagerUserPubId: setting.ProcurementManagerUser?.PubId,
             ProcurementManagerName: setting.ProcurementManagerUser?.FullNameSnapshot ?? setting.ProcurementManagerUser?.Email ?? string.Empty,
             AllowDirectSupplierOrdering: setting.AllowDirectSupplierOrdering,
             ConsolidateRequisitions: setting.ConsolidateRequisitions,
-            Notes: setting.Notes
+            Notes: setting.Notes,
+            ProcurementScopeIbuPubIds: procurementScopeIbus?.Select(x => x.PubId).ToList() ?? [],
+            ProcurementScopeIbus: procurementScopeIbus ?? []
         );
 
     public static PurchaseRequisitionLineDto ToDto(this PurchaseRequisitionLine line)
@@ -44,6 +50,8 @@ public static class ProcurementExtensions
             NeedByDate: requisition.NeedByDate,
             RequestedByUserPubId: requisition.RequestedByUser.PubId,
             RequestedByName: requisition.RequestedByUser.FullNameSnapshot,
+            ProcurementHubIbuPubId: requisition.ProcurementHubIbu?.PubId,
+            ProcurementHubIbuName: requisition.ProcurementHubIbu?.BusinessUnitName ?? string.Empty,
             ProcurementManagerUserPubId: requisition.ProcurementManagerUser?.PubId,
             ProcurementManagerName: requisition.ProcurementManagerUser?.FullNameSnapshot ?? requisition.ProcurementManagerUser?.Email ?? string.Empty,
             LineCount: requisition.Lines.Count,
@@ -64,6 +72,8 @@ public static class ProcurementExtensions
             ReviewedDt: requisition.ReviewedDt,
             RequestedByUserPubId: requisition.RequestedByUser.PubId,
             RequestedByName: requisition.RequestedByUser.FullNameSnapshot,
+            ProcurementHubIbuPubId: requisition.ProcurementHubIbu?.PubId,
+            ProcurementHubIbuName: requisition.ProcurementHubIbu?.BusinessUnitName ?? string.Empty,
             ProcurementManagerUserPubId: requisition.ProcurementManagerUser?.PubId,
             ProcurementManagerName: requisition.ProcurementManagerUser?.FullNameSnapshot ?? requisition.ProcurementManagerUser?.Email ?? string.Empty,
             Notes: requisition.Notes,
