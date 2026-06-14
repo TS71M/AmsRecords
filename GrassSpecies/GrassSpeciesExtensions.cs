@@ -78,7 +78,8 @@ public static class GrassSpeciesExtensions
            dto.RootType,
            dto.CreatedAtUtc,
            dto.UpdatedAtUtc,
-           dto.MainAppImage?.PubId
+           dto.MainAppImage?.PubId,
+           0
        );
 
     public static AmsModels.GrassSpecies ToEntity(this GrassSpeciesCreateDto dto, int grassTypeId)
@@ -176,4 +177,4 @@ public static class GrassSpeciesExtensions
             dto.SeedheadColorFlowerColor,
             dto.RootType
         ));
-}
+}

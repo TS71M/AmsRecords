@@ -27,6 +27,8 @@ public static class WeatherForecastDtos
 
     public sealed record WeatherForecastHourDisplayDto(
         [property: JsonPropertyName("forecastForUtc")] DateTime ForecastForUtc,
+        [property: JsonPropertyName("forecastForLocal")] DateTime ForecastForLocal,
+        [property: JsonPropertyName("dateLocal")] DateOnly DateLocal,
         [property: JsonPropertyName("temp")] UnitValueDto Temp,
         [property: JsonPropertyName("dewPoint")] UnitValueDto DewPoint,
         [property: JsonPropertyName("rh")] UnitValueDto Rh,
@@ -64,6 +66,8 @@ public static class WeatherForecastDtos
 
     public sealed record WeatherForecastMiniHourDto(
         [property: JsonPropertyName("forecastForUtc")] DateTime ForecastForUtc,
+        [property: JsonPropertyName("forecastForLocal")] DateTime ForecastForLocal,
+        [property: JsonPropertyName("dateLocal")] DateOnly DateLocal,
         [property: JsonPropertyName("temp")] UnitValueDto Temp,
         [property: JsonPropertyName("dewPoint")] UnitValueDto DewPoint,
         [property: JsonPropertyName("rh")] UnitValueDto Rh,

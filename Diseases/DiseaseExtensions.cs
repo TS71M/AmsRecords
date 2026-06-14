@@ -10,6 +10,7 @@ public static class DiseaseExtensions
             Name: disease.Name,
             Summary: BuildSummary(disease),
             IndicatorPicturePubId: disease.IndicatorPicture?.PubId,
+            IndicatorThumbnailUrl: null,
             Aliases: disease.DiseaseAliases
                 .Select(x => x.AliasName)
                 .Where(x => !string.IsNullOrWhiteSpace(x))

@@ -34,8 +34,23 @@ public record FieldIndexDto
     [JsonPropertyName("risk")]
     public RiskMiniDto? Risk { get; init; }
 
+    [JsonPropertyName("growthPotential")]
+    public FieldGrowthPotentialPeriodDto? GrowthPotential { get; init; }
+
     [JsonPropertyName("currentObservation")]
     public WeatherCurrentMiniDto CurrentObservation { get; init; } = new(Guid.Empty, DateTime.MinValue, new UnitValueDto(), new UnitValueDto(), new UnitValueDto(), null, null, "");
 
     public string? ImageDataUrl { get; set; }
 }
+
+public sealed record FieldGrowthPotentialPeriodDto(
+    [property: JsonPropertyName("fromUtc")] DateTime FromUtc,
+    [property: JsonPropertyName("toUtc")] DateTime ToUtc,
+    [property: JsonPropertyName("gpPct")] decimal GpPct,
+    [property: JsonPropertyName("availableDayCount")] int AvailableDayCount,
+    [property: JsonPropertyName("expectedDayCount")] int ExpectedDayCount,
+    [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
+    [property: JsonPropertyName("areaName")] string AreaName,
+    [property: JsonPropertyName("optC")] decimal OptC,
+    [property: JsonPropertyName("varC")] decimal VarC,
+    [property: JsonPropertyName("pathway")] string Pathway);

@@ -19,6 +19,7 @@ public static class DiseaseDtos
         [property: JsonPropertyName("name")] string Name,
         [property: JsonPropertyName("summary")] string Summary,
         [property: JsonPropertyName("indicatorPicturePubId")] Guid? IndicatorPicturePubId,
+        [property: JsonPropertyName("indicatorThumbnailUrl")] string? IndicatorThumbnailUrl,
         [property: JsonPropertyName("aliases")] List<string> Aliases,
         [property: JsonPropertyName("grassTypes")] List<string> GrassTypes,
         [property: JsonPropertyName("pictureCount")] int PictureCount);

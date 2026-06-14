@@ -5,6 +5,47 @@ namespace AmsRecords.Procural;
 
 public static class ProcurementDtos
 {
+    public record ProcurementHubMemberDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("userPubId")] Guid UserPubId,
+        [property: JsonPropertyName("userName")] string UserName,
+        [property: JsonPropertyName("userEmail")] string UserEmail,
+        [property: JsonPropertyName("role")] string Role,
+        [property: JsonPropertyName("active")] bool Active,
+        [property: JsonPropertyName("isPrimary")] bool IsPrimary
+    );
+
+    public record ProcurementHubSettingDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("hubIbuPubId")] Guid HubIbuPubId,
+        [property: JsonPropertyName("hubIbuName")] string HubIbuName,
+        [property: JsonPropertyName("active")] bool Active,
+        [property: JsonPropertyName("allowDirectSupplierOrderingDefault")] bool AllowDirectSupplierOrderingDefault,
+        [property: JsonPropertyName("consolidateRequisitionsDefault")] bool ConsolidateRequisitionsDefault,
+        [property: JsonPropertyName("notes")] string Notes,
+        [property: JsonPropertyName("members")] IReadOnlyList<ProcurementHubMemberDto> Members
+    );
+
+    public record ProcurementHubMemberUpdateDto(
+        [property: JsonPropertyName("userPubId")] Guid UserPubId,
+        [property: JsonPropertyName("active")] bool Active,
+        [property: JsonPropertyName("isPrimary")] bool IsPrimary,
+        [property: JsonPropertyName("role")]
+        [property: MaxLength(100)]
+        string? Role
+    );
+
+    public record ProcurementHubSettingUpdateDto(
+        [property: JsonPropertyName("hubIbuPubId")] Guid HubIbuPubId,
+        [property: JsonPropertyName("active")] bool Active,
+        [property: JsonPropertyName("allowDirectSupplierOrderingDefault")] bool AllowDirectSupplierOrderingDefault,
+        [property: JsonPropertyName("consolidateRequisitionsDefault")] bool ConsolidateRequisitionsDefault,
+        [property: JsonPropertyName("notes")]
+        [property: MaxLength(500)]
+        string? Notes,
+        [property: JsonPropertyName("members")] IReadOnlyList<ProcurementHubMemberUpdateDto> Members
+    );
+
     public record ProcurementScopeIbuDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("name")] string Name,
@@ -27,6 +68,17 @@ public static class ProcurementDtos
         [property: JsonPropertyName("notes")] string Notes,
         [property: JsonPropertyName("procurementScopeIbuPubIds")] IReadOnlyList<Guid> ProcurementScopeIbuPubIds,
         [property: JsonPropertyName("procurementScopeIbus")] IReadOnlyList<ProcurementScopeIbuDto> ProcurementScopeIbus
+    );
+
+    public record FieldProcurementSettingListDto(
+        [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
+        [property: JsonPropertyName("fieldName")] string FieldName,
+        [property: JsonPropertyName("fieldActive")] bool FieldActive,
+        [property: JsonPropertyName("procurementMode")] ProcurementMode ProcurementMode,
+        [property: JsonPropertyName("procurementHubIbuPubId")] Guid? ProcurementHubIbuPubId,
+        [property: JsonPropertyName("procurementHubIbuName")] string ProcurementHubIbuName,
+        [property: JsonPropertyName("allowDirectSupplierOrdering")] bool AllowDirectSupplierOrdering,
+        [property: JsonPropertyName("consolidateRequisitions")] bool ConsolidateRequisitions
     );
 
     public record FieldProcurementSettingUpdateDto(

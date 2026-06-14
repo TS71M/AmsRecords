@@ -33,7 +33,8 @@ public static class GrassSpeciesDtos
 
         [property: JsonPropertyName("createdAtUtc")] DateTime CreatedAtUtc,
         [property: JsonPropertyName("updatedAtUtc")] DateTime UpdatedAtUtc,
-        [property: JsonPropertyName("imagePubId")] Guid? ImagePubId
+        [property: JsonPropertyName("imagePubId")] Guid? ImagePubId,
+        [property: JsonPropertyName("pictureCount")] int PictureCount
     );
 
     public sealed record GrassSpeciesCreateDto(

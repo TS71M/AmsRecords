@@ -9,12 +9,25 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("hasAnnualPlan")] bool HasAnnualPlan,
         [property: JsonPropertyName("annualPlan")] AnnualApplicationPlanSummaryDto? AnnualPlan,
         [property: JsonPropertyName("stats")] ApplicationPlannerStatsDto Stats,
+        [property: JsonPropertyName("currentGrowthPotential")] CurrentGrowthPotentialDto? CurrentGrowthPotential,
         [property: JsonPropertyName("materialPlanLines")] IReadOnlyList<AnnualProductPlanLineDto> MaterialPlanLines,
         [property: JsonPropertyName("nutrientTotals")] IReadOnlyList<AnnualNutrientTotalDto> NutrientTotals,
         [property: JsonPropertyName("upcomingApplications")] IReadOnlyList<ApplicationPlanItemSummaryDto> UpcomingApplications,
         [property: JsonPropertyName("openTriggerEvents")] IReadOnlyList<PlanTriggerEventSummaryDto> OpenTriggerEvents,
         [property: JsonPropertyName("recentExecutions")] IReadOnlyList<ApplicationExecutionSummaryDto> RecentExecutions,
         [property: JsonPropertyName("recentDeviations")] IReadOnlyList<PlanDeviationSummaryDto> RecentDeviations);
+
+    public sealed record CurrentGrowthPotentialDto(
+        [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
+        [property: JsonPropertyName("areaName")] string AreaName,
+        [property: JsonPropertyName("dayUtc")] DateTime DayUtc,
+        [property: JsonPropertyName("tempMeanC")] decimal TempMeanC,
+        [property: JsonPropertyName("gpPct")] decimal GpPct,
+        [property: JsonPropertyName("optC")] decimal OptC,
+        [property: JsonPropertyName("varC")] decimal VarC,
+        [property: JsonPropertyName("pathway")] string Pathway,
+        [property: JsonPropertyName("calculationSource")] string CalculationSource,
+        [property: JsonPropertyName("weatherSource")] string? WeatherSource);
 
     public sealed record AnnualApplicationPlanSummaryDto(
         [property: JsonPropertyName("pubId")] Guid PubId,

@@ -4,26 +4,55 @@ namespace AmsRecords.Procural;
 
 public static class ProcurementExtensions
 {
+    public static ProcurementHubSettingDto ToDto(this ProcurementHubSetting setting)
+        => new(
+            PubId: setting.PubId,
+            HubIbuPubId: setting.HubIbu.PubId,
+            HubIbuName: setting.HubIbu.BusinessUnitName,
+            Active: setting.Active,
+            AllowDirectSupplierOrderingDefault: setting.AllowDirectSupplierOrderingDefault,
+            ConsolidateRequisitionsDefault: setting.ConsolidateRequisitionsDefault,
+            Notes: setting.Notes,
+            Members: setting.Members
+                .OrderByDescending(x => x.Active)
+                .ThenByDescending(x => x.IsPrimary)
+                .ThenBy(x => x.User.FullNameSnapshot)
+                .ThenBy(x => x.User.Email)
+                .Select(x => new ProcurementHubMemberDto(
+                    PubId: x.PubId,
+                    UserPubId: x.User.PubId,
+                    UserName: x.User.FullNameSnapshot,
+                    UserEmail: x.User.Email ?? string.Empty,
+                    Role: x.Role,
+                    Active: x.Active,
+                    IsPrimary: x.IsPrimary))
+                .ToList()
+        );
+
     public static FieldProcurementSettingDto ToDto(
         this FieldProcurementSetting setting,
         IReadOnlyList<ProcurementScopeIbuDto>? procurementScopeIbus = null)
-        => new(
+    {
+        var isLocalMode = setting.ProcurementMode == ProcurementMode.Local;
+
+        return new(
             PubId: setting.PubId,
             FieldPubId: setting.Field.PubId,
             FieldName: setting.Field.FieldName,
             ProcurementMode: setting.ProcurementMode,
-            ProcurementHubIbuPubId: setting.ProcurementHubIbu?.PubId,
-            ProcurementHubIbuName: setting.ProcurementHubIbu?.BusinessUnitName ?? string.Empty,
-            ProcurementSupplierPubId: setting.ProcurementSupplier?.PubId,
-            ProcurementSupplierName: setting.ProcurementSupplier?.SupNam ?? string.Empty,
-            ProcurementManagerUserPubId: setting.ProcurementManagerUser?.PubId,
-            ProcurementManagerName: setting.ProcurementManagerUser?.FullNameSnapshot ?? setting.ProcurementManagerUser?.Email ?? string.Empty,
-            AllowDirectSupplierOrdering: setting.AllowDirectSupplierOrdering,
-            ConsolidateRequisitions: setting.ConsolidateRequisitions,
+            ProcurementHubIbuPubId: isLocalMode ? null : setting.ProcurementHubIbu?.PubId,
+            ProcurementHubIbuName: isLocalMode ? string.Empty : setting.ProcurementHubIbu?.BusinessUnitName ?? string.Empty,
+            ProcurementSupplierPubId: null,
+            ProcurementSupplierName: string.Empty,
+            ProcurementManagerUserPubId: null,
+            ProcurementManagerName: string.Empty,
+            AllowDirectSupplierOrdering: isLocalMode || setting.AllowDirectSupplierOrdering,
+            ConsolidateRequisitions: !isLocalMode && setting.ConsolidateRequisitions,
             Notes: setting.Notes,
             ProcurementScopeIbuPubIds: procurementScopeIbus?.Select(x => x.PubId).ToList() ?? [],
             ProcurementScopeIbus: procurementScopeIbus ?? []
         );
+    }
 
     public static PurchaseRequisitionLineDto ToDto(this PurchaseRequisitionLine line)
         => new(
