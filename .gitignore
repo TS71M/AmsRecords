@@ -7,6 +7,8 @@
 .codex-build/
 .codex-tmp/
 artifacts/
+.artifacts/
+.codex-artifacts/
 
 # Logs and temp files
 *.log
