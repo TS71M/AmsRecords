@@ -103,6 +103,29 @@ public static class SurfaceCompositionTransmissionDtos
         [property: JsonPropertyName("queuedAtUtc")] DateTimeOffset QueuedAtUtc
     );
 
+    public sealed record SurfaceCompositionAnalysisQueuedDto(
+        [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
+        [property: JsonPropertyName("jobPubId")] Guid JobPubId,
+        [property: JsonPropertyName("status")] string Status,
+        [property: JsonPropertyName("statusName")] string StatusName,
+        [property: JsonPropertyName("queuedAtUtc")] DateTimeOffset QueuedAtUtc
+    );
+
+    public sealed record SurfaceCompositionAnalysisJobStatusDto(
+        [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
+        [property: JsonPropertyName("jobPubId")] Guid? JobPubId,
+        [property: JsonPropertyName("status")] string Status,
+        [property: JsonPropertyName("statusName")] string StatusName,
+        [property: JsonPropertyName("queuedAtUtc")] DateTimeOffset? QueuedAtUtc,
+        [property: JsonPropertyName("startedAtUtc")] DateTimeOffset? StartedAtUtc,
+        [property: JsonPropertyName("completedAtUtc")] DateTimeOffset? CompletedAtUtc,
+        [property: JsonPropertyName("attempts")] int Attempts,
+        [property: JsonPropertyName("lastError")] string? LastError,
+        [property: JsonPropertyName("transmissionPubId")] Guid? TransmissionPubId,
+        [property: JsonPropertyName("isActive")] bool IsActive,
+        [property: JsonPropertyName("isTerminal")] bool IsTerminal
+    );
+
     public sealed record SurfaceCompositionRerunComparisonDto(
         [property: JsonPropertyName("transmissionPubId")] Guid TransmissionPubId,
         [property: JsonPropertyName("original")] SurfaceCompositionTransmissionDto Original,
@@ -139,6 +162,25 @@ public static class SurfaceCompositionTransmissionDtos
                 OriginalKept => "Original kept",
                 Failed => "Rerun failed",
                 _ => "Not checked"
+            };
+    }
+
+    public static class SurfaceCompositionAnalysisJobDtoStatuses
+    {
+        public const string NotQueued = "not_queued";
+        public const string Pending = "pending";
+        public const string Running = "running";
+        public const string Completed = "completed";
+        public const string Failed = "failed";
+
+        public static string DisplayName(string? status)
+            => status switch
+            {
+                Pending => "Analysis queued",
+                Running => "Analysis running",
+                Completed => "Analysis completed",
+                Failed => "Analysis failed",
+                _ => "No analysis queued"
             };
     }
 }
