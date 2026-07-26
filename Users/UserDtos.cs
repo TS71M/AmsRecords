@@ -64,6 +64,10 @@ public static class UserDtos
         public List<Guid> ManagerUserPubIds { get; init; } = [];
         [JsonPropertyName("managerUserNames")]
         public List<string> ManagerUserNames { get; init; } = [];
+        [JsonPropertyName("userPositionHierarchyLevel")]
+        public int? UserPositionHierarchyLevel { get; init; }
+        [JsonPropertyName("userPositionDepartmentName")]
+        public string? UserPositionDepartmentName { get; init; }
     };
 
     public record UserCreateDto(
@@ -111,6 +115,12 @@ public static class UserDtos
 
         [JsonPropertyName("managerUserPubIds")]
         public List<Guid> ManagerUserPubIds { get; set; } = [];
+
+        [JsonPropertyName("directReportUserPubIds")]
+        public List<Guid> DirectReportUserPubIds { get; set; } = [];
+
+        [JsonPropertyName("replaceDirectReports")]
+        public bool ReplaceDirectReports { get; set; }
     }
 
     public record UserUpdateDto(
@@ -166,6 +176,12 @@ public static class UserDtos
 
         [JsonPropertyName("managerUserPubIds")]
         public List<Guid> ManagerUserPubIds { get; set; } = [];
+
+        [JsonPropertyName("directReportUserPubIds")]
+        public List<Guid> DirectReportUserPubIds { get; set; } = [];
+
+        [JsonPropertyName("replaceDirectReports")]
+        public bool ReplaceDirectReports { get; set; }
     }
 
     public sealed record UserProfileUpdateDto(
@@ -223,6 +239,18 @@ public static class UserDtos
             Active: true)
         { }
     }
+
+    public sealed record UserOffboardingDto(
+        [property: JsonPropertyName("userPubId")][Required] Guid UserPubId,
+        [property: JsonPropertyName("replacementManagerUserPubId")] Guid? ReplacementManagerUserPubId);
+
+    public sealed record UserOffboardingResultDto(
+        [property: JsonPropertyName("userPubId")] Guid UserPubId,
+        [property: JsonPropertyName("replacementManagerUserPubId")] Guid? ReplacementManagerUserPubId,
+        [property: JsonPropertyName("reassignedDirectReports")] int ReassignedDirectReports,
+        [property: JsonPropertyName("removedReportingLinks")] int RemovedReportingLinks,
+        [property: JsonPropertyName("sessionsRevoked")] int SessionsRevoked,
+        [property: JsonPropertyName("pushDevicesDisabled")] int PushDevicesDisabled);
 
     
 }

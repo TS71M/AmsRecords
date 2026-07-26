@@ -43,7 +43,9 @@ public static class UserExtensions
             )
         {
             ManagerUserPubIds = [.. GetReportingManagers(user).Select(x => x.PubId)],
-            ManagerUserNames = [.. GetReportingManagers(user).Select(ResolveDisplayName).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x!)]
+            ManagerUserNames = [.. GetReportingManagers(user).Select(ResolveDisplayName).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x!)],
+            UserPositionHierarchyLevel = user.UserPosition?.HierarchyLevel,
+            UserPositionDepartmentName = user.UserPosition?.Department?.DepartmentName
         };
 
     public static User ToEntity(this UserCreateDto dto, int ibuId, int? countryId)
@@ -148,7 +150,9 @@ public static class UserExtensions
         )
         {
             RoleIds = dto.RoleIds,
-            ManagerUserPubIds = [.. dto.ManagerUserPubIds]
+            ManagerUserPubIds = [.. dto.ManagerUserPubIds],
+            DirectReportUserPubIds = [.. dto.DirectReportUserPubIds],
+            ReplaceDirectReports = dto.ReplaceDirectReports
         };
 
     public static void UpdateEntity(this User user, UserUpdateDto dto, Ibu ibu)

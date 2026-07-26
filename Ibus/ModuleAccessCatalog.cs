@@ -3,7 +3,8 @@ namespace AmsRecords.Ibus;
 public sealed record ModuleAccessDefinition(
     string Key,
     bool IsReleased = true,
-    bool IsPermissionAssignable = true);
+    bool IsPermissionAssignable = true,
+    string? LegacyPermissionKey = null);
 
 public static class ModuleAccessCatalog
 {
@@ -11,6 +12,8 @@ public static class ModuleAccessCatalog
     public const string Facility = "facility";
     public const string Settings = "settings";
     public const string DailyOperations = "daily-operations";
+    public const string ClippingVolume = "clipping-volume";
+    public const string CuttingHeight = "cutting-height";
     public const string Messages = "messages";
     public const string SnagList = "snag-list";
     public const string Diagnostics = "diagnostics";
@@ -38,6 +41,8 @@ public static class ModuleAccessCatalog
         new(Facility),
         new(Settings),
         new(DailyOperations),
+        new(ClippingVolume, LegacyPermissionKey: DailyOperations),
+        new(CuttingHeight, LegacyPermissionKey: DailyOperations),
         new(Messages),
         new(SnagList),
         new(Diagnostics),

@@ -58,4 +58,17 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("fieldName")] string FieldName,
         [property: JsonPropertyName("unit")] string Unit,
         [property: JsonPropertyName("measurements")] IReadOnlyList<CuttingHeightDto> Measurements);
+
+    public sealed record CuttingHeightAreaLatestDto(
+        [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
+        [property: JsonPropertyName("areaName")] string AreaName,
+        [property: JsonPropertyName("measurementPubId")] Guid? MeasurementPubId,
+        [property: JsonPropertyName("measuredOn")] DateTime? MeasuredOn,
+        [property: JsonPropertyName("height")] decimal? Height);
+
+    public sealed record CuttingHeightLatestByAreaDto(
+        [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
+        [property: JsonPropertyName("fieldName")] string FieldName,
+        [property: JsonPropertyName("unit")] string Unit,
+        [property: JsonPropertyName("areas")] IReadOnlyList<CuttingHeightAreaLatestDto> Areas);
 }
