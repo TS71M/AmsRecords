@@ -34,6 +34,12 @@ public static class WeatherCurrentDtos
         [property: JsonPropertyName("messages")] IReadOnlyList<AppMessageDto> Messages
     )
     {
+        [JsonPropertyName("tempC")]
+        public decimal? TempC { get; init; }
+
+        [JsonPropertyName("rainedLast24Hours")]
+        public bool RainedLast24Hours { get; init; }
+
         public WeatherCurrentDto() : this(
             Guid.Empty,
             string.Empty,

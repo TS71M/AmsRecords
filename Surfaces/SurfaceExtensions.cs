@@ -13,6 +13,7 @@ public static class SurfaceExtensions
             AreaName: s.Area.AreaName,
             HoleNumber: s.Hole.HoleNumber,
             SurfaceSizeM2: s.SurfaceSizeM2,
+            UseForClippingMeasurements: s.UseForClippingMeasurements,
             HoleImgPubId: s.Hole.AppImage?.PubId
         );
 
@@ -24,9 +25,13 @@ public static class SurfaceExtensions
             AreaName: s.Area.AreaName,
             HoleNumber: s.Hole.HoleNumber,
             SurfaceSizeM2: s.SurfaceSizeM2,
+            UseForClippingMeasurements: s.UseForClippingMeasurements,
             HoleImgPubId: s.Hole.AppImage?.PubId
         );
 
     public static void UpdateEntity(this Surface s, SurfaceUpdateDto dto)
-        => s.SurfaceSizeM2 = dto.SurfaceSizeM2;
+    {
+        s.SurfaceSizeM2 = dto.SurfaceSizeM2;
+        s.UseForClippingMeasurements = dto.UseForClippingMeasurements;
+    }
 }

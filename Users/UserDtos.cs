@@ -16,6 +16,10 @@ public static class UserDtos
         Guid? VisualizationTempUnitPubId { get; }
         Guid? VisualizationRainUnitPubId { get; }
         Guid? VisualizationWindUnitPubId { get; }
+        Guid? VisualizationGreenSpeedUnitPubId { get; }
+        Guid? VisualizationCuttingHeightUnitPubId { get; }
+        Guid? VisualizationClippingsUnitPubId { get; }
+        Guid? VisualizationSurfaceUnitPubId { get; }
         Guid? ImagePubId { get; }
         AppImageCreateDto? AppImageCreateDto { get; }
     }
@@ -48,7 +52,11 @@ public static class UserDtos
         [property: JsonPropertyName("passwordResetEmailJob")] PasswordResetEmailJobStatusDto? PasswordResetEmailJob = null,
         [property: JsonPropertyName("visualizationTempUnitPubId")] Guid? VisualizationTempUnitPubId = default,
         [property: JsonPropertyName("visualizationRainUnitPubId")] Guid? VisualizationRainUnitPubId = default,
-        [property: JsonPropertyName("visualizationWindUnitPubId")] Guid? VisualizationWindUnitPubId = default
+        [property: JsonPropertyName("visualizationWindUnitPubId")] Guid? VisualizationWindUnitPubId = default,
+        [property: JsonPropertyName("visualizationGreenSpeedUnitPubId")] Guid? VisualizationGreenSpeedUnitPubId = default,
+        [property: JsonPropertyName("visualizationCuttingHeightUnitPubId")] Guid? VisualizationCuttingHeightUnitPubId = default,
+        [property: JsonPropertyName("visualizationClippingsUnitPubId")] Guid? VisualizationClippingsUnitPubId = default,
+        [property: JsonPropertyName("visualizationSurfaceUnitPubId")] Guid? VisualizationSurfaceUnitPubId = default
         )
     {
         public string? ImageThumbDataUrl { get; set; }
@@ -71,7 +79,11 @@ public static class UserDtos
         [property: JsonPropertyName("accessProfilePubId")] Guid? AccessProfilePubId,
         [property: JsonPropertyName("visualizationTempUnitPubId")] Guid? VisualizationTempUnitPubId = default,
         [property: JsonPropertyName("visualizationRainUnitPubId")] Guid? VisualizationRainUnitPubId = default,
-        [property: JsonPropertyName("visualizationWindUnitPubId")] Guid? VisualizationWindUnitPubId = default
+        [property: JsonPropertyName("visualizationWindUnitPubId")] Guid? VisualizationWindUnitPubId = default,
+        [property: JsonPropertyName("visualizationGreenSpeedUnitPubId")] Guid? VisualizationGreenSpeedUnitPubId = default,
+        [property: JsonPropertyName("visualizationCuttingHeightUnitPubId")] Guid? VisualizationCuttingHeightUnitPubId = default,
+        [property: JsonPropertyName("visualizationClippingsUnitPubId")] Guid? VisualizationClippingsUnitPubId = default,
+        [property: JsonPropertyName("visualizationSurfaceUnitPubId")] Guid? VisualizationSurfaceUnitPubId = default
         )
     {
         public UserCreateDto() : this(
@@ -87,7 +99,11 @@ public static class UserDtos
             AccessProfilePubId: null,
             VisualizationTempUnitPubId: null,
             VisualizationRainUnitPubId: null,
-            VisualizationWindUnitPubId: null)
+            VisualizationWindUnitPubId: null,
+            VisualizationGreenSpeedUnitPubId: null,
+            VisualizationCuttingHeightUnitPubId: null,
+            VisualizationClippingsUnitPubId: null,
+            VisualizationSurfaceUnitPubId: null)
         { }
 
         [JsonPropertyName("roleIds")]
@@ -113,7 +129,11 @@ public static class UserDtos
         [property: JsonPropertyName("accessProfilePubId")] Guid? AccessProfilePubId,
         [property: JsonPropertyName("visualizationTempUnitPubId")] Guid? VisualizationTempUnitPubId = default,
         [property: JsonPropertyName("visualizationRainUnitPubId")] Guid? VisualizationRainUnitPubId = default,
-        [property: JsonPropertyName("visualizationWindUnitPubId")] Guid? VisualizationWindUnitPubId = default
+        [property: JsonPropertyName("visualizationWindUnitPubId")] Guid? VisualizationWindUnitPubId = default,
+        [property: JsonPropertyName("visualizationGreenSpeedUnitPubId")] Guid? VisualizationGreenSpeedUnitPubId = default,
+        [property: JsonPropertyName("visualizationCuttingHeightUnitPubId")] Guid? VisualizationCuttingHeightUnitPubId = default,
+        [property: JsonPropertyName("visualizationClippingsUnitPubId")] Guid? VisualizationClippingsUnitPubId = default,
+        [property: JsonPropertyName("visualizationSurfaceUnitPubId")] Guid? VisualizationSurfaceUnitPubId = default
         ) : IUserPreferenceUpdateDto
     {
         public UserUpdateDto() : this(
@@ -132,7 +152,11 @@ public static class UserDtos
             AccessProfilePubId: null,
             VisualizationTempUnitPubId: null,
             VisualizationRainUnitPubId: null,
-            VisualizationWindUnitPubId: null)
+            VisualizationWindUnitPubId: null,
+            VisualizationGreenSpeedUnitPubId: null,
+            VisualizationCuttingHeightUnitPubId: null,
+            VisualizationClippingsUnitPubId: null,
+            VisualizationSurfaceUnitPubId: null)
         { }
         public string? ImageThumbDataUrl { get; set; }
         public AppImageCreateDto? AppImageCreateDto { get; set; }
@@ -155,7 +179,11 @@ public static class UserDtos
         [property: JsonPropertyName("contact")] ContactDetailDto? Contact,
         [property: JsonPropertyName("visualizationTempUnitPubId")] Guid? VisualizationTempUnitPubId = default,
         [property: JsonPropertyName("visualizationRainUnitPubId")] Guid? VisualizationRainUnitPubId = default,
-        [property: JsonPropertyName("visualizationWindUnitPubId")] Guid? VisualizationWindUnitPubId = default
+        [property: JsonPropertyName("visualizationWindUnitPubId")] Guid? VisualizationWindUnitPubId = default,
+        [property: JsonPropertyName("visualizationGreenSpeedUnitPubId")] Guid? VisualizationGreenSpeedUnitPubId = default,
+        [property: JsonPropertyName("visualizationCuttingHeightUnitPubId")] Guid? VisualizationCuttingHeightUnitPubId = default,
+        [property: JsonPropertyName("visualizationClippingsUnitPubId")] Guid? VisualizationClippingsUnitPubId = default,
+        [property: JsonPropertyName("visualizationSurfaceUnitPubId")] Guid? VisualizationSurfaceUnitPubId = default
     ) : IUserPreferenceUpdateDto
     {
         public string? ImageThumbDataUrl { get; set; }

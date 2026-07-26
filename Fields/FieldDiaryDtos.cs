@@ -16,6 +16,9 @@ public static class FieldDiaryDtos
         public const string WeatherExtremeEnded = "WeatherExtremeEnded";
         public const string ManualNote = "ManualNote";
         public const string AttachmentAdded = "AttachmentAdded";
+        public const string LeafNitrateMeasured = "LeafNitrateMeasured";
+        public const string ClippingVolumeMeasured = "ClippingVolumeMeasured";
+        public const string CuttingHeightMeasured = "CuttingHeightMeasured";
     }
 
     public static class Sources

@@ -10,6 +10,7 @@ public static class SurfaceDtos
         [property: JsonPropertyName("areaName")] string AreaName,
         [property: JsonPropertyName("holeNumber")] int HoleNumber,
         [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
+        [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements,
         [property: JsonPropertyName("holeImgPubId")] Guid? HoleImgPubId
     )
     {
@@ -22,17 +23,20 @@ public static class SurfaceDtos
        [property: JsonPropertyName("holePubId")] Guid HolePubId,
        [property: JsonPropertyName("holeName")] string HoleName,
        [property: JsonPropertyName("holeNumber")] int HoleNumber,
-       [property: JsonPropertyName("surfaceSize")] decimal SurfaceSize
+       [property: JsonPropertyName("surfaceSize")] decimal SurfaceSize,
+       [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements
     );
 
     public sealed record SurfaceCreateDto(
         [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
         [property: JsonPropertyName("holePubId")] Guid HolePubId,
-        [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2
+        [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
+        [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements = true
     );
 
     public sealed record SurfaceUpdateDto(
-        [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2
+        [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
+        [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements = true
     );
 
     public sealed record SurfacesIndexDto(
@@ -67,6 +71,7 @@ public static class SurfaceDtos
         [property: JsonPropertyName("areaName")] string AreaName,
         [property: JsonPropertyName("holeNumber")] int HoleNumber,
         [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
+        [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements,
         [property: JsonPropertyName("holeImgPubId")] Guid? HoleImgPubId
     )
     {

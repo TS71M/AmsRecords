@@ -19,23 +19,16 @@ public static class FieldDtoExtensions
             WaterSources = field.WaterSources,
             WeatherStation = field.WeatherStation,
             Tolerance = field.Tolerance,
-            SurfaceUniPubId = field.SurfaceUni?.PubId,
-            SelSurUniTxt = field.TotalSurfaceUnit,
-            CutUniLenPubId = field.CutUniLen?.PubId,
-            CutUniLenTxt = field.CuttingsUnit,
-            GreenSpeedUniLenPubId = field.GreenSpeedUniLen?.PubId,
-            GreenSpeedUniLenTxt = field.GreenSpeedUnit,
-            TempUniPubId = field.TempUni?.PubId,
-            TempUniTxt = field.TemperatureUnit,
-            RainUniPubId = field.RainUni?.PubId,
-            RainUniTxt = field.RainUnit,
-            ClippingsUniPubId = field.ClippingsUni?.PubId,
-            ClippingsUniTxt = field.ClippingsUnit,
-            WindUniPubId = field.WindUni?.PubId,
-            WindUniTxt = field.WindSpeedUnit,
-            UniSurTxt = field.SurfaceUnit,
-            TotalSurfaceUniPubId = field.TotalSurfaceUni?.PubId,
-            ElevationUnitPubId = field.ElevationUniLen?.PubId,
+            SelSurUniTxt = "m²",
+            CutUniLenTxt = "mm",
+            GreenSpeedUniLenTxt = "m",
+            TempUniTxt = "°C",
+            RainUniTxt = "mm",
+            ClippingsUniTxt = "l",
+            WindUniTxt = "m/s",
+            UniSurTxt = "m²",
+            TotalSurfaceUniTxt = "m²",
+            ElevationUnitTxt = "m",
             StartInventory = field.StartInventory,
             UsePlanning = field.UsePlanning,
             EnterWeatherManually = field.EnterWeatherManually,
@@ -105,16 +98,7 @@ public static class FieldDtoExtensions
             WaterSources = dto.WaterSources,
             WeatherStation = dto.WeatherStation,
             Tolerance = dto.Tolerance,
-            SurfaceUniId = null,
-            CutUniLenId = null,
-            GreenSpeedUniLenId = null,
-            TempUniId = null,
-            RainUniId = null,
-            ClippingsUniId = null,
-            WindUniId = null,
             TotalSurface = dto.TotalSurface,
-            TotalSurfaceUniId = null,
-            ElevationUniLenId = null,
             StartInventory = dto.StartInventory,
             UsePlanning = dto.UsePlanning,
             EnterWeatherManually = dto.EnterWeatherManually,
@@ -162,14 +146,6 @@ public static class FieldDtoExtensions
         field.WaterSources = dto.WaterSources;
         field.WeatherStation = dto.WeatherStation;
         field.Tolerance = dto.Tolerance;
-        field.SurfaceUniId = null;
-        field.CutUniLenId = null;
-        field.GreenSpeedUniLenId = null;
-        field.TempUniId = null;
-        field.RainUniId = null;
-        field.ClippingsUniId = null;
-        field.WindUniId = null;
-        field.ElevationUniLenId = null;
         field.StartInventory = dto.StartInventory;
         field.UsePlanning = dto.UsePlanning;
         field.EnterWeatherManually = dto.EnterWeatherManually;
@@ -191,7 +167,6 @@ public static class FieldDtoExtensions
         field.Coordinate = coor;
         field.CoordinateId = coor?.CoordinatesId;
         field.TotalSurface = dto.TotalSurface;
-        field.TotalSurfaceUniId = null;
     }
 
     public static FieldUpdateDto ToUpdateDto(this FieldDto dto)

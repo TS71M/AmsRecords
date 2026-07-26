@@ -35,7 +35,11 @@ public static class UserExtensions
             Roles: [.. user.UserRole.Select(ur => ur.Role.ToDto())],
             VisualizationTempUnitPubId: user.VisualizationTempUnit?.PubId,
             VisualizationRainUnitPubId: user.VisualizationRainUnit?.PubId,
-            VisualizationWindUnitPubId: user.VisualizationWindUnit?.PubId
+            VisualizationWindUnitPubId: user.VisualizationWindUnit?.PubId,
+            VisualizationGreenSpeedUnitPubId: user.VisualizationGreenSpeedUnit?.PubId,
+            VisualizationCuttingHeightUnitPubId: user.VisualizationCuttingHeightUnit?.PubId,
+            VisualizationClippingsUnitPubId: user.VisualizationClippingsUnit?.PubId,
+            VisualizationSurfaceUnitPubId: user.VisualizationSurfaceUnit?.PubId
             )
         {
             ManagerUserPubIds = [.. GetReportingManagers(user).Select(x => x.PubId)],
@@ -75,7 +79,11 @@ public static class UserExtensions
             AccessProfilePubId: dto.AccessProfilePubId,
             VisualizationTempUnitPubId: dto.VisualizationTempUnitPubId,
             VisualizationRainUnitPubId: dto.VisualizationRainUnitPubId,
-            VisualizationWindUnitPubId: dto.VisualizationWindUnitPubId
+            VisualizationWindUnitPubId: dto.VisualizationWindUnitPubId,
+            VisualizationGreenSpeedUnitPubId: dto.VisualizationGreenSpeedUnitPubId,
+            VisualizationCuttingHeightUnitPubId: dto.VisualizationCuttingHeightUnitPubId,
+            VisualizationClippingsUnitPubId: dto.VisualizationClippingsUnitPubId,
+            VisualizationSurfaceUnitPubId: dto.VisualizationSurfaceUnitPubId
             )
         {
             RoleIds = [.. dto.Roles.Select(r => r.Id)],
@@ -98,7 +106,11 @@ public static class UserExtensions
             Contact: dto.Contact,
             VisualizationTempUnitPubId: dto.VisualizationTempUnitPubId,
             VisualizationRainUnitPubId: dto.VisualizationRainUnitPubId,
-            VisualizationWindUnitPubId: dto.VisualizationWindUnitPubId
+            VisualizationWindUnitPubId: dto.VisualizationWindUnitPubId,
+            VisualizationGreenSpeedUnitPubId: dto.VisualizationGreenSpeedUnitPubId,
+            VisualizationCuttingHeightUnitPubId: dto.VisualizationCuttingHeightUnitPubId,
+            VisualizationClippingsUnitPubId: dto.VisualizationClippingsUnitPubId,
+            VisualizationSurfaceUnitPubId: dto.VisualizationSurfaceUnitPubId
             );
 
     public static UserTemporaryReplacementDto ToDto(this UserTemporaryReplacement entity)
@@ -128,7 +140,11 @@ public static class UserExtensions
             AccessProfilePubId: dto.AccessProfilePubId,
             VisualizationTempUnitPubId: dto.VisualizationTempUnitPubId,
             VisualizationRainUnitPubId: dto.VisualizationRainUnitPubId,
-            VisualizationWindUnitPubId: dto.VisualizationWindUnitPubId
+            VisualizationWindUnitPubId: dto.VisualizationWindUnitPubId,
+            VisualizationGreenSpeedUnitPubId: dto.VisualizationGreenSpeedUnitPubId,
+            VisualizationCuttingHeightUnitPubId: dto.VisualizationCuttingHeightUnitPubId,
+            VisualizationClippingsUnitPubId: dto.VisualizationClippingsUnitPubId,
+            VisualizationSurfaceUnitPubId: dto.VisualizationSurfaceUnitPubId
         )
         {
             RoleIds = dto.RoleIds,

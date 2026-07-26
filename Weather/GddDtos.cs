@@ -78,7 +78,7 @@ public sealed class GddDtos
             CapTempC: capTempC,
             BaseTemp: null,
             CapTemp: null,
-            TemperatureUnitShort: field.TempUni?.UnitShort ?? "°C",
+            TemperatureUnitShort: "°C",
             Method: new(
                 Code: GddAppMessageCodes.Methods.TminTmaxAvg,
                 Severity: null,

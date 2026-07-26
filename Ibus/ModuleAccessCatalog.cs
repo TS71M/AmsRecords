@@ -21,6 +21,7 @@ public static class ModuleAccessCatalog
     public const string Surfaces = "surfaces";
     public const string SoilTests = "soil-tests";
     public const string WaterTests = "water-tests";
+    public const string LeafNitrate = "leaf-nitrate";
     public const string Procural = "procural";
     public const string Statistics = "statistics";
     public const string Infos = "infos";
@@ -47,6 +48,7 @@ public static class ModuleAccessCatalog
         new(Surfaces),
         new(SoilTests),
         new(WaterTests),
+        new(LeafNitrate),
         new(Procural, IsReleased: false, IsPermissionAssignable: false),
         new(Statistics, IsReleased: false, IsPermissionAssignable: false),
         new(Infos),
