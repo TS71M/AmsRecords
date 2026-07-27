@@ -18,6 +18,7 @@ public static class FieldDiaryDtos
         public const string AttachmentAdded = "AttachmentAdded";
         public const string LeafNitrateMeasured = "LeafNitrateMeasured";
         public const string ClippingVolumeMeasured = "ClippingVolumeMeasured";
+        public const string GreenSpeedMeasured = "GreenSpeedMeasured";
         public const string CuttingHeightMeasured = "CuttingHeightMeasured";
     }
 

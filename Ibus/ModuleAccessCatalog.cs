@@ -13,6 +13,7 @@ public static class ModuleAccessCatalog
     public const string Settings = "settings";
     public const string DailyOperations = "daily-operations";
     public const string ClippingVolume = "clipping-volume";
+    public const string GreenSpeed = "green-speed";
     public const string CuttingHeight = "cutting-height";
     public const string Messages = "messages";
     public const string SnagList = "snag-list";
@@ -42,6 +43,7 @@ public static class ModuleAccessCatalog
         new(Settings),
         new(DailyOperations),
         new(ClippingVolume, LegacyPermissionKey: DailyOperations),
+        new(GreenSpeed, LegacyPermissionKey: DailyOperations),
         new(CuttingHeight, LegacyPermissionKey: DailyOperations),
         new(Messages),
         new(SnagList),

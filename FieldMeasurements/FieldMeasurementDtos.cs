@@ -39,6 +39,38 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("clippingSurfaces")] IReadOnlyList<ClippingSurfaceDto> ClippingSurfaces,
         [property: JsonPropertyName("measurements")] IReadOnlyList<ClippingVolumeDto> Measurements);
 
+    public sealed record GreenSpeedSurfaceDto(
+        [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
+        [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
+        [property: JsonPropertyName("areaName")] string AreaName,
+        [property: JsonPropertyName("holePubId")] Guid HolePubId,
+        [property: JsonPropertyName("surfaceName")] string SurfaceName,
+        [property: JsonPropertyName("label")] string Label);
+
+    public sealed record GreenSpeedCreateDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
+        [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
+        [property: JsonPropertyName("measuredAtUtc")] DateTime MeasuredAtUtc,
+        [property: JsonPropertyName("speed")] decimal Speed);
+
+    public sealed record GreenSpeedDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
+        [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
+        [property: JsonPropertyName("areaName")] string AreaName,
+        [property: JsonPropertyName("holePubId")] Guid HolePubId,
+        [property: JsonPropertyName("surfaceName")] string SurfaceName,
+        [property: JsonPropertyName("measuredAtUtc")] DateTime MeasuredAtUtc,
+        [property: JsonPropertyName("speed")] decimal Speed);
+
+    public sealed record GreenSpeedTimelineDto(
+        [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
+        [property: JsonPropertyName("fieldName")] string FieldName,
+        [property: JsonPropertyName("unit")] string Unit,
+        [property: JsonPropertyName("greenSpeedSurfaces")] IReadOnlyList<GreenSpeedSurfaceDto> GreenSpeedSurfaces,
+        [property: JsonPropertyName("measurements")] IReadOnlyList<GreenSpeedDto> Measurements);
+
     public sealed record CuttingHeightCreateDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
