@@ -20,7 +20,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
         [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
         [property: JsonPropertyName("measuredAtUtc")] DateTime MeasuredAtUtc,
-        [property: JsonPropertyName("volume")] decimal Volume);
+        [property: JsonPropertyName("volume")] decimal Volume,
+        [property: JsonPropertyName("inputUnitPubId")] Guid? InputUnitPubId = null);
 
     public sealed record ClippingVolumeDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -37,7 +38,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("fieldName")] string FieldName,
         [property: JsonPropertyName("unit")] string Unit,
         [property: JsonPropertyName("clippingSurfaces")] IReadOnlyList<ClippingSurfaceDto> ClippingSurfaces,
-        [property: JsonPropertyName("measurements")] IReadOnlyList<ClippingVolumeDto> Measurements);
+        [property: JsonPropertyName("measurements")] IReadOnlyList<ClippingVolumeDto> Measurements,
+        [property: JsonPropertyName("unitPubId")] Guid? UnitPubId = null);
 
     public sealed record GreenSpeedSurfaceDto(
         [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
@@ -52,7 +54,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
         [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
         [property: JsonPropertyName("measuredAtUtc")] DateTime MeasuredAtUtc,
-        [property: JsonPropertyName("speed")] decimal Speed);
+        [property: JsonPropertyName("speed")] decimal Speed,
+        [property: JsonPropertyName("inputUnitPubId")] Guid? InputUnitPubId = null);
 
     public sealed record GreenSpeedDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -69,14 +72,16 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("fieldName")] string FieldName,
         [property: JsonPropertyName("unit")] string Unit,
         [property: JsonPropertyName("greenSpeedSurfaces")] IReadOnlyList<GreenSpeedSurfaceDto> GreenSpeedSurfaces,
-        [property: JsonPropertyName("measurements")] IReadOnlyList<GreenSpeedDto> Measurements);
+        [property: JsonPropertyName("measurements")] IReadOnlyList<GreenSpeedDto> Measurements,
+        [property: JsonPropertyName("unitPubId")] Guid? UnitPubId = null);
 
     public sealed record CuttingHeightCreateDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
         [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
         [property: JsonPropertyName("measuredOn")] DateTime MeasuredOn,
-        [property: JsonPropertyName("height")] decimal Height);
+        [property: JsonPropertyName("height")] decimal Height,
+        [property: JsonPropertyName("inputUnitPubId")] Guid? InputUnitPubId = null);
 
     public sealed record CuttingHeightDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -89,7 +94,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
         [property: JsonPropertyName("fieldName")] string FieldName,
         [property: JsonPropertyName("unit")] string Unit,
-        [property: JsonPropertyName("measurements")] IReadOnlyList<CuttingHeightDto> Measurements);
+        [property: JsonPropertyName("measurements")] IReadOnlyList<CuttingHeightDto> Measurements,
+        [property: JsonPropertyName("unitPubId")] Guid? UnitPubId = null);
 
     public sealed record CuttingHeightAreaLatestDto(
         [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
@@ -102,5 +108,6 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
         [property: JsonPropertyName("fieldName")] string FieldName,
         [property: JsonPropertyName("unit")] string Unit,
-        [property: JsonPropertyName("areas")] IReadOnlyList<CuttingHeightAreaLatestDto> Areas);
+        [property: JsonPropertyName("areas")] IReadOnlyList<CuttingHeightAreaLatestDto> Areas,
+        [property: JsonPropertyName("unitPubId")] Guid? UnitPubId = null);
 }
