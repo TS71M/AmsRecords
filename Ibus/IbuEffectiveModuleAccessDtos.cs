@@ -7,7 +7,8 @@ public static class IbuEffectiveModuleAccessDtos
         [property: JsonPropertyName("isReleased")] bool IsReleased,
         [property: JsonPropertyName("isOrganizationEnabled")] bool IsOrganizationEnabled,
         [property: JsonPropertyName("canView")] bool CanView,
-        [property: JsonPropertyName("canEdit")] bool CanEdit);
+        [property: JsonPropertyName("canEdit")] bool CanEdit,
+        [property: JsonPropertyName("canDelete")] bool CanDelete);
 
     public sealed record IbuEffectiveModuleAccessResponseDto(
         [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,

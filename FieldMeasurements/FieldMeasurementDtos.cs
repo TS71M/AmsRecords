@@ -13,7 +13,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("areaName")] string AreaName,
         [property: JsonPropertyName("holePubId")] Guid HolePubId,
         [property: JsonPropertyName("surfaceName")] string SurfaceName,
-        [property: JsonPropertyName("label")] string Label);
+        [property: JsonPropertyName("label")] string Label,
+        [property: JsonPropertyName("surfaceAreaM2")] decimal SurfaceAreaM2 = 0m);
 
     public sealed record ClippingVolumeCreateDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -31,7 +32,9 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("holePubId")] Guid HolePubId,
         [property: JsonPropertyName("surfaceName")] string SurfaceName,
         [property: JsonPropertyName("measuredAtUtc")] DateTime MeasuredAtUtc,
-        [property: JsonPropertyName("volume")] decimal Volume);
+        [property: JsonPropertyName("volume")] decimal Volume,
+        [property: JsonPropertyName("sampleAreaM2")] decimal? SampleAreaM2 = null,
+        [property: JsonPropertyName("yieldMlPerM2")] decimal? YieldMlPerM2 = null);
 
     public sealed record ClippingVolumeTimelineDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
@@ -39,7 +42,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("unit")] string Unit,
         [property: JsonPropertyName("clippingSurfaces")] IReadOnlyList<ClippingSurfaceDto> ClippingSurfaces,
         [property: JsonPropertyName("measurements")] IReadOnlyList<ClippingVolumeDto> Measurements,
-        [property: JsonPropertyName("unitPubId")] Guid? UnitPubId = null);
+        [property: JsonPropertyName("unitPubId")] Guid? UnitPubId = null,
+        [property: JsonPropertyName("normalizedUnit")] string NormalizedUnit = "mL/m²");
 
     public sealed record GreenSpeedSurfaceDto(
         [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,

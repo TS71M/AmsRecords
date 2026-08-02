@@ -67,6 +67,21 @@ public static class DiseaseExtensions
             Pictures: disease.DiseasePictures
                 .OrderBy(x => x.DiseasePictureId)
                 .Select(x => new DiseasePictureDto(x.PubId, x.AppImage?.PubId))
+                .ToList(),
+            GrassSpeciesSusceptibilities: disease.GrassSpeciesSusceptibilities
+                .Where(x => x.Active)
+                .OrderByDescending(x => x.SusceptibilityLevel)
+                .ThenBy(x => x.GrassSpecies.Name)
+                .Select(x => new DiseaseGrassSpeciesSusceptibilityDto(
+                    x.PubId,
+                    x.GrassSpecies.PubId,
+                    x.GrassSpecies.Name,
+                    x.GrassSpecies.LatinName,
+                    x.SusceptibilityLevel,
+                    x.ContentOwner,
+                    x.ReviewedAtUtc,
+                    x.EvidenceNote,
+                    x.SourceUrl))
                 .ToList());
 
     public static DiseaseTrainingExampleDto ToTrainingDto(this DiseaseTrainingExample example)

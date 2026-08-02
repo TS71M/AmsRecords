@@ -33,6 +33,17 @@ public static class DiseaseDtos
         [property: JsonPropertyName("grassTypePubId")] Guid GrassTypePubId,
         [property: JsonPropertyName("grassTypeName")] string GrassTypeName);
 
+    public sealed record DiseaseGrassSpeciesSusceptibilityDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("grassSpeciesPubId")] Guid GrassSpeciesPubId,
+        [property: JsonPropertyName("grassSpeciesName")] string GrassSpeciesName,
+        [property: JsonPropertyName("latinName")] string? LatinName,
+        [property: JsonPropertyName("susceptibilityLevel")] byte SusceptibilityLevel,
+        [property: JsonPropertyName("contentOwner")] string ContentOwner,
+        [property: JsonPropertyName("reviewedAtUtc")] DateTime? ReviewedAtUtc,
+        [property: JsonPropertyName("evidenceNote")] string? EvidenceNote,
+        [property: JsonPropertyName("sourceUrl")] string? SourceUrl);
+
     public sealed record DiseaseDetailDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("name")] string Name,
@@ -53,7 +64,8 @@ public static class DiseaseDtos
         [property: JsonPropertyName("diseaseCyclePicturePubId")] Guid? DiseaseCyclePicturePubId,
         [property: JsonPropertyName("aliases")] List<string> Aliases,
         [property: JsonPropertyName("grassTypes")] List<DiseaseGrassTypeDto> GrassTypes,
-        [property: JsonPropertyName("pictures")] List<DiseasePictureDto> Pictures);
+        [property: JsonPropertyName("pictures")] List<DiseasePictureDto> Pictures,
+        [property: JsonPropertyName("grassSpeciesSusceptibilities")] List<DiseaseGrassSpeciesSusceptibilityDto> GrassSpeciesSusceptibilities);
 
     public sealed record DiseaseAdminListDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
