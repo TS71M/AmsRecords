@@ -68,6 +68,7 @@ public static class MobileFeedbackDtos
         [property: JsonPropertyName("emailSent")] bool EmailSent,
         [property: JsonPropertyName("emailSentUtc")] DateTime? EmailSentUtc,
         [property: JsonPropertyName("emailError")] string? EmailError,
+        [property: JsonPropertyName("lastAutomationCheckUtc")] DateTime? LastAutomationCheckUtc,
         [property: JsonPropertyName("automationNotes")] string? AutomationNotes,
         [property: JsonPropertyName("ibuPubId")] Guid? IbuPubId,
         [property: JsonPropertyName("ibuName")] string? IbuName,
