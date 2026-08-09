@@ -6,6 +6,7 @@ namespace AmsRecords.FieldMeasurements;
 /// </summary>
 public static class ClippingVolumeNormalization
 {
+    public const string DailyRateUnit = "mL/m²/day";
     public const string StandardUnit = "mL/m²";
 
     public static decimal? CalculateMlPerM2(decimal canonicalLitres, decimal? sampleAreaM2)
@@ -16,6 +17,24 @@ public static class ClippingVolumeNormalization
             return null;
 
         return decimal.Round(canonicalLitres * 1_000m / sampleAreaM2.Value, 2,
+            MidpointRounding.AwayFromZero);
+    }
+
+    public static decimal? CalculateMlPerM2PerDay(
+        decimal canonicalLitres,
+        decimal? sampleAreaM2,
+        DateTime measuredAtUtc,
+        DateTime? previousCutAtUtc)
+    {
+        var yield = CalculateMlPerM2(canonicalLitres, sampleAreaM2);
+        if (!yield.HasValue || !previousCutAtUtc.HasValue)
+            return null;
+
+        var elapsedHours = (measuredAtUtc - previousCutAtUtc.Value).TotalHours;
+        if (elapsedHours <= 0d)
+            return null;
+
+        return decimal.Round(yield.Value * 24m / (decimal)elapsedHours, 2,
             MidpointRounding.AwayFromZero);
     }
 }

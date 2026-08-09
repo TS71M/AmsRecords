@@ -22,7 +22,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
         [property: JsonPropertyName("measuredAtUtc")] DateTime MeasuredAtUtc,
         [property: JsonPropertyName("volume")] decimal Volume,
-        [property: JsonPropertyName("inputUnitPubId")] Guid? InputUnitPubId = null);
+        [property: JsonPropertyName("inputUnitPubId")] Guid? InputUnitPubId = null,
+        [property: JsonPropertyName("previousCutAtUtc")] DateTime? PreviousCutAtUtc = null);
 
     public sealed record ClippingVolumeDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -34,7 +35,10 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("measuredAtUtc")] DateTime MeasuredAtUtc,
         [property: JsonPropertyName("volume")] decimal Volume,
         [property: JsonPropertyName("sampleAreaM2")] decimal? SampleAreaM2 = null,
-        [property: JsonPropertyName("yieldMlPerM2")] decimal? YieldMlPerM2 = null);
+        [property: JsonPropertyName("yieldMlPerM2")] decimal? YieldMlPerM2 = null,
+        [property: JsonPropertyName("previousCutAtUtc")] DateTime? PreviousCutAtUtc = null,
+        [property: JsonPropertyName("accumulationHours")] decimal? AccumulationHours = null,
+        [property: JsonPropertyName("yieldMlPerM2PerDay")] decimal? YieldMlPerM2PerDay = null);
 
     public sealed record ClippingVolumeTimelineDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
@@ -43,7 +47,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("clippingSurfaces")] IReadOnlyList<ClippingSurfaceDto> ClippingSurfaces,
         [property: JsonPropertyName("measurements")] IReadOnlyList<ClippingVolumeDto> Measurements,
         [property: JsonPropertyName("unitPubId")] Guid? UnitPubId = null,
-        [property: JsonPropertyName("normalizedUnit")] string NormalizedUnit = "mL/m²");
+        [property: JsonPropertyName("normalizedUnit")] string NormalizedUnit = "mL/m²",
+        [property: JsonPropertyName("dailyRateUnit")] string DailyRateUnit = "mL/m²/day");
 
     public sealed record GreenSpeedSurfaceDto(
         [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,

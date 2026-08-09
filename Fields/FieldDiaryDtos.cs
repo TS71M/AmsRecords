@@ -14,6 +14,7 @@ public static class FieldDiaryDtos
         public const string NearbyRiskAdvisory = "NearbyRiskAdvisory";
         public const string WeatherExtremeStarted = "WeatherExtremeStarted";
         public const string WeatherExtremeEnded = "WeatherExtremeEnded";
+        public const string ManualEvent = "ManualEvent";
         public const string ManualNote = "ManualNote";
         public const string AttachmentAdded = "AttachmentAdded";
         public const string LeafNitrateMeasured = "LeafNitrateMeasured";
@@ -32,13 +33,36 @@ public static class FieldDiaryDtos
         public const string System = "System";
     }
 
+    public static class ManualEventTypes
+    {
+        public const string Observation = "observation";
+        public const string Application = "application";
+        public const string CulturalPractice = "cultural-practice";
+        public const string Irrigation = "irrigation";
+        public const string WeatherImpact = "weather-impact";
+        public const string Other = "other";
+    }
+
+    public sealed record FieldDiaryManualEventUpsertDto(
+        [property: JsonPropertyName("occurredAtUtc")] DateTime OccurredAtUtc,
+        [property: JsonPropertyName("eventType")] string EventType,
+        [property: JsonPropertyName("title")] string Title,
+        [property: JsonPropertyName("note")] string? Note,
+        [property: JsonPropertyName("severity")] string Severity,
+        [property: JsonPropertyName("areaPubId")] Guid? AreaPubId,
+        [property: JsonPropertyName("surfacePubId")] Guid? SurfacePubId
+    );
+
     public sealed record FieldDiaryTimelineQueryDto(
         [property: JsonPropertyName("fromUtc")] DateTime? FromUtc,
         [property: JsonPropertyName("toUtc")] DateTime? ToUtc,
         [property: JsonPropertyName("category")] string? Category,
         [property: JsonPropertyName("severity")] string? Severity,
         [property: JsonPropertyName("source")] string? Source,
-        [property: JsonPropertyName("importantOnly")] bool ImportantOnly = false
+        [property: JsonPropertyName("importantOnly")] bool ImportantOnly = false,
+        [property: JsonPropertyName("categories")] string? Categories = null,
+        [property: JsonPropertyName("skip")] int? Skip = null,
+        [property: JsonPropertyName("take")] int? Take = null
     );
 
     public sealed record FieldDiaryItemDto(
@@ -57,13 +81,16 @@ public static class FieldDiaryDtos
         [property: JsonPropertyName("relatedPubId")] Guid? RelatedPubId,
         [property: JsonPropertyName("createdByName")] string? CreatedByName,
         [property: JsonPropertyName("createdByPubId")] Guid? CreatedByPubId,
-        [property: JsonPropertyName("active")] bool Active
+        [property: JsonPropertyName("active")] bool Active,
+        [property: JsonPropertyName("translatedTitle")] string? TranslatedTitle = null,
+        [property: JsonPropertyName("translatedNote")] string? TranslatedNote = null
     );
 
     public sealed record FieldDiaryTimelineDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
         [property: JsonPropertyName("fieldName")] string FieldName,
         [property: JsonPropertyName("query")] FieldDiaryTimelineQueryDto Query,
-        [property: JsonPropertyName("items")] IReadOnlyList<FieldDiaryItemDto> Items
+        [property: JsonPropertyName("items")] IReadOnlyList<FieldDiaryItemDto> Items,
+        [property: JsonPropertyName("totalCount")] int TotalCount = 0
     );
 }

@@ -11,7 +11,11 @@ public static class SurfaceDtos
         [property: JsonPropertyName("holeNumber")] int HoleNumber,
         [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
         [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements,
-        [property: JsonPropertyName("holeImgPubId")] Guid? HoleImgPubId
+        [property: JsonPropertyName("holeImgPubId")] Guid? HoleImgPubId,
+        [property: JsonPropertyName("dryVwcThreshold")] decimal? DryVwcThreshold = null,
+        [property: JsonPropertyName("wetVwcThreshold")] decimal? WetVwcThreshold = null,
+        [property: JsonPropertyName("areaDryVwcThreshold")] decimal AreaDryVwcThreshold = 15m,
+        [property: JsonPropertyName("areaWetVwcThreshold")] decimal AreaWetVwcThreshold = 25m
     )
     {
         public string? ImageThumbDataUrl { get; set; }
@@ -31,12 +35,16 @@ public static class SurfaceDtos
         [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
         [property: JsonPropertyName("holePubId")] Guid HolePubId,
         [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
-        [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements = true
+        [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements = true,
+        [property: JsonPropertyName("dryVwcThreshold")] decimal? DryVwcThreshold = null,
+        [property: JsonPropertyName("wetVwcThreshold")] decimal? WetVwcThreshold = null
     );
 
     public sealed record SurfaceUpdateDto(
         [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
-        [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements = true
+        [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements = true,
+        [property: JsonPropertyName("dryVwcThreshold")] decimal? DryVwcThreshold = null,
+        [property: JsonPropertyName("wetVwcThreshold")] decimal? WetVwcThreshold = null
     );
 
     public sealed record SurfacesIndexDto(

@@ -13,7 +13,9 @@ public static class AreaDtos
         [property: JsonPropertyName("color")] int Color,
         [property: JsonPropertyName("areaGroupPubId")] Guid AreaGroupPubId,
         [property: JsonPropertyName("areaGroupName")] string AreaGroupName,
-        [property: JsonPropertyName("areaGroupCode")] string AreaGroupCode
+        [property: JsonPropertyName("areaGroupCode")] string AreaGroupCode,
+        [property: JsonPropertyName("dryVwcThreshold")] decimal DryVwcThreshold = 15m,
+        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m
     );
 
     public sealed record AreaDto(
@@ -40,7 +42,9 @@ public static class AreaDtos
         [property: JsonPropertyName("areaGroupName")] string AreaGroupName,
         [property: JsonPropertyName("areaGroupCode")] string AreaGroupCode,
         [property: JsonPropertyName("grassSpecies")] IReadOnlyList<AreaCompositionDtos.AreaGrassSpeciesRowDto> GrassSpecies,
-        [property: JsonPropertyName("soilTypes")] IReadOnlyList<AreaCompositionDtos.AreaSoilTypeRowDto> SoilTypes
+        [property: JsonPropertyName("soilTypes")] IReadOnlyList<AreaCompositionDtos.AreaSoilTypeRowDto> SoilTypes,
+        [property: JsonPropertyName("dryVwcThreshold")] decimal DryVwcThreshold = 15m,
+        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m
     );
 
     public sealed record AreaCreateDto(
@@ -62,7 +66,9 @@ public static class AreaDtos
         [property: JsonPropertyName("baseTemp")] int BaseTemp,
         [property: JsonPropertyName("gddDays")] int GddDays,
         [property: JsonPropertyName("dollarSpotMedium")] int DollarSpotMedium,
-        [property: JsonPropertyName("dollarSpotHigh")] int DollarSpotHigh
+        [property: JsonPropertyName("dollarSpotHigh")] int DollarSpotHigh,
+        [property: JsonPropertyName("dryVwcThreshold")] decimal DryVwcThreshold = 15m,
+        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m
     );
 
     public sealed record AreaUpdateDto(
@@ -83,7 +89,9 @@ public static class AreaDtos
         [property: JsonPropertyName("baseTemp")] int BaseTemp,
         [property: JsonPropertyName("gddDays")] int GddDays,
         [property: JsonPropertyName("dollarSpotMedium")] int DollarSpotMedium,
-        [property: JsonPropertyName("dollarSpotHigh")] int DollarSpotHigh
+        [property: JsonPropertyName("dollarSpotHigh")] int DollarSpotHigh,
+        [property: JsonPropertyName("dryVwcThreshold")] decimal DryVwcThreshold = 15m,
+        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m
     );
 
     public sealed record AreaMiniDto(

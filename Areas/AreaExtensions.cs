@@ -52,7 +52,9 @@ public static class AreaExtensions
             area.AreaGroup?.Name ?? string.Empty,
             area.AreaGroup?.Code ?? string.Empty,
             grass,
-            soils
+            soils,
+            area.DryVwcThreshold,
+            area.WetVwcThreshold
         );
     }
 
@@ -75,6 +77,8 @@ public static class AreaExtensions
             NMaxMonth = dto.NMax,
             TempOpt = dto.TempOpt,
             EtThreshold = dto.EtThreshold,
+            DryVwcThreshold = dto.DryVwcThreshold,
+            WetVwcThreshold = dto.WetVwcThreshold,
 
             Irrigated = dto.Irrigated,
             Report = dto.Report,
@@ -108,6 +112,8 @@ public static class AreaExtensions
         area.NMaxMonth = dto.NMax;
         area.TempOpt = dto.TempOpt;
         area.EtThreshold = dto.EtThreshold;
+        area.DryVwcThreshold = dto.DryVwcThreshold;
+        area.WetVwcThreshold = dto.WetVwcThreshold;
 
         area.Irrigated = dto.Irrigated;
         area.Report = dto.Report;
@@ -137,7 +143,9 @@ public static class AreaExtensions
            a.Color,
            a.AreaGroup!.PubId,
            a.AreaGroup!.Name,
-           a.AreaGroup!.Code
+           a.AreaGroup!.Code,
+           a.DryVwcThreshold,
+           a.WetVwcThreshold
        );
 
     public static readonly Expression<Func<Area, AreaDtoBase>> ToDtoBase
@@ -206,7 +214,9 @@ public static class AreaExtensions
             BaseTemp: input.BaseTemp,
             GddDays: input.GddDays,
             DollarSpotMedium: input.DollarSpotMedium,
-            DollarSpotHigh: input.DollarSpotHigh
+            DollarSpotHigh: input.DollarSpotHigh,
+            DryVwcThreshold: input.DryVwcThreshold,
+            WetVwcThreshold: input.WetVwcThreshold
         );
 
     public static AreaCreateDto ToCreateDto(this AreaDto dto)
@@ -229,7 +239,9 @@ public static class AreaExtensions
             BaseTemp: dto.BaseTemp,
             GddDays: dto.GddDays,
             DollarSpotMedium: dto.DollarSpotMedium,
-            DollarSpotHigh: dto.DollarSpotHigh
+            DollarSpotHigh: dto.DollarSpotHigh,
+            DryVwcThreshold: dto.DryVwcThreshold,
+            WetVwcThreshold: dto.WetVwcThreshold
         );
 
     static AreaComposition? CurrentComposition(this Area area)

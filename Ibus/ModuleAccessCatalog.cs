@@ -18,11 +18,13 @@ public static class ModuleAccessCatalog
     public const string Messages = "messages";
     public const string SnagList = "snag-list";
     public const string Diagnostics = "diagnostics";
+    public const string TdrMoisture = "tdr-moisture";
     public const string Applications = "applications";
     public const string Planning = "planning";
     public const string CurrentWeather = "weather";
     public const string WeatherAnalysis = "weather-analysis";
     public const string Surfaces = "surfaces";
+    public const string SurfaceMapping = "surface-mapping";
     public const string SoilTests = "soil-tests";
     public const string WaterTests = "water-tests";
     public const string LeafNitrate = "leaf-nitrate";
@@ -48,11 +50,13 @@ public static class ModuleAccessCatalog
         new(Messages),
         new(SnagList),
         new(Diagnostics),
+        new(TdrMoisture, LegacyPermissionKey: Fields),
         new(Applications, IsReleased: false, IsPermissionAssignable: false),
         new(Planning, IsReleased: false, IsPermissionAssignable: false),
         new(CurrentWeather),
         new(WeatherAnalysis),
         new(Surfaces),
+        new(SurfaceMapping, LegacyPermissionKey: Surfaces),
         new(SoilTests),
         new(WaterTests),
         new(LeafNitrate),

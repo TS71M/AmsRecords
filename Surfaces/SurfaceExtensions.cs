@@ -14,7 +14,11 @@ public static class SurfaceExtensions
             HoleNumber: s.Hole.HoleNumber,
             SurfaceSizeM2: s.SurfaceSizeM2,
             UseForClippingMeasurements: s.UseForClippingMeasurements,
-            HoleImgPubId: s.Hole.AppImage?.PubId
+            HoleImgPubId: s.Hole.AppImage?.PubId,
+            DryVwcThreshold: s.DryVwcThreshold,
+            WetVwcThreshold: s.WetVwcThreshold,
+            AreaDryVwcThreshold: s.Area.DryVwcThreshold,
+            AreaWetVwcThreshold: s.Area.WetVwcThreshold
         );
 
     public static SurfaceIndexDto ToIndexDto(this Surface s)
@@ -33,5 +37,7 @@ public static class SurfaceExtensions
     {
         s.SurfaceSizeM2 = dto.SurfaceSizeM2;
         s.UseForClippingMeasurements = dto.UseForClippingMeasurements;
+        s.DryVwcThreshold = dto.DryVwcThreshold;
+        s.WetVwcThreshold = dto.WetVwcThreshold;
     }
 }
