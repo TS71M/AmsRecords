@@ -47,6 +47,22 @@ public static class TdrMeasurementDtos
 
     public sealed record SurfaceAssignmentUpdate(Guid? SurfacePubId);
 
+    public sealed record PositionCorrectionUpdate(
+        decimal? Latitude = null,
+        decimal? Longitude = null,
+        bool ResetToCapturedPosition = false);
+
+    public sealed record PositionCorrectionResult(
+        Guid MeasurementPubId,
+        decimal? Latitude,
+        decimal? Longitude,
+        string PositionSource,
+        string PositionStatus,
+        bool LocationWarning,
+        decimal? DistanceFromFieldKm,
+        Guid? SuggestedSurfacePubId,
+        string? SuggestedSurfaceName);
+
     public sealed record TimelineSession(Guid SessionId, DateTimeOffset FirstReadingUtc,
         DateTimeOffset LastReadingUtc, int MeasurementCount);
 

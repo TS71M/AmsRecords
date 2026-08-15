@@ -23,6 +23,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("measuredAtUtc")] DateTime MeasuredAtUtc,
         [property: JsonPropertyName("volume")] decimal Volume,
         [property: JsonPropertyName("inputUnitPubId")] Guid? InputUnitPubId = null,
+        // Retained so older clients can submit their existing payload shape. The API ignores this
+        // value and derives chronology from clipping measurements for the same Surface.
         [property: JsonPropertyName("previousCutAtUtc")] DateTime? PreviousCutAtUtc = null);
 
     public sealed record ClippingVolumeDto(
@@ -36,6 +38,7 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("volume")] decimal Volume,
         [property: JsonPropertyName("sampleAreaM2")] decimal? SampleAreaM2 = null,
         [property: JsonPropertyName("yieldMlPerM2")] decimal? YieldMlPerM2 = null,
+        // Backward-compatible JSON name; the value is the closest earlier measurement on this Surface.
         [property: JsonPropertyName("previousCutAtUtc")] DateTime? PreviousCutAtUtc = null,
         [property: JsonPropertyName("accumulationHours")] decimal? AccumulationHours = null,
         [property: JsonPropertyName("yieldMlPerM2PerDay")] decimal? YieldMlPerM2PerDay = null);

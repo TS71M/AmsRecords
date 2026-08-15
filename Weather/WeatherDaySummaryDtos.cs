@@ -18,7 +18,8 @@ public static class WeatherDaySummaryDtos
         [property: JsonPropertyName("humidityMeanPct")] short? HumidityMeanPct,
         [property: JsonPropertyName("source")] string? Source,
         [property: JsonPropertyName("updatedAtUtc")] DateTime UpdatedAtUtc,
-        [property: JsonPropertyName("growthPotentialPct")] decimal? GrowthPotentialPct = null
+        [property: JsonPropertyName("growthPotentialPct")] decimal? GrowthPotentialPct = null,
+        [property: JsonPropertyName("growthPotentialProfile")] GrowthPotentialDtos.GrowthPotentialProfileDto? GrowthPotentialProfile = null
     );
 
     public sealed record WeatherDaySummaryQueryDto(

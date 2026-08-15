@@ -26,12 +26,16 @@ public static class ProcurementExtensions
                     Role: x.Role,
                     Active: x.Active,
                     IsPrimary: x.IsPrimary))
-                .ToList()
+                .ToList(),
+            RequireApprovalDefault: setting.RequireApprovalDefault,
+            AllowSelfApprovalDefault: setting.AllowSelfApprovalDefault,
+            RequireRequestForQuoteDefault: setting.RequireRequestForQuoteDefault
         );
 
     public static FieldProcurementSettingDto ToDto(
         this FieldProcurementSetting setting,
-        IReadOnlyList<ProcurementScopeIbuDto>? procurementScopeIbus = null)
+        IReadOnlyList<ProcurementScopeIbuDto>? procurementScopeIbus = null,
+        IReadOnlyList<ProcurementDeliveryLocationOptionDto>? deliveryLocationOptions = null)
     {
         var isLocalMode = setting.ProcurementMode == ProcurementMode.Local;
 
@@ -50,7 +54,14 @@ public static class ProcurementExtensions
             ConsolidateRequisitions: !isLocalMode && setting.ConsolidateRequisitions,
             Notes: setting.Notes,
             ProcurementScopeIbuPubIds: procurementScopeIbus?.Select(x => x.PubId).ToList() ?? [],
-            ProcurementScopeIbus: procurementScopeIbus ?? []
+            ProcurementScopeIbus: procurementScopeIbus ?? [],
+            RequireApproval: setting.RequireApproval,
+            AllowSelfApproval: setting.AllowSelfApproval,
+            RequireRequestForQuote: setting.RequireRequestForQuote,
+            RequireCostCenter: setting.RequireCostCenter,
+            RequireBudgetReference: setting.RequireBudgetReference,
+            DefaultDeliveryLocation: setting.DefaultDeliveryLocation,
+            DeliveryLocationOptions: deliveryLocationOptions ?? []
         );
     }
 
@@ -84,7 +95,11 @@ public static class ProcurementExtensions
             ProcurementManagerUserPubId: requisition.ProcurementManagerUser?.PubId,
             ProcurementManagerName: requisition.ProcurementManagerUser?.FullNameSnapshot ?? requisition.ProcurementManagerUser?.Email ?? string.Empty,
             LineCount: requisition.Lines.Count,
-            TotalQuantity: requisition.Lines.Sum(x => x.Quantity)
+            TotalQuantity: requisition.Lines.Sum(x => x.Quantity),
+            Urgency: requisition.Urgency,
+            IsOverdue: requisition.NeedByDate.HasValue &&
+                requisition.NeedByDate.Value.Date < DateTime.UtcNow.Date &&
+                requisition.Status is not (PurchaseRequisitionStatus.Fulfilled or PurchaseRequisitionStatus.Closed or PurchaseRequisitionStatus.Cancelled)
         );
 
     public static PurchaseRequisitionDto ToDto(this PurchaseRequisition requisition)
@@ -110,6 +125,26 @@ public static class ProcurementExtensions
             Lines: requisition.Lines
                 .OrderBy(x => x.Product.ProNam)
                 .Select(x => x.ToDto())
+                .ToList(),
+            Urgency: requisition.Urgency,
+            AllowSubstitution: requisition.AllowSubstitution,
+            DeliveryLocation: requisition.DeliveryLocation,
+            CostCenter: requisition.CostCenter,
+            BudgetReference: requisition.BudgetReference,
+            ConcurrencyToken: requisition.ConcurrencyToken,
+            Events: requisition.Events
+                .OrderByDescending(x => x.CreatedDt)
+                .ThenByDescending(x => x.PurchaseRequisitionEventId)
+                .Select(x => new PurchaseRequisitionEventDto(
+                    x.PubId,
+                    x.EventType,
+                    x.FromStatus,
+                    x.ToStatus,
+                    x.ActorUser?.PubId,
+                    x.ActorUser?.FullNameSnapshot ?? x.ActorUser?.Email ?? (x.IsAutomatic ? "System" : string.Empty),
+                    x.IsAutomatic,
+                    x.CreatedDt,
+                    x.Note))
                 .ToList()
         );
 }

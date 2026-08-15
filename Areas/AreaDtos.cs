@@ -44,7 +44,8 @@ public static class AreaDtos
         [property: JsonPropertyName("grassSpecies")] IReadOnlyList<AreaCompositionDtos.AreaGrassSpeciesRowDto> GrassSpecies,
         [property: JsonPropertyName("soilTypes")] IReadOnlyList<AreaCompositionDtos.AreaSoilTypeRowDto> SoilTypes,
         [property: JsonPropertyName("dryVwcThreshold")] decimal DryVwcThreshold = 15m,
-        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m
+        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m,
+        [property: JsonPropertyName("useGrowthPotentialTemperatureOverride")] bool UseGrowthPotentialTemperatureOverride = false
     );
 
     public sealed record AreaCreateDto(
@@ -68,7 +69,8 @@ public static class AreaDtos
         [property: JsonPropertyName("dollarSpotMedium")] int DollarSpotMedium,
         [property: JsonPropertyName("dollarSpotHigh")] int DollarSpotHigh,
         [property: JsonPropertyName("dryVwcThreshold")] decimal DryVwcThreshold = 15m,
-        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m
+        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m,
+        [property: JsonPropertyName("useGrowthPotentialTemperatureOverride")] bool UseGrowthPotentialTemperatureOverride = false
     );
 
     public sealed record AreaUpdateDto(
@@ -91,7 +93,8 @@ public static class AreaDtos
         [property: JsonPropertyName("dollarSpotMedium")] int DollarSpotMedium,
         [property: JsonPropertyName("dollarSpotHigh")] int DollarSpotHigh,
         [property: JsonPropertyName("dryVwcThreshold")] decimal DryVwcThreshold = 15m,
-        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m
+        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m,
+        [property: JsonPropertyName("useGrowthPotentialTemperatureOverride")] bool UseGrowthPotentialTemperatureOverride = false
     );
 
     public sealed record AreaMiniDto(

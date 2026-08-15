@@ -74,6 +74,32 @@ public static class ResearchRadarDtos
         string Answer,
         IReadOnlyList<ResearchDiscussionMessageDto> Messages);
 
+    public sealed record ResearchCodexTaskDto(
+        Guid PubId,
+        string Status,
+        DateTime QueuedUtc,
+        DateTime? StartedUtc,
+        DateTime? CompletedUtc,
+        int Attempts,
+        string? LastError,
+        string? ThreadId = null,
+        string? Brief = null,
+        string? Result = null);
+
+    public sealed record RadarWorkItemSaveDto(string Brief);
+
+    public sealed record ResearchCodexTaskClaimDto(
+        Guid PubId,
+        Guid LeaseId,
+        string Brief);
+
+    public sealed record ResearchCodexTaskCompletionDto(
+        Guid LeaseId,
+        bool Succeeded,
+        string? Result,
+        string? ErrorMessage,
+        string? ThreadId = null);
+
     public sealed record ResearchScanResultDto(
         int SourcesScanned,
         int ArticlesAdded,
@@ -81,4 +107,22 @@ public static class ResearchRadarDtos
         int NonArticleLinksRejected,
         int SourcesFailed,
         IReadOnlyList<string> Messages);
+
+    public sealed record ResearchScanJobStatusDto(
+        string State,
+        bool Force,
+        DateTime? QueuedUtc,
+        DateTime? StartedUtc,
+        DateTime? CompletedUtc,
+        ResearchScanResultDto? Result,
+        string? ErrorMessage);
+
+    public sealed record ResearchStatusCountsDto(
+        int All,
+        int New,
+        int Reviewing,
+        int Saved,
+        int ForImplementation,
+        int Published,
+        int Rejected);
 }

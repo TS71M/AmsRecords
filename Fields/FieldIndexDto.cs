@@ -53,4 +53,5 @@ public sealed record FieldGrowthPotentialPeriodDto(
     [property: JsonPropertyName("areaName")] string AreaName,
     [property: JsonPropertyName("optC")] decimal OptC,
     [property: JsonPropertyName("varC")] decimal VarC,
-    [property: JsonPropertyName("pathway")] string Pathway);
+    [property: JsonPropertyName("pathway")] string Pathway,
+    [property: JsonPropertyName("profile")] GrowthPotentialDtos.GrowthPotentialProfileDto? Profile = null);

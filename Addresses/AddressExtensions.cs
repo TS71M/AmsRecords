@@ -73,33 +73,51 @@ public static class AddressExtensions
         if (address is null)
             return null;
 
+        return FormatSingleLine(
+            address.Address1,
+            address.Address2,
+            address.State,
+            address.Town,
+            address.Zip,
+            address.Country);
+    }
+
+    public static string? FormatSingleLine(
+        string? address1,
+        string? address2,
+        string? state,
+        string? town,
+        string? zip,
+        string? country)
+    {
+
         var parts = new List<string>();
 
-        if (!string.IsNullOrWhiteSpace(address.Address1))
-            parts.Add(address.Address1);
+        if (!string.IsNullOrWhiteSpace(address1))
+            parts.Add(address1.Trim());
 
-        if (!string.IsNullOrWhiteSpace(address.Address2))
-            parts.Add(address.Address2);
+        if (!string.IsNullOrWhiteSpace(address2))
+            parts.Add(address2.Trim());
 
         var cityLineParts = new List<string>();
 
-        if (!string.IsNullOrWhiteSpace(address.Zip))
-            cityLineParts.Add(address.Zip);
+        if (!string.IsNullOrWhiteSpace(zip))
+            cityLineParts.Add(zip.Trim());
 
-        if (!string.IsNullOrWhiteSpace(address.Town))
-            cityLineParts.Add(address.Town);
+        if (!string.IsNullOrWhiteSpace(town))
+            cityLineParts.Add(town.Trim());
 
         if (cityLineParts.Count > 0)
             parts.Add(string.Join(" ", cityLineParts));
 
-        if (!string.IsNullOrWhiteSpace(address.State))
-            parts.Add(address.State);
+        if (!string.IsNullOrWhiteSpace(state))
+            parts.Add(state.Trim());
 
-        if (!string.IsNullOrWhiteSpace(address.Country))
-            parts.Add(address.Country);
+        if (!string.IsNullOrWhiteSpace(country))
+            parts.Add(country.Trim());
 
         return parts.Count == 0
             ? null
             : string.Join(", ", parts);
     }
-}
+}

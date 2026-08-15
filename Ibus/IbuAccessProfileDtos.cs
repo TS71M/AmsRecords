@@ -33,4 +33,8 @@ public static class IbuAccessProfileDtos
         [property: JsonPropertyName("active")] bool Active,
         [property: JsonPropertyName("sortOrder")] int SortOrder,
         [property: JsonPropertyName("permissions")] IReadOnlyList<IbuAccessProfilePermissionDto> Permissions);
+
+    public sealed record IbuAccessProfileProcurementResponsibilitiesUpdateDto(
+        [property: JsonPropertyName("publicId")][Required] Guid PubId,
+        [property: JsonPropertyName("responsibilityKeys")] IReadOnlyList<string> ResponsibilityKeys);
 }

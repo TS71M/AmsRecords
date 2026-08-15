@@ -24,13 +24,13 @@ public static class ClippingVolumeNormalization
         decimal canonicalLitres,
         decimal? sampleAreaM2,
         DateTime measuredAtUtc,
-        DateTime? previousCutAtUtc)
+        DateTime? previousMeasurementAtUtc)
     {
         var yield = CalculateMlPerM2(canonicalLitres, sampleAreaM2);
-        if (!yield.HasValue || !previousCutAtUtc.HasValue)
+        if (!yield.HasValue || !previousMeasurementAtUtc.HasValue)
             return null;
 
-        var elapsedHours = (measuredAtUtc - previousCutAtUtc.Value).TotalHours;
+        var elapsedHours = (measuredAtUtc - previousMeasurementAtUtc.Value).TotalHours;
         if (elapsedHours <= 0d)
             return null;
 

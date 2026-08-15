@@ -36,6 +36,43 @@ public static class AuthenticationDtos
         [property: JsonPropertyName("password")] string? Password
     );
 
+    public sealed record PasskeyOptionsDto(
+        [property: JsonPropertyName("optionsJson")] string OptionsJson,
+        [property: JsonPropertyName("state")] string State
+    );
+
+    public sealed record PasskeyAssertionDto(
+        [property: JsonPropertyName("credentialJson")] string CredentialJson,
+        [property: JsonPropertyName("state")] string State
+    );
+
+    public sealed record PasskeyRegistrationDto(
+        [property: JsonPropertyName("credentialJson")] string CredentialJson,
+        [property: JsonPropertyName("state")] string State,
+        [property: JsonPropertyName("name")] string Name
+    );
+
+    public sealed record PasskeyRemoveDto(
+        [property: JsonPropertyName("credentialId")] string CredentialId
+    );
+
+    public sealed record PasskeySummaryDto(
+        [property: JsonPropertyName("credentialId")] string CredentialId,
+        [property: JsonPropertyName("name")] string Name,
+        [property: JsonPropertyName("createdAt")] DateTimeOffset CreatedAt,
+        [property: JsonPropertyName("isBackedUp")] bool IsBackedUp
+    );
+
+    public sealed record PasskeyStatusDto(
+        [property: JsonPropertyName("passkeys")] IReadOnlyList<PasskeySummaryDto> Passkeys,
+        [property: JsonPropertyName("minimumPasskeys")] int MinimumPasskeys,
+        [property: JsonPropertyName("enforcementEnabled")] bool EnforcementEnabled
+    )
+    {
+        [JsonPropertyName("meetsMinimum")]
+        public bool MeetsMinimum => Passkeys.Count >= MinimumPasskeys;
+    }
+
     public sealed record ConfirmEmailDto(
        [property: JsonPropertyName("userId")] int UserId,
        [property: JsonPropertyName("code")] string Code

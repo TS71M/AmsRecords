@@ -10,7 +10,8 @@ public static class IbuLocationDtos
         [property: JsonPropertyName("longitude")] double? Longitude,
         [property: JsonPropertyName("isPrimary")] bool IsPrimary,
         [property: JsonPropertyName("sortOrder")] int SortOrder,
-        [property: JsonPropertyName("active")] bool Active);
+        [property: JsonPropertyName("active")] bool Active,
+        [property: JsonPropertyName("isSystemLocation")] bool IsSystemLocation = false);
 
     public sealed record IbuLocationCreateDto(
         [property: JsonPropertyName("name")] string Name,
@@ -28,4 +29,10 @@ public static class IbuLocationDtos
         [property: JsonPropertyName("isPrimary")] bool IsPrimary,
         [property: JsonPropertyName("sortOrder")] int SortOrder,
         [property: JsonPropertyName("active")] bool Active);
+
+    public sealed record IbuLocationPrimaryNameUpdateDto(
+        [property: JsonPropertyName("name")]
+        [property: Required]
+        [property: MaxLength(100)]
+        string Name);
 }

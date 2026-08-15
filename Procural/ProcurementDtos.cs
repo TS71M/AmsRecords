@@ -23,7 +23,10 @@ public static class ProcurementDtos
         [property: JsonPropertyName("allowDirectSupplierOrderingDefault")] bool AllowDirectSupplierOrderingDefault,
         [property: JsonPropertyName("consolidateRequisitionsDefault")] bool ConsolidateRequisitionsDefault,
         [property: JsonPropertyName("notes")] string Notes,
-        [property: JsonPropertyName("members")] IReadOnlyList<ProcurementHubMemberDto> Members
+        [property: JsonPropertyName("members")] IReadOnlyList<ProcurementHubMemberDto> Members,
+        [property: JsonPropertyName("requireApprovalDefault")] bool RequireApprovalDefault = true,
+        [property: JsonPropertyName("allowSelfApprovalDefault")] bool AllowSelfApprovalDefault = false,
+        [property: JsonPropertyName("requireRequestForQuoteDefault")] bool RequireRequestForQuoteDefault = false
     );
 
     public record ProcurementHubMemberUpdateDto(
@@ -31,7 +34,7 @@ public static class ProcurementDtos
         [property: JsonPropertyName("active")] bool Active,
         [property: JsonPropertyName("isPrimary")] bool IsPrimary,
         [property: JsonPropertyName("role")]
-        [property: MaxLength(100)]
+        [param: MaxLength(100)]
         string? Role
     );
 
@@ -41,15 +44,25 @@ public static class ProcurementDtos
         [property: JsonPropertyName("allowDirectSupplierOrderingDefault")] bool AllowDirectSupplierOrderingDefault,
         [property: JsonPropertyName("consolidateRequisitionsDefault")] bool ConsolidateRequisitionsDefault,
         [property: JsonPropertyName("notes")]
-        [property: MaxLength(500)]
+        [param: MaxLength(500)]
         string? Notes,
-        [property: JsonPropertyName("members")] IReadOnlyList<ProcurementHubMemberUpdateDto> Members
+        [property: JsonPropertyName("members")] IReadOnlyList<ProcurementHubMemberUpdateDto> Members,
+        [property: JsonPropertyName("requireApprovalDefault")] bool RequireApprovalDefault = true,
+        [property: JsonPropertyName("allowSelfApprovalDefault")] bool AllowSelfApprovalDefault = false,
+        [property: JsonPropertyName("requireRequestForQuoteDefault")] bool RequireRequestForQuoteDefault = false
     );
 
     public record ProcurementScopeIbuDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("isFieldOwner")] bool IsFieldOwner
+        [property: JsonPropertyName("isFieldOwner")] bool IsFieldOwner,
+        [property: JsonPropertyName("isActiveProcurementHub")] bool IsActiveProcurementHub = false
+    );
+
+    public record ProcurementDeliveryLocationOptionDto(
+        [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
+        [property: JsonPropertyName("fieldName")] string FieldName,
+        [property: JsonPropertyName("address")] string Address
     );
 
     public record FieldProcurementSettingDto(
@@ -67,7 +80,14 @@ public static class ProcurementDtos
         [property: JsonPropertyName("consolidateRequisitions")] bool ConsolidateRequisitions,
         [property: JsonPropertyName("notes")] string Notes,
         [property: JsonPropertyName("procurementScopeIbuPubIds")] IReadOnlyList<Guid> ProcurementScopeIbuPubIds,
-        [property: JsonPropertyName("procurementScopeIbus")] IReadOnlyList<ProcurementScopeIbuDto> ProcurementScopeIbus
+        [property: JsonPropertyName("procurementScopeIbus")] IReadOnlyList<ProcurementScopeIbuDto> ProcurementScopeIbus,
+        [property: JsonPropertyName("requireApproval")] bool RequireApproval = true,
+        [property: JsonPropertyName("allowSelfApproval")] bool AllowSelfApproval = false,
+        [property: JsonPropertyName("requireRequestForQuote")] bool RequireRequestForQuote = false,
+        [property: JsonPropertyName("requireCostCenter")] bool RequireCostCenter = false,
+        [property: JsonPropertyName("requireBudgetReference")] bool RequireBudgetReference = false,
+        [property: JsonPropertyName("defaultDeliveryLocation")] string DefaultDeliveryLocation = "",
+        [property: JsonPropertyName("deliveryLocationOptions")] IReadOnlyList<ProcurementDeliveryLocationOptionDto>? DeliveryLocationOptions = null
     );
 
     public record FieldProcurementSettingListDto(
@@ -78,7 +98,12 @@ public static class ProcurementDtos
         [property: JsonPropertyName("procurementHubIbuPubId")] Guid? ProcurementHubIbuPubId,
         [property: JsonPropertyName("procurementHubIbuName")] string ProcurementHubIbuName,
         [property: JsonPropertyName("allowDirectSupplierOrdering")] bool AllowDirectSupplierOrdering,
-        [property: JsonPropertyName("consolidateRequisitions")] bool ConsolidateRequisitions
+        [property: JsonPropertyName("consolidateRequisitions")] bool ConsolidateRequisitions,
+        [property: JsonPropertyName("requireApproval")] bool RequireApproval = true,
+        [property: JsonPropertyName("allowSelfApproval")] bool AllowSelfApproval = false,
+        [property: JsonPropertyName("requireRequestForQuote")] bool RequireRequestForQuote = false,
+        [property: JsonPropertyName("requireCostCenter")] bool RequireCostCenter = false,
+        [property: JsonPropertyName("requireBudgetReference")] bool RequireBudgetReference = false
     );
 
     public record FieldProcurementSettingUpdateDto(
@@ -92,8 +117,16 @@ public static class ProcurementDtos
         [property: JsonPropertyName("allowDirectSupplierOrdering")] bool AllowDirectSupplierOrdering,
         [property: JsonPropertyName("consolidateRequisitions")] bool ConsolidateRequisitions,
         [property: JsonPropertyName("notes")]
-        [property: MaxLength(500)]
-        string? Notes
+        [param: MaxLength(500)]
+        string? Notes,
+        [property: JsonPropertyName("requireApproval")] bool RequireApproval = true,
+        [property: JsonPropertyName("allowSelfApproval")] bool AllowSelfApproval = false,
+        [property: JsonPropertyName("requireRequestForQuote")] bool RequireRequestForQuote = false,
+        [property: JsonPropertyName("requireCostCenter")] bool RequireCostCenter = false,
+        [property: JsonPropertyName("requireBudgetReference")] bool RequireBudgetReference = false,
+        [property: JsonPropertyName("defaultDeliveryLocation")]
+        [param: MaxLength(500)]
+        string? DefaultDeliveryLocation = null
     );
 
     public record PurchaseRequisitionLineDto(
@@ -133,7 +166,21 @@ public static class ProcurementDtos
         [property: JsonPropertyName("procurementManagerUserPubId")] Guid? ProcurementManagerUserPubId,
         [property: JsonPropertyName("procurementManagerName")] string ProcurementManagerName,
         [property: JsonPropertyName("lineCount")] int LineCount,
-        [property: JsonPropertyName("totalQuantity")] decimal TotalQuantity
+        [property: JsonPropertyName("totalQuantity")] decimal TotalQuantity,
+        [property: JsonPropertyName("urgency")] ProcurementUrgency Urgency = ProcurementUrgency.Routine,
+        [property: JsonPropertyName("isOverdue")] bool IsOverdue = false
+    );
+
+    public record PurchaseRequisitionEventDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("eventType")] ProcurementEventType EventType,
+        [property: JsonPropertyName("fromStatus")] PurchaseRequisitionStatus? FromStatus,
+        [property: JsonPropertyName("toStatus")] PurchaseRequisitionStatus? ToStatus,
+        [property: JsonPropertyName("actorUserPubId")] Guid? ActorUserPubId,
+        [property: JsonPropertyName("actorName")] string ActorName,
+        [property: JsonPropertyName("isAutomatic")] bool IsAutomatic,
+        [property: JsonPropertyName("createdDt")] DateTime CreatedDt,
+        [property: JsonPropertyName("note")] string Note
     );
 
     public record PurchaseRequisitionDto(
@@ -155,7 +202,14 @@ public static class ProcurementDtos
         [property: JsonPropertyName("procurementManagerName")] string ProcurementManagerName,
         [property: JsonPropertyName("notes")] string Notes,
         [property: JsonPropertyName("decisionNotes")] string DecisionNotes,
-        [property: JsonPropertyName("lines")] List<PurchaseRequisitionLineDto> Lines
+        [property: JsonPropertyName("lines")] List<PurchaseRequisitionLineDto> Lines,
+        [property: JsonPropertyName("urgency")] ProcurementUrgency Urgency = ProcurementUrgency.Routine,
+        [property: JsonPropertyName("allowSubstitution")] bool AllowSubstitution = false,
+        [property: JsonPropertyName("deliveryLocation")] string DeliveryLocation = "",
+        [property: JsonPropertyName("costCenter")] string CostCenter = "",
+        [property: JsonPropertyName("budgetReference")] string BudgetReference = "",
+        [property: JsonPropertyName("concurrencyToken")] Guid ConcurrencyToken = default,
+        [property: JsonPropertyName("events")] IReadOnlyList<PurchaseRequisitionEventDto>? Events = null
     );
 
     public record PurchaseRequisitionCreateDto(
@@ -171,7 +225,18 @@ public static class ProcurementDtos
         [property: MaxLength(1000)]
         string? Notes,
         [property: JsonPropertyName("lines")] List<PurchaseRequisitionLineInputDto> Lines,
-        [property: JsonPropertyName("submitForProcessing")] bool SubmitForProcessing = false
+        [property: JsonPropertyName("submitForProcessing")] bool SubmitForProcessing = false,
+        [property: JsonPropertyName("urgency")] ProcurementUrgency Urgency = ProcurementUrgency.Routine,
+        [property: JsonPropertyName("allowSubstitution")] bool AllowSubstitution = false,
+        [property: JsonPropertyName("deliveryLocation")]
+        [property: MaxLength(500)]
+        string? DeliveryLocation = null,
+        [property: JsonPropertyName("costCenter")]
+        [property: MaxLength(100)]
+        string? CostCenter = null,
+        [property: JsonPropertyName("budgetReference")]
+        [property: MaxLength(100)]
+        string? BudgetReference = null
     );
 
     public record PurchaseRequisitionUpdateDto(
@@ -188,7 +253,19 @@ public static class ProcurementDtos
         [property: MaxLength(1000)]
         string? Notes,
         [property: JsonPropertyName("lines")] List<PurchaseRequisitionLineInputDto> Lines,
-        [property: JsonPropertyName("submitForProcessing")] bool SubmitForProcessing = false
+        [property: JsonPropertyName("submitForProcessing")] bool SubmitForProcessing = false,
+        [property: JsonPropertyName("urgency")] ProcurementUrgency Urgency = ProcurementUrgency.Routine,
+        [property: JsonPropertyName("allowSubstitution")] bool AllowSubstitution = false,
+        [property: JsonPropertyName("deliveryLocation")]
+        [property: MaxLength(500)]
+        string? DeliveryLocation = null,
+        [property: JsonPropertyName("costCenter")]
+        [property: MaxLength(100)]
+        string? CostCenter = null,
+        [property: JsonPropertyName("budgetReference")]
+        [property: MaxLength(100)]
+        string? BudgetReference = null,
+        [property: JsonPropertyName("concurrencyToken")] Guid ConcurrencyToken = default
     );
 
     public record PurchaseRequisitionStatusUpdateDto(
@@ -196,6 +273,7 @@ public static class ProcurementDtos
         [property: JsonPropertyName("decisionNotes")]
         [property: MaxLength(1000)]
         string? DecisionNotes,
-        [property: JsonPropertyName("procurementManagerUserPubId")] Guid? ProcurementManagerUserPubId
+        [property: JsonPropertyName("procurementManagerUserPubId")] Guid? ProcurementManagerUserPubId,
+        [property: JsonPropertyName("concurrencyToken")] Guid ConcurrencyToken = default
     );
 }

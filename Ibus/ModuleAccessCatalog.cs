@@ -4,6 +4,7 @@ public sealed record ModuleAccessDefinition(
     string Key,
     bool IsReleased = true,
     bool IsPermissionAssignable = true,
+    bool IsPilotCapable = true,
     string? LegacyPermissionKey = null);
 
 public static class ModuleAccessCatalog
@@ -19,6 +20,7 @@ public static class ModuleAccessCatalog
     public const string SnagList = "snag-list";
     public const string Diagnostics = "diagnostics";
     public const string TdrMoisture = "tdr-moisture";
+    public const string GrassSpeciesAnalysis = "grass-species-analysis";
     public const string Applications = "applications";
     public const string Planning = "planning";
     public const string CurrentWeather = "weather";
@@ -51,8 +53,9 @@ public static class ModuleAccessCatalog
         new(SnagList),
         new(Diagnostics),
         new(TdrMoisture, LegacyPermissionKey: Fields),
-        new(Applications, IsReleased: false, IsPermissionAssignable: false),
-        new(Planning, IsReleased: false, IsPermissionAssignable: false),
+        new(GrassSpeciesAnalysis),
+        new(Applications, IsReleased: false),
+        new(Planning, IsReleased: false),
         new(CurrentWeather),
         new(WeatherAnalysis),
         new(Surfaces),
@@ -60,7 +63,7 @@ public static class ModuleAccessCatalog
         new(SoilTests),
         new(WaterTests),
         new(LeafNitrate),
-        new(Procural, IsReleased: false, IsPermissionAssignable: false),
+        new(Procural),
         new(Statistics, IsReleased: false, IsPermissionAssignable: false),
         new(Infos),
         new(ELearning),

@@ -54,7 +54,8 @@ public static class AreaExtensions
             grass,
             soils,
             area.DryVwcThreshold,
-            area.WetVwcThreshold
+            area.WetVwcThreshold,
+            area.UseGrowthPotentialTemperatureOverride
         );
     }
 
@@ -76,6 +77,7 @@ public static class AreaExtensions
 
             NMaxMonth = dto.NMax,
             TempOpt = dto.TempOpt,
+            UseGrowthPotentialTemperatureOverride = dto.UseGrowthPotentialTemperatureOverride,
             EtThreshold = dto.EtThreshold,
             DryVwcThreshold = dto.DryVwcThreshold,
             WetVwcThreshold = dto.WetVwcThreshold,
@@ -111,6 +113,7 @@ public static class AreaExtensions
 
         area.NMaxMonth = dto.NMax;
         area.TempOpt = dto.TempOpt;
+        area.UseGrowthPotentialTemperatureOverride = dto.UseGrowthPotentialTemperatureOverride;
         area.EtThreshold = dto.EtThreshold;
         area.DryVwcThreshold = dto.DryVwcThreshold;
         area.WetVwcThreshold = dto.WetVwcThreshold;
@@ -205,6 +208,7 @@ public static class AreaExtensions
             Color: input.Color,
             NMax: input.NMax,
             TempOpt: input.TempOpt,
+            UseGrowthPotentialTemperatureOverride: input.UseGrowthPotentialTemperatureOverride,
             EtThreshold: input.EtThreshold,
             Irrigated: input.Irrigated,
             Report: input.Report,
@@ -230,6 +234,7 @@ public static class AreaExtensions
             Color: dto.Color,
             NMax: dto.NMax,
             TempOpt: dto.TempOpt,
+            UseGrowthPotentialTemperatureOverride: dto.UseGrowthPotentialTemperatureOverride,
             EtThreshold: dto.EtThreshold,
             Irrigated: dto.Irrigated,
             Report: dto.Report,

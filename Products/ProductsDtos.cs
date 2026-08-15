@@ -57,7 +57,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("sdsSize")] int? SdsSize,
         [property: JsonPropertyName("nutrients")] List<ProductNutrientDto> Nutrients,
         [property: JsonPropertyName("supplements")] List<ProductSupplementDto> Supplements,
-        [property: JsonPropertyName("labels")] List<ProductLabelDto> Labels
+        [property: JsonPropertyName("labels")] List<ProductLabelDto> Labels,
+        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null
     );
 
     public sealed record ProductCreateDto(
@@ -85,7 +86,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("sdsName")][param: MaxLength(250)] string? SdsName = null,
         [property: JsonPropertyName("sdsPath")][param: MaxLength(1000)] string? SdsPath = null,
         [property: JsonPropertyName("sdsSize")] int? SdsSize = null,
-        [property: JsonPropertyName("sdsUploadDt")] DateTime? SdsUploadDt = null)
+        [property: JsonPropertyName("sdsUploadDt")] DateTime? SdsUploadDt = null,
+        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null)
     {
         public AppImageCreateDto ImageCreateDto { get; set; } = new(null, ImageCategories.Products);
     }
@@ -117,7 +119,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("sdsName")][param: MaxLength(250)] string? SdsName = null,
         [property: JsonPropertyName("sdsPath")][param: MaxLength(1000)] string? SdsPath = null,
         [property: JsonPropertyName("sdsSize")] int? SdsSize = null,
-        [property: JsonPropertyName("sdsUploadDt")] DateTime? SdsUploadDt = null)
+        [property: JsonPropertyName("sdsUploadDt")] DateTime? SdsUploadDt = null,
+        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null)
     {
         public AppImageCreateDto ImageCreateDto { get; set; } = new(null, ImageCategories.Products);
     }
@@ -181,7 +184,8 @@ public static class ProductsDtos
     public record NutrientLookupDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("orderNumber")] int OrderNumber
+        [property: JsonPropertyName("orderNumber")] int OrderNumber,
+        [property: JsonPropertyName("code")] string Code = ""
     );
 
     public record ProductNutrientDto(
@@ -189,20 +193,29 @@ public static class ProductsDtos
         [property: JsonPropertyName("productPubId")] Guid ProductPubId,
         [property: JsonPropertyName("nutrientPubId")] Guid NutrientPubId,
         [property: JsonPropertyName("nutrientName")] string NutrientName,
-        [property: JsonPropertyName("amount")] decimal Amount
+        [property: JsonPropertyName("amount")] decimal Amount,
+        [property: JsonPropertyName("analysisBasis")] string AnalysisBasis = "PercentByMass",
+        [property: JsonPropertyName("analysisSource")] string AnalysisSource = "",
+        [property: JsonPropertyName("isVerified")] bool IsVerified = false
     );
 
     public record ProductNutrientCreateDto(
         [property: JsonPropertyName("productPubId")] Guid ProductPubId,
         [property: JsonPropertyName("nutrientPubId")] Guid NutrientPubId,
-        [property: JsonPropertyName("amount")] decimal Amount
+        [property: JsonPropertyName("amount")] decimal Amount,
+        [property: JsonPropertyName("analysisBasis")] string AnalysisBasis = "PercentByMass",
+        [property: JsonPropertyName("analysisSource")][property: MaxLength(250)] string AnalysisSource = "",
+        [property: JsonPropertyName("isVerified")] bool IsVerified = false
     );
 
     public record ProductNutrientUpdateDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("productPubId")] Guid ProductPubId,
         [property: JsonPropertyName("nutrientPubId")] Guid NutrientPubId,
-        [property: JsonPropertyName("amount")] decimal Amount
+        [property: JsonPropertyName("amount")] decimal Amount,
+        [property: JsonPropertyName("analysisBasis")] string AnalysisBasis = "PercentByMass",
+        [property: JsonPropertyName("analysisSource")][property: MaxLength(250)] string AnalysisSource = "",
+        [property: JsonPropertyName("isVerified")] bool IsVerified = false
     );
 
     #endregion

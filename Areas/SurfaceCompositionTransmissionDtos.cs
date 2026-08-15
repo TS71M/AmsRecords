@@ -21,7 +21,10 @@ public static class SurfaceCompositionTransmissionDtos
         [property: JsonPropertyName("rerunLastModelUsed")] string? RerunLastModelUsed = null,
         [property: JsonPropertyName("rerunLastConfidence")] decimal? RerunLastConfidence = null,
         [property: JsonPropertyName("rerunDecisionAtUtc")] DateTime? RerunDecisionAtUtc = null,
-        [property: JsonPropertyName("rerunReviewNote")] string? RerunReviewNote = null
+        [property: JsonPropertyName("rerunReviewNote")] string? RerunReviewNote = null,
+        [property: JsonPropertyName("analysisReviewOutcome")] string? AnalysisReviewOutcome = null,
+        [property: JsonPropertyName("analysisReviewComment")] string? AnalysisReviewComment = null,
+        [property: JsonPropertyName("analysisReviewedAtUtc")] DateTime? AnalysisReviewedAtUtc = null
     );
 
     public sealed record SurfaceCompositionTransmissionSpeciesDto(
@@ -143,6 +146,40 @@ public static class SurfaceCompositionTransmissionDtos
         [property: JsonPropertyName("transmissionPubId")] Guid TransmissionPubId,
         [property: JsonPropertyName("reviewNote")] string? ReviewNote = null
     );
+
+    public sealed record SurfaceCompositionAnalysisFeedbackDto(
+        [property: JsonPropertyName("transmissionPubId")] Guid TransmissionPubId,
+        [property: JsonPropertyName("outcome")] string Outcome,
+        [property: JsonPropertyName("comment")] string? Comment = null
+    );
+
+    public static class SurfaceCompositionAnalysisFeedbackOutcomes
+    {
+        public const string Accurate = "accurate";
+        public const string PartlyAccurate = "partly_accurate";
+        public const string Inaccurate = "inaccurate";
+
+        public static string? Normalize(string? outcome)
+            => outcome?.Trim().ToLowerInvariant() switch
+            {
+                Accurate => Accurate,
+                PartlyAccurate => PartlyAccurate,
+                Inaccurate => Inaccurate,
+                _ => null
+            };
+
+        public static bool RequiresComment(string? outcome)
+            => Normalize(outcome) is PartlyAccurate or Inaccurate;
+
+        public static string DisplayName(string? outcome)
+            => Normalize(outcome) switch
+            {
+                Accurate => "Accurate",
+                PartlyAccurate => "Partly accurate",
+                Inaccurate => "Inaccurate",
+                _ => "Not reviewed"
+            };
+    }
 
     public static class SurfaceCompositionRerunStatuses
     {

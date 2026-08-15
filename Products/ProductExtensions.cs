@@ -88,7 +88,10 @@ public static class ProductExtensions
                     ProductPubId: product.PubId,
                     NutrientPubId: x.Nutrient.PubId,
                     NutrientName: x.Nutrient.NutrientName,
-                    Amount: x.Amount))
+                    Amount: x.Amount,
+                    AnalysisBasis: x.AnalysisBasis.ToString(),
+                    AnalysisSource: x.AnalysisSource,
+                    IsVerified: x.IsVerified))
                 .ToList(),
             Supplements: product.ProductSupplements
                 .OrderBy(x => x.Category)
@@ -113,7 +116,8 @@ public static class ProductExtensions
                     UploadDt: x.UploadDT,
                     ImagePubId: x.AppImage?.PubId,
                     Image: x.Image))
-                .ToList()
+                .ToList(),
+            DensityKgPerL: product.DensityKgPerL
         );
     }
 
@@ -121,7 +125,8 @@ public static class ProductExtensions
         => new(
             PubId: nutrient.PubId,
             Name: nutrient.NutrientName,
-            OrderNumber: nutrient.OrderNumber
+            OrderNumber: nutrient.OrderNumber,
+            Code: nutrient.Code
         );
 
     public static ProductNutrientDto ToDto(this ProductNutrient productNutrient)
@@ -130,7 +135,10 @@ public static class ProductExtensions
             ProductPubId: productNutrient.Product.PubId,
             NutrientPubId: productNutrient.Nutrient.PubId,
             NutrientName: productNutrient.Nutrient.NutrientName,
-            Amount: productNutrient.Amount
+            Amount: productNutrient.Amount,
+            AnalysisBasis: productNutrient.AnalysisBasis.ToString(),
+            AnalysisSource: productNutrient.AnalysisSource,
+            IsVerified: productNutrient.IsVerified
         );
 
     public static ProductSupplementDto ToDto(this ProductSupplement productSupplement)
