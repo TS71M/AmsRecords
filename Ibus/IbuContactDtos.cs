@@ -13,7 +13,8 @@ public static class IbuContactDtos
         [property: JsonPropertyName("sortOrder")] int SortOrder,
         [property: JsonPropertyName("active")] bool Active,
         [property: JsonPropertyName("website")] string? Website = null,
-        [property: JsonPropertyName("isSystemContact")] bool IsSystemContact = false);
+        [property: JsonPropertyName("isSystemContact")] bool IsSystemContact = false,
+        [property: JsonPropertyName("isAssignedUser")] bool IsAssignedUser = false);
 
     public sealed record IbuContactCreateDto(
         [property: JsonPropertyName("name")] string Name,
@@ -36,7 +37,7 @@ public static class IbuContactDtos
 
     public sealed record IbuContactPrimaryNameUpdateDto(
         [property: JsonPropertyName("name")]
-        [property: Required]
-        [property: MaxLength(150)]
+        [param: Required]
+        [param: MaxLength(150)]
         string Name);
 }

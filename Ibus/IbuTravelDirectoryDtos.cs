@@ -4,7 +4,7 @@ public static class IbuTravelDirectoryDtos
 {
     public sealed record TravelDirectoryOrderUpdateDto(
         [property: JsonPropertyName("orderedPubIds")]
-        [property: Required]
+        [param: Required]
         IReadOnlyList<Guid> OrderedPubIds);
 
     public sealed record TravelDirectoryDto(
@@ -12,6 +12,7 @@ public static class IbuTravelDirectoryDtos
 
     public sealed record TravelCourseDto(
         [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,
+        [property: JsonPropertyName("fieldPubId")] Guid? FieldPubId,
         [property: JsonPropertyName("name")] string Name,
         [property: JsonPropertyName("fieldTypeName")] string FieldTypeName,
         [property: JsonPropertyName("destinations")] IReadOnlyList<TravelDestinationDto> Destinations,
@@ -34,7 +35,9 @@ public static class IbuTravelDirectoryDtos
         [property: JsonPropertyName("role")] string? Role,
         [property: JsonPropertyName("phone")] string? Phone,
         [property: JsonPropertyName("email")] string? Email,
-        [property: JsonPropertyName("isPrimary")] bool IsPrimary);
+        [property: JsonPropertyName("isPrimary")] bool IsPrimary,
+        [property: JsonPropertyName("website")] string? Website = null,
+        [property: JsonPropertyName("mobile")] string? Mobile = null);
 
     public sealed record ContactSyncDto(
         [property: JsonPropertyName("targetPubId")][param: Required] Guid TargetPubId,

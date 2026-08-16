@@ -32,7 +32,7 @@ public static class IbuLocationDtos
 
     public sealed record IbuLocationPrimaryNameUpdateDto(
         [property: JsonPropertyName("name")]
-        [property: Required]
-        [property: MaxLength(100)]
+        [param: Required]
+        [param: MaxLength(100)]
         string Name);
 }

@@ -49,7 +49,7 @@ public static class ContactDetailsExtensions
             OwnerPubId: ownerPubId
             );
 
-    static string? ReadableOrNull(string? value)
+    public static string? ReadableOrNull(string? value)
         => !string.IsNullOrWhiteSpace(value)
            && value.StartsWith(ProtectedValuePrefix, StringComparison.Ordinal)
             ? null
