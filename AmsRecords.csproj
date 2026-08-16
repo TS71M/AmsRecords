@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Models\AmsModels.csproj" SetTargetFramework="TargetFramework=net10.0" UndefineProperties="RuntimeIdentifier;SelfContained" />
+    <ProjectReference Include="..\Lib\Lib.csproj" SetTargetFramework="TargetFramework=net10.0" UndefineProperties="RuntimeIdentifier;SelfContained" />
   </ItemGroup>
 
   <ItemGroup>
