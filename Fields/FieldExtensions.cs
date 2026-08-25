@@ -252,6 +252,7 @@ public static class FieldDtoExtensions
             IbuPubId: dto.IbuPubId,
             CommonStartTime: dto.CommonStartTime,
             PrimaryRiskAreaPubId: dto.PrimaryRiskAreaPubId,
-            GrowthPotentialAreaPubId: dto.GrowthPotentialAreaPubId
+            GrowthPotentialAreaPubId: dto.GrowthPotentialAreaPubId,
+            CountryPubId: dto.CountryPubId
         );
 }

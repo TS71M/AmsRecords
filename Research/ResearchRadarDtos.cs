@@ -48,7 +48,35 @@ public static class ResearchRadarDtos
         bool PublishWebApp,
         bool PublishMobileApp,
         bool PublishPublicWeb,
-        DateTime? PublishedUtc);
+        DateTime? PublishedUtc,
+        ResearchArticleEngagementDto? Engagement = null,
+        string ContentCulture = "en");
+
+    public sealed record ResearchArticleEngagementDto(
+        int LikeCount,
+        int ApplauseCount,
+        int CommentCount,
+        bool IsLiked,
+        bool IsApplauded,
+        bool IsSaved);
+
+    public sealed record ResearchReactionSaveDto(bool IsActive);
+
+    public sealed record ResearchCommentSaveDto(string Content, Guid? ParentPubId = null);
+
+    public sealed record ResearchCommentDto(
+        Guid PubId,
+        Guid ArticlePubId,
+        Guid? ParentPubId,
+        string AuthorDisplayName,
+        string Content,
+        string LanguageCode,
+        DateTime CreatedUtc,
+        DateTime? UpdatedUtc,
+        bool IsRemoved,
+        bool IsOwn,
+        bool CanEdit,
+        bool CanRemove);
 
     public sealed record ResearchArticleUpdateDto(
         string? EditorialSummary,

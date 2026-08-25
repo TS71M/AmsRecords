@@ -154,7 +154,10 @@ public sealed record FieldCreateDto(
 
     [property: JsonPropertyName("growthPotentialAreaPubId")]
     [property: DisplayName("Growth Potential Area")]
-    Guid? GrowthPotentialAreaPubId=default
+    Guid? GrowthPotentialAreaPubId=default,
+
+    [property: JsonPropertyName("countryPubId")]
+    Guid? CountryPubId=default
 )
 {
     public AppImageCreateDto? ImageCreateDto { get; set; } = null;

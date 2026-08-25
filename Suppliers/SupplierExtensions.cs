@@ -1,4 +1,5 @@
 using static AmsRecords.Suppliers.SupplierDtos;
+using AmsRecords.ContactDetails;
 
 namespace AmsRecords.Suppliers;
 
@@ -86,8 +87,8 @@ public static class SupplierExtensions
             AppImagePubId: supplier.AppImage?.PubId,
             AddressPubId: effectiveAddress?.PubId,
             ContactPubId: effectiveContact?.PubId,
-            PrimaryPhone: effectiveContact?.Phone,
-            PrimaryEmail: effectiveContact?.Email,
+            PrimaryPhone: ContactDetailsExtensions.ReadableOrNull(effectiveContact?.Phone),
+            PrimaryEmail: ContactDetailsExtensions.ReadableOrNull(effectiveContact?.Email),
             PrimaryWebsite: effectiveContact?.Website,
             Address1: effectiveAddress?.Address1,
             Address2: effectiveAddress?.Address2,
@@ -145,8 +146,8 @@ public static class SupplierExtensions
             Image: supplier.Image,
             PrimaryContactName: primaryContactName,
             PrimaryContactPosition: primaryContactPosition,
-            PrimaryPhone: effectiveContact?.Phone,
-            PrimaryEmail: effectiveContact?.Email,
+            PrimaryPhone: ContactDetailsExtensions.ReadableOrNull(effectiveContact?.Phone),
+            PrimaryEmail: ContactDetailsExtensions.ReadableOrNull(effectiveContact?.Email),
             PrimaryWebsite: effectiveContact?.Website,
             PrimaryAddress: ToSingleLine(effectiveAddress),
             ContactCount: contactCount,
@@ -205,8 +206,8 @@ public static class SupplierExtensions
             SupplierPubId: supplierPubId,
             FullName: supplierContact.FullName,
             Position: supplierContact.Position,
-            Phone: supplierContact.Contact?.Phone,
-            Email: supplierContact.Contact?.Email,
+            Phone: ContactDetailsExtensions.ReadableOrNull(supplierContact.Contact?.Phone),
+            Email: ContactDetailsExtensions.ReadableOrNull(supplierContact.Contact?.Email),
             Website: supplierContact.Contact?.Website,
             Image: imageUrl,
             IsPrimary: supplierContact.IsPrimary,
@@ -224,8 +225,8 @@ public static class SupplierExtensions
             MiddleName: supplierContact.Name?.MiddleName,
             LastName: supplierContact.Name?.LastName ?? "",
             Position: supplierContact.Position,
-            Phone: supplierContact.Contact?.Phone,
-            Email: supplierContact.Contact?.Email,
+            Phone: ContactDetailsExtensions.ReadableOrNull(supplierContact.Contact?.Phone),
+            Email: ContactDetailsExtensions.ReadableOrNull(supplierContact.Contact?.Email),
             Website: supplierContact.Contact?.Website,
             Image: imageUrl,
             IsPrimary: supplierContact.IsPrimary,

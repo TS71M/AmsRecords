@@ -164,7 +164,7 @@ public sealed record FieldUpdateDto(
 )
 {
     public Guid IbuPubId { get; set; } = default;
-    [JsonIgnore]
+    [JsonPropertyName("countryPubId")]
     public Guid? CountryPubId { get; set; } = null;
     [JsonIgnore]
     public string? FieldWebsite { get; set; } = null;

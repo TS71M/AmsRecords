@@ -13,8 +13,13 @@ public static class DualSourcePosition
     public const double MaximumPhoneAgeSeconds = 2d;
     public const double DisagreementWarningMetres = 5d;
     public const double StrongDisagreementMetres = 15d;
+    public const int ReliableTdrSatelliteCount = 8;
 
     public static PositionSelectionDto Select(double? tdrLatitude, double? tdrLongitude,
+        PhonePositionDto? phone, DateTimeOffset eventAtUtc)
+        => Select(tdrLatitude, tdrLongitude, null, phone, eventAtUtc);
+
+    public static PositionSelectionDto Select(double? tdrLatitude, double? tdrLongitude, int? tdrSatelliteCount,
         PhonePositionDto? phone, DateTimeOffset eventAtUtc)
     {
         var tdrValid = IsValid(tdrLatitude, tdrLongitude);
@@ -27,6 +32,12 @@ public static class DualSourcePosition
             : null;
         var disagreement = distance > DisagreementWarningMetres;
         var strongDisagreement = distance > StrongDisagreementMetres;
+        var tdrReliable = tdrValid && tdrSatelliteCount >= ReliableTdrSatelliteCount;
+
+        if (tdrReliable)
+            return new(tdrLatitude, tdrLongitude, "Tdr", distance, disagreement,
+                strongDisagreement ? "StrongSourceDisagreementTdrReliable" :
+                disagreement ? "SourceDisagreementTdrReliable" : "TdrReliableSatellites");
 
         if (phoneAcceptable)
             return new(phone!.Latitude, phone.Longitude, "Phone", distance, disagreement,

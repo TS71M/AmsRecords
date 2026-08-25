@@ -39,6 +39,7 @@ public static class ModuleAccessCatalog
     public const string Reports = "reports";
     public const string Inventory = "inventory";
     public const string Irrigation = "irrigation";
+    public const string Remote = "remote";
 
     public static IReadOnlyList<ModuleAccessDefinition> All { get; } =
     [
@@ -71,6 +72,7 @@ public static class ModuleAccessCatalog
         new(Documents, IsReleased: false, IsPermissionAssignable: false),
         new(Reports, IsReleased: false, IsPermissionAssignable: false),
         new(Inventory, IsReleased: false, IsPermissionAssignable: false),
-        new(Irrigation, IsReleased: false, IsPermissionAssignable: false)
+        new(Irrigation, IsReleased: false),
+        new(Remote)
     ];
 }

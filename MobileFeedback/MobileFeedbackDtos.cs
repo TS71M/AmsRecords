@@ -39,7 +39,8 @@ public static class MobileFeedbackDtos
         [property: JsonPropertyName("submittedAtUtc")] DateTime SubmittedAtUtc);
 
     public sealed record MobileBugReportStatusUpdateDto(
-        [property: JsonPropertyName("status")] MobileBugReportStatus Status);
+        [property: JsonPropertyName("status")] MobileBugReportStatus Status,
+        [property: JsonPropertyName("input")] string? Input = null);
 
     public sealed record MobileBugReportStatusCountDto(
         [property: JsonPropertyName("status")] MobileBugReportStatus Status,
