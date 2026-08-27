@@ -15,6 +15,15 @@ public static class IrrigationNozzleConfigurationEvaluator
         string? installedManufacturer,
         string? installedModel)
     {
+        var catalogOverrides = installedNozzles
+            .Where(x => x.State == IrrigationNozzleState.Installed && x.CompatibilityOverride)
+            .OrderBy(x => x.Position)
+            .Select(x => $"{x.PositionLabel} uses an installed nozzle that is not compatible with the selected sprinkler model.")
+            .Distinct()
+            .ToList();
+        if (catalogOverrides.Count > 0)
+            return new(IrrigationNozzleConfigurationAssessment.Incompatible, catalogOverrides);
+
         if (reference is null)
             return new(IrrigationNozzleConfigurationAssessment.ReviewRequired, ["No reference nozzle configuration is selected."]);
         if (!reference.IsApprovedReference)

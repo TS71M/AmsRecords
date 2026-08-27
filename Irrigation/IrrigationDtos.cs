@@ -123,7 +123,8 @@ public static class IrrigationDtos
         [property: JsonPropertyName("nozzleName")] string NozzleName,
         [property: JsonPropertyName("color")] string Color,
         [property: JsonPropertyName("recognitionConfidence")] decimal? RecognitionConfidence,
-        [property: JsonPropertyName("nozzleOptionPubId")] Guid? NozzleOptionPubId = null);
+        [property: JsonPropertyName("nozzleOptionPubId")] Guid? NozzleOptionPubId = null,
+        [property: JsonPropertyName("compatibilityOverride")] bool CompatibilityOverride = false);
 
     public sealed record SurfaceSprinklerImageLocationDto(
         [property: JsonPropertyName("view")] string View,
