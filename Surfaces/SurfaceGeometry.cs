@@ -56,22 +56,40 @@ public static class SurfaceGeometry
 
     public static bool ContainsPoint(string? geoJson, double latitude, double longitude)
     {
-        if (string.IsNullOrWhiteSpace(geoJson) || latitude is < -90 or > 90 || longitude is < -180 or > 180)
-            return false;
+        return ContainsPoints(geoJson, [new CoordinateDto(latitude, longitude)])[0];
+    }
+
+    /// <summary>Tests many coordinates against one parsed Polygon or MultiPolygon GeoJSON value.</summary>
+    public static IReadOnlyList<bool> ContainsPoints(string? geoJson, IReadOnlyList<CoordinateDto> points)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        var result = new bool[points.Count];
+        if (string.IsNullOrWhiteSpace(geoJson) || points.Count == 0)
+            return result;
         try
         {
             using var document = JsonDocument.Parse(geoJson);
             var root = document.RootElement;
             if (!root.TryGetProperty("type", out var type) || !root.TryGetProperty("coordinates", out var coordinates))
-                return false;
-            return type.GetString() switch
+                return result;
+            var geometryType = type.GetString();
+            for (var index = 0; index < points.Count; index++)
             {
-                "Polygon" => PolygonContains(coordinates, latitude, longitude),
-                "MultiPolygon" => coordinates.EnumerateArray().Any(x => PolygonContains(x, latitude, longitude)),
-                _ => false
-            };
+                var point = points[index];
+                if (!double.IsFinite(point.Latitude) || point.Latitude is < -90 or > 90 ||
+                    !double.IsFinite(point.Longitude) || point.Longitude is < -180 or > 180)
+                    continue;
+                result[index] = geometryType switch
+                {
+                    "Polygon" => PolygonContains(coordinates, point.Latitude, point.Longitude),
+                    "MultiPolygon" => coordinates.EnumerateArray()
+                        .Any(x => PolygonContains(x, point.Latitude, point.Longitude)),
+                    _ => false
+                };
+            }
+            return result;
         }
-        catch (JsonException) { return false; }
+        catch (JsonException) { return result; }
     }
 
     static bool PolygonContains(JsonElement polygon, double latitude, double longitude)

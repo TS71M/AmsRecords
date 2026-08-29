@@ -11,7 +11,8 @@ public static class IrrigationCatalogSuggestion
         Guid? selectedModelPubId,
         IEnumerable<IrrigationSprinklerModelDto> availableModels)
     {
-        if (!needsReview || selectedModelPubId is not null && selectedModelPubId != Guid.Empty)
+        _ = needsReview;
+        if (selectedModelPubId is not null && selectedModelPubId != Guid.Empty)
             return null;
 
         var manufacturer = Normalize(manufacturerName);

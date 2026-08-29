@@ -41,24 +41,24 @@ public static class IrrigationNozzleConfigurationEvaluator
             .Where(x => x.Position is >= 1 and <= IrrigationRules.MaximumNozzlesPerSprinkler)
             .GroupBy(x => x.Position)
             .ToDictionary(x => x.Key, x => x.First());
-        var referenceByPosition = reference.Slots
-            .GroupBy(x => x.Position)
-            .ToDictionary(x => x.Key, x => x.First());
+        var unmatchedInstalledPositions = installedByPosition.Keys.ToHashSet();
 
         foreach (var expected in reference.Slots.OrderBy(x => x.Position))
         {
-            if (!installedByPosition.TryGetValue(expected.Position, out var installed))
+            var installed = installedByPosition.Values
+                .Where(candidate =>
+                    unmatchedInstalledPositions.Contains(candidate.Position) &&
+                    IrrigationRules.AreNozzlePositionsInterchangeable(candidate.Position, expected.Position))
+                .OrderByDescending(candidate => IdentityMatches(expected, candidate))
+                .ThenByDescending(candidate => candidate.Position == expected.Position)
+                .FirstOrDefault();
+            if (installed is null)
             {
                 if (!expected.IsOptional)
                     incompatible.Add($"Missing required {expected.PositionLabel} nozzle.");
                 continue;
             }
-
-            if (installed.PositionKind != expected.PositionKind)
-            {
-                incompatible.Add($"{expected.PositionLabel} is assigned to {installed.PositionKind} instead of {expected.PositionKind}.");
-                continue;
-            }
+            unmatchedInstalledPositions.Remove(installed.Position);
 
             switch (installed.State)
             {
@@ -76,7 +76,7 @@ public static class IrrigationNozzleConfigurationEvaluator
         }
 
         foreach (var extra in installedNozzles
-                     .Where(x => x.State == IrrigationNozzleState.Installed && !referenceByPosition.ContainsKey(x.Position))
+                     .Where(x => x.State == IrrigationNozzleState.Installed && unmatchedInstalledPositions.Contains(x.Position))
                      .OrderBy(x => x.Position))
         {
             incompatible.Add($"Unexpected installed nozzle at {extra.PositionLabel}.");
@@ -137,6 +137,21 @@ public static class IrrigationNozzleConfigurationEvaluator
         {
             review.Add($"Color at {expected.PositionLabel} differs from the reference; verify the nozzle code.");
         }
+    }
+
+    static bool IdentityMatches(
+        IrrigationNozzleConfigurationSlotDto expected,
+        SurfaceSprinklerNozzleDto installed)
+    {
+        if (expected.NozzleOptionPubId.HasValue && installed.NozzleOptionPubId.HasValue)
+            return expected.NozzleOptionPubId.Value == installed.NozzleOptionPubId.Value;
+        if (!string.IsNullOrWhiteSpace(expected.NozzleCode) && !string.IsNullOrWhiteSpace(installed.NozzleCode))
+            return Same(expected.NozzleCode, installed.NozzleCode);
+        if (!string.IsNullOrWhiteSpace(expected.NozzleName) && !string.IsNullOrWhiteSpace(installed.NozzleName))
+            return Same(expected.NozzleName, installed.NozzleName);
+        return !string.IsNullOrWhiteSpace(expected.Color) &&
+               !string.IsNullOrWhiteSpace(installed.Color) &&
+               Same(expected.Color, installed.Color);
     }
 
     static bool Same(string? left, string? right)

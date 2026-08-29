@@ -15,7 +15,8 @@ public static class AreaDtos
         [property: JsonPropertyName("areaGroupName")] string AreaGroupName,
         [property: JsonPropertyName("areaGroupCode")] string AreaGroupCode,
         [property: JsonPropertyName("dryVwcThreshold")] decimal DryVwcThreshold = 15m,
-        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m
+        [property: JsonPropertyName("wetVwcThreshold")] decimal WetVwcThreshold = 25m,
+        [property: JsonPropertyName("clippingsRemoved")] bool ClippingsRemoved = false
     );
 
     public sealed record AreaDto(

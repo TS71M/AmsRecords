@@ -1,5 +1,7 @@
 namespace AmsRecords.Surfaces;
 
+using static AmsRecords.Locations.MapCenterDtos;
+
 public static class SurfaceMappingDtos
 {
     public sealed record CoordinateDto(double Latitude, double Longitude);
@@ -23,11 +25,21 @@ public static class SurfaceMappingDtos
         string GrossGeoJson, string DeductionGeoJson, string EffectiveGeoJson, decimal GrossAreaM2,
         decimal DeductionAreaM2, decimal EffectiveAreaM2, string ApprovalState, IReadOnlyList<string> Warnings,
         DateTimeOffset CreatedAtUtc, DateTimeOffset? ApprovedAtUtc);
+    public sealed record SurfaceMapDetailsDto(Guid FieldPubId, Guid AreaPubId, int HoleNumber,
+        bool UseForClippingMeasurements, bool Irrigated, bool ClippingsRemoved);
     public sealed record SurfaceMapWorkspaceDto(Guid SurfacePubId, string SurfaceName, decimal ManualAreaM2,
         bool SubtractFromContainingSurface, IReadOnlyList<SubsectionGeometryDto> Subsections,
         IReadOnlyList<RawBoundaryPointDto> RawPoints, IReadOnlyList<SurfaceMapRevisionDto> Revisions,
-        DateTimeOffset? ClearedAtUtc = null);
-    public sealed record SurfaceMapLayerDto(Guid FieldPubId, IReadOnlyList<SurfaceMapLayerItemDto> Layers);
+        DateTimeOffset? ClearedAtUtc = null, MapCenterDto? MapCenter = null,
+        SurfaceMapDetailsDto? Details = null);
+    public sealed record SurfaceMapLayerDto(Guid FieldPubId, IReadOnlyList<SurfaceMapLayerItemDto> Layers,
+        MapCenterDto? MapCenter = null);
     public sealed record SurfaceMapLayerItemDto(string LayerType, Guid PubId, Guid? ParentPubId, string Name,
         string GeoJson, string? ApprovalState);
+    public sealed record SurfaceMapAssignmentOptionDto(Guid SurfacePubId, string SurfaceName, int HoleNumber);
+    public sealed record SurfaceMapAssignmentWorkspaceDto(Guid FieldPubId, string FieldName, Guid AreaPubId,
+        string AreaName, Guid SourceSurfacePubId, string SourceSurfaceName, int SourceHoleNumber,
+        IReadOnlyList<SurfaceMapAssignmentOptionDto> Surfaces);
+    public sealed record SurfaceMapReassignRequestDto(Guid TargetSurfacePubId);
+    public sealed record SurfaceMapReassignResultDto(Guid VacatedSurfacePubId, Guid AssignedSurfacePubId);
 }

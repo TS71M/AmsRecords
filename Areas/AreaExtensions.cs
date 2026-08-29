@@ -148,7 +148,8 @@ public static class AreaExtensions
            a.AreaGroup!.Name,
            a.AreaGroup!.Code,
            a.DryVwcThreshold,
-           a.WetVwcThreshold
+           a.WetVwcThreshold,
+           a.ClippingsRemoved
        );
 
     public static readonly Expression<Func<Area, AreaDtoBase>> ToDtoBase

@@ -32,7 +32,7 @@ public static class DualSourcePosition
             : null;
         var disagreement = distance > DisagreementWarningMetres;
         var strongDisagreement = distance > StrongDisagreementMetres;
-        var tdrReliable = tdrValid && tdrSatelliteCount >= ReliableTdrSatelliteCount;
+        var tdrReliable = tdrValid && HasReliableTdrSatellites(tdrSatelliteCount);
 
         if (tdrReliable)
             return new(tdrLatitude, tdrLongitude, "Tdr", distance, disagreement,
@@ -51,8 +51,36 @@ public static class DualSourcePosition
         return new(null, null, "None", distance, true, phoneValid ? "PhoneStaleTdrUnavailable" : "NoValidPosition");
     }
 
+    /// <summary>
+    /// Boundary capture requires one stable coordinate source for the whole walk. A valid TDR coordinate
+    /// remains authoritative while the phone fix is retained only as comparison evidence.
+    /// </summary>
+    public static PositionSelectionDto SelectBoundary(double? tdrLatitude, double? tdrLongitude,
+        int? tdrSatelliteCount, PhonePositionDto? phone, DateTimeOffset eventAtUtc)
+    {
+        if (!IsValid(tdrLatitude, tdrLongitude))
+            return Select(tdrLatitude, tdrLongitude, tdrSatelliteCount, phone, eventAtUtc);
+
+        var phoneValid = phone is not null && IsValid(phone.Latitude, phone.Longitude);
+        var distance = phoneValid
+            ? DistanceMetres(tdrLatitude!.Value, tdrLongitude!.Value, phone!.Latitude, phone.Longitude)
+            : (double?)null;
+        var warning = distance > DisagreementWarningMetres;
+        var status = distance > StrongDisagreementMetres
+            ? "StrongBoundarySourceDisagreement"
+            : warning
+                ? "BoundarySourceDisagreement"
+                : phoneValid
+                    ? "BoundaryTdrCompared"
+                    : "BoundaryTdrOnly";
+        return new(tdrLatitude, tdrLongitude, "Tdr", distance, warning, status);
+    }
+
     public static bool IsValid(double? latitude, double? longitude) => latitude is >= -90 and <= 90 &&
         longitude is >= -180 and <= 180 && (Math.Abs(latitude.Value) > 0.0000001 || Math.Abs(longitude.Value) > 0.0000001);
+
+    public static bool HasReliableTdrSatellites(int? satelliteCount)
+        => satelliteCount is >= ReliableTdrSatelliteCount;
 
     public static double DistanceMetres(double lat1, double lon1, double lat2, double lon2)
     {

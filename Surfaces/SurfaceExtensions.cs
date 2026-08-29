@@ -13,7 +13,9 @@ public static class SurfaceExtensions
             AreaName: s.Area.AreaName,
             HoleNumber: s.Hole.HoleNumber,
             SurfaceSizeM2: s.SurfaceSizeM2,
-            UseForClippingMeasurements: s.UseForClippingMeasurements,
+            UseForClippingMeasurements: SurfaceClippingMeasurementPolicy.IsEnabled(
+                s.Area.ClippingsRemoved,
+                s.UseForClippingMeasurements),
             HoleImgPubId: s.Hole.AppImage?.PubId,
             DryVwcThreshold: s.DryVwcThreshold,
             WetVwcThreshold: s.WetVwcThreshold,
@@ -29,7 +31,9 @@ public static class SurfaceExtensions
             AreaName: s.Area.AreaName,
             HoleNumber: s.Hole.HoleNumber,
             SurfaceSizeM2: s.SurfaceSizeM2,
-            UseForClippingMeasurements: s.UseForClippingMeasurements,
+            UseForClippingMeasurements: SurfaceClippingMeasurementPolicy.IsEnabled(
+                s.Area.ClippingsRemoved,
+                s.UseForClippingMeasurements),
             HoleImgPubId: s.Hole.AppImage?.PubId
         );
 
