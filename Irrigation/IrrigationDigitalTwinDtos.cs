@@ -2,6 +2,14 @@ namespace AmsRecords.Irrigation;
 
 public static class IrrigationDigitalTwinDtos
 {
+    public static class FieldReconciliationStatuses
+    {
+        public const string Unlinked = "unlinked";
+        public const string Matched = "matched";
+        public const string Variance = "variance";
+        public const string Review = "review";
+    }
+
     public sealed record IrrigationSystemDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,
@@ -40,7 +48,10 @@ public static class IrrigationDigitalTwinDtos
         [property: JsonPropertyName("elevationM")] decimal? ElevationM,
         [property: JsonPropertyName("arcDegrees")] decimal? ArcDegrees,
         [property: JsonPropertyName("orientationDegrees")] decimal? OrientationDegrees,
-        [property: JsonPropertyName("active")] bool Active);
+        [property: JsonPropertyName("active")] bool Active,
+        [property: JsonPropertyName("irrigationControlStationPubId")] Guid? IrrigationControlStationPubId = null,
+        [property: JsonPropertyName("irrigationControlStationName")] string IrrigationControlStationName = "",
+        [property: JsonPropertyName("controlStationPositionNumber")] int? ControlStationPositionNumber = null);
 
     public sealed record IrrigationAreaHeadDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -92,7 +103,53 @@ public static class IrrigationDigitalTwinDtos
         [property: JsonPropertyName("sourceType")] string SourceType,
         [property: JsonPropertyName("sourceEntityType")] string SourceEntityType,
         [property: JsonPropertyName("sourceReference")] string SourceReference,
-        [property: JsonPropertyName("active")] bool Active);
+        [property: JsonPropertyName("active")] bool Active,
+        [property: JsonPropertyName("irrigationControlStationPubId")] Guid? IrrigationControlStationPubId = null);
+
+    public sealed record IrrigationFieldSprinklerOptionDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("surfaceName")] string SurfaceName,
+        [property: JsonPropertyName("identifier")] string Identifier,
+        [property: JsonPropertyName("modelName")] string ModelName,
+        [property: JsonPropertyName("configurationName")] string ConfigurationName,
+        [property: JsonPropertyName("linkedIrrigationHeadPubId")] Guid? LinkedIrrigationHeadPubId);
+
+    public sealed record IrrigationHeadFieldReconciliationDto(
+        [property: JsonPropertyName("irrigationHeadPubId")] Guid IrrigationHeadPubId,
+        [property: JsonPropertyName("irrigationHeadName")] string IrrigationHeadName,
+        [property: JsonPropertyName("controlStationName")] string ControlStationName,
+        [property: JsonPropertyName("controlStationPositionNumber")] int? ControlStationPositionNumber,
+        [property: JsonPropertyName("mapX")] double? MapX,
+        [property: JsonPropertyName("mapY")] double? MapY,
+        [property: JsonPropertyName("canonicalModel")] string CanonicalModel,
+        [property: JsonPropertyName("canonicalNozzle")] string CanonicalNozzle,
+        [property: JsonPropertyName("surfaceSprinklerPubId")] Guid? SurfaceSprinklerPubId,
+        [property: JsonPropertyName("surfaceName")] string SurfaceName,
+        [property: JsonPropertyName("surfaceSprinklerIdentifier")] string SurfaceSprinklerIdentifier,
+        [property: JsonPropertyName("observedModel")] string ObservedModel,
+        [property: JsonPropertyName("observedConfiguration")] string ObservedConfiguration,
+        [property: JsonPropertyName("status")] string Status,
+        [property: JsonPropertyName("differences")] IReadOnlyList<string> Differences,
+        [property: JsonPropertyName("suggestedSurfaceSprinklerPubId")] Guid? SuggestedSurfaceSprinklerPubId,
+        [property: JsonPropertyName("suggestedSurfaceSprinklerIdentifier")] string SuggestedSurfaceSprinklerIdentifier,
+        [property: JsonPropertyName("suggestionScore")] int SuggestionScore,
+        [property: JsonPropertyName("suggestionEvidence")] IReadOnlyList<string> SuggestionEvidence);
+
+    public sealed record IrrigationFieldReconciliationDto(
+        [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
+        [property: JsonPropertyName("fieldName")] string FieldName,
+        [property: JsonPropertyName("irrigationSystemPubId")] Guid IrrigationSystemPubId,
+        [property: JsonPropertyName("irrigationSystemName")] string IrrigationSystemName,
+        [property: JsonPropertyName("matchedCount")] int MatchedCount,
+        [property: JsonPropertyName("varianceCount")] int VarianceCount,
+        [property: JsonPropertyName("reviewCount")] int ReviewCount,
+        [property: JsonPropertyName("unlinkedCount")] int UnlinkedCount,
+        [property: JsonPropertyName("heads")] IReadOnlyList<IrrigationHeadFieldReconciliationDto> Heads,
+        [property: JsonPropertyName("sprinklers")] IReadOnlyList<IrrigationFieldSprinklerOptionDto> Sprinklers);
+
+    public sealed record IrrigationHeadFieldLinkSaveDto(
+        [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
+        [property: JsonPropertyName("surfaceSprinklerPubId")] Guid? SurfaceSprinklerPubId);
 
     public sealed record IrrigationControllerOptionDto(
         [property: JsonPropertyName("pubId")] Guid PubId,

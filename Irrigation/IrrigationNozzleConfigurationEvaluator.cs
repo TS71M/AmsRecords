@@ -5,6 +5,8 @@ namespace AmsRecords.Irrigation;
 
 public static class IrrigationNozzleConfigurationEvaluator
 {
+    public const string FactoryDocumentedBackflowEvidenceCode = "factory-documented-backflow";
+
     public sealed record Result(
         IrrigationNozzleConfigurationAssessment Assessment,
         IReadOnlyList<string> Issues);
@@ -16,7 +18,9 @@ public static class IrrigationNozzleConfigurationEvaluator
         string? installedModel)
     {
         var catalogOverrides = installedNozzles
-            .Where(x => x.State == IrrigationNozzleState.Installed && x.CompatibilityOverride)
+            .Where(x => x.State == IrrigationNozzleState.Installed &&
+                        x.CompatibilityOverride &&
+                        !HasNonContradictoryApplicationEvidence(x))
             .OrderBy(x => x.Position)
             .Select(x => $"{x.PositionLabel} uses an installed nozzle that is not compatible with the selected sprinkler model.")
             .Distinct()
@@ -33,9 +37,9 @@ public static class IrrigationNozzleConfigurationEvaluator
                 ["The selected local configuration is recorded for reuse but is not an approved compatibility reference."]);
         }
 
-        var incompatible = new List<string>();
+        var deviations = new List<string>();
         var review = new List<string>();
-        CompareModel(reference, installedManufacturer, installedModel, incompatible, review);
+        CompareModel(reference, installedManufacturer, installedModel, deviations, review);
 
         var installedByPosition = installedNozzles
             .Where(x => x.Position is >= 1 and <= IrrigationRules.MaximumNozzlesPerSprinkler)
@@ -55,7 +59,7 @@ public static class IrrigationNozzleConfigurationEvaluator
             if (installed is null)
             {
                 if (!expected.IsOptional)
-                    incompatible.Add($"Missing required {expected.PositionLabel} nozzle.");
+                    deviations.Add($"The documented set contains a required {expected.PositionLabel} nozzle, but none is recorded.");
                 continue;
             }
             unmatchedInstalledPositions.Remove(installed.Position);
@@ -63,7 +67,7 @@ public static class IrrigationNozzleConfigurationEvaluator
             switch (installed.State)
             {
                 case IrrigationNozzleState.Empty when !expected.IsOptional:
-                    incompatible.Add($"Required {expected.PositionLabel} nozzle is empty.");
+                    deviations.Add($"The documented set contains a required {expected.PositionLabel} nozzle, but the recorded position is empty.");
                     continue;
                 case IrrigationNozzleState.Empty:
                     continue;
@@ -72,28 +76,73 @@ public static class IrrigationNozzleConfigurationEvaluator
                     continue;
             }
 
-            CompareIdentity(expected, installed, incompatible, review);
+            if (!IdentityMatches(expected, installed) && HasNonContradictoryApplicationEvidence(installed))
+            {
+                AddSupplementalEvidenceReview(installed, review);
+                continue;
+            }
+
+            CompareIdentity(expected, installed, deviations, review);
         }
 
         foreach (var extra in installedNozzles
                      .Where(x => x.State == IrrigationNozzleState.Installed && unmatchedInstalledPositions.Contains(x.Position))
                      .OrderBy(x => x.Position))
         {
-            incompatible.Add($"Unexpected installed nozzle at {extra.PositionLabel}.");
+            if (HasNonContradictoryApplicationEvidence(extra))
+            {
+                AddSupplementalEvidenceReview(extra, review);
+                continue;
+            }
+
+            deviations.Add($"The installed nozzle at {extra.PositionLabel} is not listed in the selected documented set.");
         }
 
-        if (incompatible.Count > 0)
-            return new(IrrigationNozzleConfigurationAssessment.Incompatible, incompatible.Concat(review).Distinct().ToList());
+        if (deviations.Count > 0)
+        {
+            var issues = deviations.Concat(review).Distinct().ToList();
+            if (reference.EvidenceLevel == IrrigationCompatibilityEvidenceLevel.Contradictory)
+                return new(IrrigationNozzleConfigurationAssessment.Incompatible, issues);
+
+            issues.Add("This difference is not proof of mechanical or hydraulic incompatibility; verify it against additional manufacturer or field evidence.");
+            return new(IrrigationNozzleConfigurationAssessment.ReviewRequired, issues.Distinct().ToList());
+        }
         if (review.Count > 0)
             return new(IrrigationNozzleConfigurationAssessment.ReviewRequired, review.Distinct().ToList());
         return new(IrrigationNozzleConfigurationAssessment.Compatible, []);
+    }
+
+    public static bool HasNonContradictoryApplicationEvidence(SurfaceSprinklerNozzleDto nozzle)
+        => nozzle.ApplicationEvidenceLevel is
+            IrrigationCompatibilityEvidenceLevel.FactoryDocumented or
+            IrrigationCompatibilityEvidenceLevel.SharedPlatformDocumented or
+            IrrigationCompatibilityEvidenceLevel.MechanicallyCompatible or
+            IrrigationCompatibilityEvidenceLevel.FieldObserved or
+            IrrigationCompatibilityEvidenceLevel.HydraulicallyValidated;
+
+    public static bool HasStrongCompatibleApplicationEvidence(SurfaceSprinklerNozzleDto nozzle)
+        => nozzle.ApplicationEvidenceLevel is
+            IrrigationCompatibilityEvidenceLevel.FactoryDocumented or
+            IrrigationCompatibilityEvidenceLevel.SharedPlatformDocumented or
+            IrrigationCompatibilityEvidenceLevel.HydraulicallyValidated;
+
+    static void AddSupplementalEvidenceReview(
+        SurfaceSprinklerNozzleDto nozzle,
+        ICollection<string> review)
+    {
+        if (HasStrongCompatibleApplicationEvidence(nozzle))
+            return;
+
+        review.Add(string.IsNullOrWhiteSpace(nozzle.ApplicationEvidenceSummary)
+            ? $"Verify the supplemental nozzle application at {nozzle.PositionLabel}."
+            : nozzle.ApplicationEvidenceSummary);
     }
 
     static void CompareModel(
         IrrigationNozzleConfigurationDto reference,
         string? installedManufacturer,
         string? installedModel,
-        ICollection<string> incompatible,
+        ICollection<string> deviations,
         ICollection<string> review)
     {
         var expected = reference.SprinklerModel;
@@ -107,13 +156,13 @@ public static class IrrigationNozzleConfigurationEvaluator
         }
 
         if (!Same(installedManufacturer, expected.ManufacturerName) || !Same(installedModel, expected.ModelName))
-            incompatible.Add($"Selected configuration is for {expected.ManufacturerName} {expected.ModelName}.");
+            deviations.Add($"The selected documented set is associated with {expected.ManufacturerName} {expected.ModelName}.");
     }
 
     static void CompareIdentity(
         IrrigationNozzleConfigurationSlotDto expected,
         SurfaceSprinklerNozzleDto installed,
-        ICollection<string> incompatible,
+        ICollection<string> deviations,
         ICollection<string> review)
     {
         if (!string.IsNullOrWhiteSpace(expected.NozzleCode))
@@ -121,14 +170,14 @@ public static class IrrigationNozzleConfigurationEvaluator
             if (string.IsNullOrWhiteSpace(installed.NozzleCode))
                 review.Add($"Confirm nozzle code {expected.NozzleCode} at {expected.PositionLabel}.");
             else if (!Same(installed.NozzleCode, expected.NozzleCode))
-                incompatible.Add($"{expected.PositionLabel} uses nozzle {installed.NozzleCode}; expected {expected.NozzleCode}.");
+                deviations.Add($"{expected.PositionLabel} uses nozzle {installed.NozzleCode}; the selected documented set lists {expected.NozzleCode}.");
         }
         else if (!string.IsNullOrWhiteSpace(expected.NozzleName))
         {
             if (string.IsNullOrWhiteSpace(installed.NozzleName))
                 review.Add($"Confirm {expected.NozzleName} at {expected.PositionLabel}.");
             else if (!Same(installed.NozzleName, expected.NozzleName))
-                incompatible.Add($"{expected.PositionLabel} uses {installed.NozzleName}; expected {expected.NozzleName}.");
+                deviations.Add($"{expected.PositionLabel} uses {installed.NozzleName}; the selected documented set lists {expected.NozzleName}.");
         }
 
         if (!string.IsNullOrWhiteSpace(expected.Color) &&

@@ -85,7 +85,9 @@ public static class LynxImportDtos
         [property: JsonPropertyName("sourceSprinklerModel")] string SourceSprinklerModel,
         [property: JsonPropertyName("currentNozzle")] string CurrentNozzle,
         [property: JsonPropertyName("sourceNozzle")] string SourceNozzle,
-        [property: JsonPropertyName("changes")] IReadOnlyList<string> Changes);
+        [property: JsonPropertyName("changes")] IReadOnlyList<string> Changes,
+        [property: JsonPropertyName("mapPointNumber")] int? MapPointNumber = null,
+        [property: JsonPropertyName("stationMapPointCount")] int StationMapPointCount = 0);
 
     public sealed record LynxSynchronizationPreviewDto(
         [property: JsonPropertyName("importPubId")] Guid ImportPubId,
@@ -103,12 +105,14 @@ public static class LynxImportDtos
         [property: JsonPropertyName("heads")] IReadOnlyList<LynxHeadReconciliationDto> Heads);
 
     public sealed record LynxTagGroupMappingApprovalDto(
-        [property: JsonPropertyName("tagGroup"), Required, StringLength(80, MinimumLength = 1)] string TagGroup,
+        [property: JsonPropertyName("tagGroup")]
+        [param: Required, StringLength(80, MinimumLength = 1)] string TagGroup,
         [property: JsonPropertyName("irrigationAreaPubId")] Guid? IrrigationAreaPubId);
 
     public sealed record LynxSynchronizationApprovalDto(
         [property: JsonPropertyName("irrigationSystemPubId")] Guid IrrigationSystemPubId,
-        [property: JsonPropertyName("approvalToken"), Required, StringLength(64, MinimumLength = 64)] string ApprovalToken,
+        [property: JsonPropertyName("approvalToken")]
+        [param: Required, StringLength(64, MinimumLength = 64)] string ApprovalToken,
         [property: JsonPropertyName("deactivateMissingHeads")] bool DeactivateMissingHeads,
         [property: JsonPropertyName("tagGroupMappings")] IReadOnlyList<LynxTagGroupMappingApprovalDto> TagGroupMappings);
 
@@ -120,4 +124,9 @@ public static class LynxImportDtos
         [property: JsonPropertyName("missingCount")] int MissingCount,
         [property: JsonPropertyName("unchangedCount")] int UnchangedCount,
         [property: JsonPropertyName("deactivatedMissingCount")] int DeactivatedMissingCount);
+
+    public sealed record LynxAreaInitializationResultDto(
+        [property: JsonPropertyName("createdAreaCount")] int CreatedAreaCount,
+        [property: JsonPropertyName("reusedAreaCount")] int ReusedAreaCount,
+        [property: JsonPropertyName("mappedTagGroupCount")] int MappedTagGroupCount);
 }
