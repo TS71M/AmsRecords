@@ -72,7 +72,11 @@ public sealed record IrrigationSimulationGrid(
 
 public sealed record IrrigationSimulationRequest(
     IrrigationSimulationGrid Grid,
-    IReadOnlyList<IrrigationSimulationHead> Heads);
+    IReadOnlyList<IrrigationSimulationHead> Heads,
+    bool CaptureContributions = false);
+
+public sealed record IrrigationHeadCellContributions(Guid HeadPubId, double RuntimeSeconds,
+    IReadOnlyList<int> CellIndices, IReadOnlyList<double> DepthMm);
 
 public sealed record IrrigationHeadSimulationSummary(
     Guid HeadPubId,
@@ -118,7 +122,8 @@ public sealed record IrrigationSimulationResult(
     double[,] Cells,
     IReadOnlyList<IrrigationHeadSimulationSummary> PerHeadSummary,
     IReadOnlyList<string> Warnings,
-    IrrigationSimulationConfidence Confidence);
+    IrrigationSimulationConfidence Confidence,
+    IReadOnlyList<IrrigationHeadCellContributions>? Contributions = null);
 
 /// <summary>
 /// Deterministic finite-grid precipitation calculator. Each head is evaluated only inside its
@@ -142,12 +147,23 @@ public sealed class IrrigationPrecipitationEngine
         var cells = new double[request.Grid.Height, request.Grid.Width];
         var summaries = new List<IrrigationHeadSimulationSummary>(preparedHeads.Count);
         var warnings = new List<string>();
+        var contributions = request.CaptureContributions ? new List<IrrigationHeadCellContributions>() : null;
+        var capturedCellCount = 0;
 
         foreach (var preparedHead in preparedHeads)
         {
             // Per-head calculations have no shared mutable state and may be parallelized later.
             // Contributions are deliberately aggregated in stable input order for deterministic sums.
             var calculation = CalculateHead(request.Grid, preparedHead);
+            if (contributions is not null)
+            {
+                capturedCellCount = checked(capturedCellCount + calculation.Contributions.Count);
+                if (capturedCellCount > MaximumCellCount)
+                    throw new ArgumentException("Animation contains too many head-cell contributions. Use a coarser grid or fewer heads.");
+                contributions.Add(new(preparedHead.Input.Head.PubId, preparedHead.Input.RuntimeSeconds,
+                    calculation.Contributions.Select(x => x.Row * request.Grid.Width + x.Column).ToArray(),
+                    calculation.Contributions.Select(x => x.DepthMm).ToArray()));
+            }
             foreach (var contribution in calculation.Contributions)
                 cells[contribution.Row, contribution.Column] += contribution.DepthMm;
 
@@ -160,7 +176,7 @@ public sealed class IrrigationPrecipitationEngine
                     $"Head '{summary.HeadName}' used the generic parabolic radial profile because its catalog profile status was '{summary.DistributionProfileStatus}'; its distribution is a C-level estimate, not measured pattern accuracy.");
             }
             else if (summary.DistributionConfidenceLevelCode == SprinklerDistributionConfidenceLevelCodes.GenericModeled)
-                warnings.Add($"Head '{summary.HeadName}' used a C-level generic modeled catalog profile; it is not a measured distribution.");
+                warnings.Add($"Head '{summary.HeadName}' used a C-level unverified or modeled profile; it is not a verified measured distribution.");
 
             if (!string.IsNullOrWhiteSpace(preparedHead.Input.Performance.Warning))
                 warnings.Add($"Head '{summary.HeadName}' performance: {preparedHead.Input.Performance.Warning}");
@@ -191,7 +207,8 @@ public sealed class IrrigationPrecipitationEngine
             cells,
             summaries.AsReadOnly(),
             warnings.AsReadOnly(),
-            confidence);
+            confidence,
+            contributions);
     }
 
     static void ValidateGrid(IrrigationSimulationGrid grid)

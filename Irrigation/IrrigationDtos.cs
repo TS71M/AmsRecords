@@ -141,7 +141,8 @@ public static class IrrigationDtos
         [property: JsonPropertyName("active")] bool Active,
         [property: JsonPropertyName("defaultMinPressureBar")] decimal? DefaultMinPressureBar = null,
         [property: JsonPropertyName("defaultMaxPressureBar")] decimal? DefaultMaxPressureBar = null,
-        [property: JsonPropertyName("recognitionProfile")] IrrigationSprinklerRecognitionProfileDto? RecognitionProfile = null);
+        [property: JsonPropertyName("recognitionProfile")] IrrigationSprinklerRecognitionProfileDto? RecognitionProfile = null,
+        [property: JsonPropertyName("referenceImageUrl")] string? ReferenceImageUrl = null);
 
     public sealed record IrrigationSprinklerModelSaveDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -155,7 +156,8 @@ public static class IrrigationDtos
         [property: JsonPropertyName("active")] bool Active = true,
         [property: JsonPropertyName("defaultMinPressureBar")][param: Range(typeof(decimal), "0", "100")] decimal? DefaultMinPressureBar = null,
         [property: JsonPropertyName("defaultMaxPressureBar")][param: Range(typeof(decimal), "0", "100")] decimal? DefaultMaxPressureBar = null,
-        [property: JsonPropertyName("visibleModelMarking")][param: MaxLength(160)] string? VisibleModelMarking = null);
+        [property: JsonPropertyName("visibleModelMarking")][param: MaxLength(160)] string? VisibleModelMarking = null,
+        [property: JsonPropertyName("referenceImageUrl")][param: MaxLength(500)] string? ReferenceImageUrl = null);
 
     public sealed record IrrigationSprinklerNozzleOptionDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -217,7 +219,11 @@ public static class IrrigationDtos
         [property: JsonPropertyName("active")] bool Active,
         [property: JsonPropertyName("slots")] IReadOnlyList<IrrigationNozzleConfigurationSlotDto> Slots,
         [property: JsonPropertyName("evidenceLevel")]
-        IrrigationCompatibilityEvidenceLevel EvidenceLevel = IrrigationCompatibilityEvidenceLevel.Unknown);
+        IrrigationCompatibilityEvidenceLevel EvidenceLevel = IrrigationCompatibilityEvidenceLevel.Unknown,
+        [property: JsonPropertyName("mainNozzleNumber")] string MainNozzleNumber = "",
+        [property: JsonPropertyName("generationCode")] string GenerationCode = "",
+        [property: JsonPropertyName("validFrom")] DateOnly? ValidFrom = null,
+        [property: JsonPropertyName("validUntil")] DateOnly? ValidUntil = null);
 
     public sealed record IrrigationNozzleConfigurationSaveDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -229,7 +235,19 @@ public static class IrrigationDtos
         [property: JsonPropertyName("slots")] IReadOnlyList<IrrigationNozzleConfigurationSlotDto> Slots,
         [property: JsonPropertyName("isApprovedReference")] bool IsApprovedReference = true,
         [property: JsonPropertyName("evidenceLevel")]
-        IrrigationCompatibilityEvidenceLevel EvidenceLevel = IrrigationCompatibilityEvidenceLevel.Unknown);
+        IrrigationCompatibilityEvidenceLevel EvidenceLevel = IrrigationCompatibilityEvidenceLevel.Unknown,
+        [property: JsonPropertyName("mainNozzleNumber")][param: MaxLength(80)] string MainNozzleNumber = "",
+        [property: JsonPropertyName("generationCode")][param: MaxLength(120)] string GenerationCode = "",
+        [property: JsonPropertyName("validFrom")] DateOnly? ValidFrom = null,
+        [property: JsonPropertyName("validUntil")] DateOnly? ValidUntil = null);
+
+    public sealed record SurfaceSprinklerConfigurationMatchDto(
+        [property: JsonPropertyName("status")] string? Status,
+        [property: JsonPropertyName("generation")] string? Generation,
+        [property: JsonPropertyName("matchedConfigurationPubId")] Guid? MatchedConfigurationPubId,
+        [property: JsonPropertyName("confidence")] decimal Confidence,
+        [property: JsonPropertyName("requiresCloseUp")] bool RequiresCloseUp,
+        [property: JsonPropertyName("summary")] string Summary);
 
     public sealed record SurfaceSprinklerNozzleDto(
         [property: JsonPropertyName("position")] int Position,
@@ -321,7 +339,12 @@ public static class IrrigationDtos
         [property: JsonPropertyName("irrigationControlStationName")] string IrrigationControlStationName = "",
         [property: JsonPropertyName("irrigationHeadPositionNumber")] int? IrrigationHeadPositionNumber = null,
         [property: JsonPropertyName("digitalTwinStatus")] string DigitalTwinStatus = "unlinked",
-        [property: JsonPropertyName("digitalTwinDifferences")] IReadOnlyList<string>? DigitalTwinDifferences = null);
+        [property: JsonPropertyName("digitalTwinDifferences")] IReadOnlyList<string>? DigitalTwinDifferences = null,
+        [property: JsonPropertyName("configurationMatch")] SurfaceSprinklerConfigurationMatchDto? ConfigurationMatch = null,
+        [property: JsonPropertyName("reviewUpdate")] SurfaceSprinklerReviewUpdateDto? ReviewUpdate = null);
+
+    public sealed record SurfaceSprinklerReviewUpdateDto(Guid MessagePubId, string Summary, bool CanAcknowledge);
+    public sealed record SurfaceSprinklerReviewAcknowledgementDto(Guid MessagePubId);
 
     public sealed record SurfaceIrrigationInventoryDto(
         [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
@@ -361,7 +384,8 @@ public static class IrrigationDtos
         [property: JsonPropertyName("identifier")][param: MaxLength(80)] string? Identifier = null,
         [property: JsonPropertyName("existingSprinklerPubId")] Guid? ExistingSprinklerPubId = null,
         [property: JsonPropertyName("selectedFlex800BodyFamily")][param: MaxLength(20)] string? SelectedFlex800BodyFamily = null,
-        [property: JsonPropertyName("selectedSprinklerModelPubId")] Guid? SelectedSprinklerModelPubId = null);
+        [property: JsonPropertyName("selectedSprinklerModelPubId")] Guid? SelectedSprinklerModelPubId = null,
+        [property: JsonPropertyName("analysisRunId")] Guid? AnalysisRunId = null);
 
     public sealed record IrrigationPhotoAnalysisPreflightRequestDto(
         [property: JsonPropertyName("topImagePubId")] Guid TopImagePubId,
@@ -429,7 +453,14 @@ public static class IrrigationDtos
         [property: JsonPropertyName("manufacturerName")][param: MaxLength(120)] string ManufacturerName,
         [property: JsonPropertyName("modelName")][param: MaxLength(160)] string ModelName,
         [property: JsonPropertyName("configurationName")][param: MaxLength(160)] string ConfigurationName,
-        [property: JsonPropertyName("decision")][param: MaxLength(32)] string Decision = IrrigationSprinklerReviewDecisions.ConfirmAsRecorded);
+        [property: JsonPropertyName("decision")][param: MaxLength(32)] string Decision = IrrigationSprinklerReviewDecisions.ConfirmAsRecorded,
+        [property: JsonPropertyName("nozzles")] IReadOnlyList<IrrigationNozzleCorrectionDto>? Nozzles = null);
+
+    public sealed record IrrigationNozzleCorrectionDto(
+        int Position, IrrigationNozzleState State, Guid? NozzleOptionPubId,
+        [param: MaxLength(80)] string NozzleCode,
+        [param: MaxLength(160)] string NozzleName,
+        [param: MaxLength(80)] string Color);
 
     public sealed record IrrigationRecognitionPatternProposalDto(
         [property: JsonPropertyName("pubId")] Guid PubId,

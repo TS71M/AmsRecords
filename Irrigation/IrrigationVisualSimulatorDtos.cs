@@ -2,6 +2,24 @@ namespace AmsRecords.Irrigation;
 
 public static class IrrigationVisualSimulatorDtos
 {
+    public sealed record IrrigationSimulatorPortDto(string Key, Guid ComponentPubId, string State = "installed");
+    public sealed record IrrigationSimulatorMeasuredProfileDto(Guid SetPubId,
+        IReadOnlyList<IrrigationSimulatorPortDto> Ports, decimal PressureBar, decimal ArcDegrees,
+        decimal FlowM3H, decimal RadiusM, string Source,
+        IReadOnlyList<SprinklerPerformanceDtos.SprinklerDistributionPointSaveDto> Points);
+    public sealed record IrrigationSimulatorComponentDto(Guid PubId, string PartNumber, string Name, string Color);
+    public sealed record IrrigationSimulatorSetPortDto(string Key, string Label, Guid ComponentPubId);
+    public sealed record IrrigationSimulatorSetDto(Guid PubId, string Name, string Generation,
+        DateOnly? ValidFrom, DateOnly? ValidUntil, int SourcePage,
+        IReadOnlyList<IrrigationSimulatorSetPortDto> Ports);
+    public sealed record IrrigationSimulatorModelCatalogDto(Guid ModelPubId,
+        IReadOnlyList<IrrigationSimulatorSetDto> Sets, IReadOnlyList<IrrigationSimulatorComponentDto> Components);
+    public sealed record IrrigationSimulatorPlaybackHeadDto(Guid HeadPubId, double RuntimeSeconds,
+        IReadOnlyList<int> CellIndices, IReadOnlyList<double> DepthMm);
+    public sealed record IrrigationSimulatorViewDto(IrrigationSimulatorGridDto Grid,
+        IReadOnlyList<IrrigationSimulatorHeadResultDto> Heads,
+        IReadOnlyList<IrrigationSimulatorPlaybackHeadDto> PlaybackHeads,
+        IReadOnlyList<string> Warnings, bool Complete);
     public sealed record IrrigationSimulatorAreaOptionDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("name")] string Name,
@@ -28,7 +46,8 @@ public static class IrrigationVisualSimulatorDtos
         [property: JsonPropertyName("orientationDegrees")] decimal OrientationDegrees,
         [property: JsonPropertyName("isAreaMember")] bool IsAreaMember,
         [property: JsonPropertyName("nozzles")] IReadOnlyList<IrrigationSimulatorNozzleOptionDto> Nozzles,
-        [property: JsonPropertyName("limitation")] string? Limitation);
+        [property: JsonPropertyName("limitation")] string? Limitation,
+        [property: JsonPropertyName("modelPubId")] Guid? ModelPubId = null);
 
     public sealed record IrrigationSimulatorWorkspaceDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
@@ -44,7 +63,8 @@ public static class IrrigationVisualSimulatorDtos
         [property: JsonPropertyName("defaultGridResolutionM")] double DefaultGridResolutionM,
         [property: JsonPropertyName("targetToleranceFraction")] double TargetToleranceFraction,
         [property: JsonPropertyName("warnings")] IReadOnlyList<string> Warnings,
-        [property: JsonPropertyName("calibration")] CatchCanCalibrationDtos.IrrigationModelCalibrationSummaryDto? Calibration = null);
+        [property: JsonPropertyName("calibration")] CatchCanCalibrationDtos.IrrigationModelCalibrationSummaryDto? Calibration = null,
+        [property: JsonPropertyName("configurationCatalog")] IReadOnlyList<IrrigationSimulatorModelCatalogDto>? ConfigurationCatalog = null);
 
     public sealed record IrrigationSimulatorHeadOverrideDto(
         [property: JsonPropertyName("headPubId")] Guid HeadPubId,
@@ -52,7 +72,10 @@ public static class IrrigationVisualSimulatorDtos
         [property: JsonPropertyName("runtimeMinutes")] double? RuntimeMinutes,
         [property: JsonPropertyName("nozzlePubId")] Guid? NozzlePubId,
         [property: JsonPropertyName("pressureBar")] decimal? PressureBar,
-        [property: JsonPropertyName("arcDegrees")] decimal? ArcDegrees = null);
+        [property: JsonPropertyName("arcDegrees")] decimal? ArcDegrees = null,
+        [property: JsonPropertyName("setPubId")] Guid? SetPubId = null,
+        [property: JsonPropertyName("ports")] IReadOnlyList<IrrigationSimulatorPortDto>? Ports = null,
+        [property: JsonPropertyName("measuredProfile")] IrrigationSimulatorMeasuredProfileDto? MeasuredProfile = null);
 
     public sealed record IrrigationSimulatorRequestDto(
         [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
@@ -61,7 +84,8 @@ public static class IrrigationVisualSimulatorDtos
         [property: JsonPropertyName("gridResolutionM")] double GridResolutionM,
         [property: JsonPropertyName("includeInstalledComparison")] bool IncludeInstalledComparison,
         [property: JsonPropertyName("headOverrides")] IReadOnlyList<IrrigationSimulatorHeadOverrideDto> HeadOverrides,
-        [property: JsonPropertyName("applySiteCalibration")] bool? ApplySiteCalibration = null);
+        [property: JsonPropertyName("applySiteCalibration")] bool? ApplySiteCalibration = null,
+        [property: JsonPropertyName("includePlayback")] bool IncludePlayback = false);
 
     public sealed record IrrigationSimulatorHeadResultDto(
         [property: JsonPropertyName("headPubId")] Guid HeadPubId,
@@ -75,7 +99,10 @@ public static class IrrigationVisualSimulatorDtos
         [property: JsonPropertyName("arcDegrees")] decimal ArcDegrees,
         [property: JsonPropertyName("performanceStatus")] string PerformanceStatus,
         [property: JsonPropertyName("simulated")] bool Simulated,
-        [property: JsonPropertyName("limitation")] string? Limitation);
+        [property: JsonPropertyName("limitation")] string? Limitation,
+        [property: JsonPropertyName("rotationSeconds")] decimal? RotationSeconds = null,
+        [property: JsonPropertyName("setPubId")] Guid? SetPubId = null,
+        [property: JsonPropertyName("evidenceBasis")] string? EvidenceBasis = null);
 
     public sealed record IrrigationSimulatorGridDto(
         [property: JsonPropertyName("originX")] double OriginX,
@@ -96,5 +123,9 @@ public static class IrrigationVisualSimulatorDtos
         [property: JsonPropertyName("comparison")] IrrigationDistributionComparison? Comparison,
         [property: JsonPropertyName("confidence")] IrrigationSimulationConfidence Confidence,
         [property: JsonPropertyName("warnings")] IReadOnlyList<string> Warnings,
-        [property: JsonPropertyName("calibration")] CatchCanCalibrationDtos.IrrigationModelCalibrationSummaryDto? Calibration = null);
+        [property: JsonPropertyName("calibration")] CatchCanCalibrationDtos.IrrigationModelCalibrationSummaryDto? Calibration = null,
+        [property: JsonPropertyName("playbackHeads")] IReadOnlyList<IrrigationSimulatorPlaybackHeadDto>? PlaybackHeads = null,
+        [property: JsonPropertyName("installedView")] IrrigationSimulatorViewDto? InstalledView = null,
+        [property: JsonPropertyName("complete")] bool Complete = true,
+        [property: JsonPropertyName("referenceView")] IrrigationSimulatorViewDto? ReferenceView = null);
 }

@@ -24,7 +24,11 @@ public static class IrrigationCatalogImportDtos
         [property: JsonPropertyName("acceptedCount")] int AcceptedCount,
         [property: JsonPropertyName("rejectedCount")] int RejectedCount,
         [property: JsonPropertyName("createdAtUtc")] DateTime CreatedAtUtc,
-        [property: JsonPropertyName("candidates")] IReadOnlyList<IrrigationCatalogImportCandidateDto> Candidates);
+        [property: JsonPropertyName("candidates")] IReadOnlyList<IrrigationCatalogImportCandidateDto> Candidates,
+        [property: JsonPropertyName("progress")] IrrigationCatalogImportProgressDto? Progress = null);
+
+    public sealed record IrrigationCatalogImportProgressDto(
+        string Stage, DateTime StartedAtUtc, int CompletedSections, int TotalSections);
 
     public sealed record IrrigationCatalogImportCandidateDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -39,7 +43,13 @@ public static class IrrigationCatalogImportDtos
         [property: JsonPropertyName("reviewerNotes")] string ReviewerNotes,
         [property: JsonPropertyName("reviewedAtUtc")] DateTime? ReviewedAtUtc,
         [property: JsonPropertyName("reconciliationStatus")] string ReconciliationStatus = IrrigationCatalogReconciliationStatuses.NotEvaluated,
-        [property: JsonPropertyName("reconciliationDifferences")] IReadOnlyList<IrrigationCatalogReconciliationDifferenceDto>? ReconciliationDifferences = null);
+        [property: JsonPropertyName("reconciliationDifferences")] IReadOnlyList<IrrigationCatalogReconciliationDifferenceDto>? ReconciliationDifferences = null,
+        [property: JsonPropertyName("matchedComponent")] IrrigationCatalogMatchedComponentDto? MatchedComponent = null);
+
+    public sealed record IrrigationCatalogMatchedComponentDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("manufacturerName")] string ManufacturerName,
+        [property: JsonPropertyName("partNumber")] string PartNumber);
 
     public sealed record IrrigationCatalogReconciliationDifferenceDto(
         [property: JsonPropertyName("field")] string Field,
@@ -50,7 +60,7 @@ public static class IrrigationCatalogImportDtos
     public sealed record IrrigationCatalogCandidateReviewDto(
         [property: JsonPropertyName("sourcePage")][param: Range(1, 10000)] int SourcePage,
         [property: JsonPropertyName("payloadJson")][param: Required] string PayloadJson,
-        [property: JsonPropertyName("reviewerNotes")][param: MaxLength(2000)] string ReviewerNotes,
+        [property: JsonPropertyName("reviewerNotes")][param: MaxLength(2000)] string? ReviewerNotes,
         [property: JsonPropertyName("accept")] bool Accept);
 
     public sealed record IrrigationCatalogComponentCandidate(
@@ -61,6 +71,21 @@ public static class IrrigationCatalogImportDtos
         string Name,
         string Color,
         string Notes);
+
+    public sealed record IrrigationCatalogComponentPerformanceCandidate(
+        string ManufacturerName,
+        string PartNumber,
+        string RoleCode,
+        IrrigationNozzlePositionKind? PositionKind,
+        string OperatingContext,
+        IrrigationCompatibilityEvidenceLevel EvidenceLevel,
+        IReadOnlyList<IrrigationCatalogComponentPerformancePointCandidate> Points);
+
+    public sealed record IrrigationCatalogComponentPerformancePointCandidate(
+        decimal PressureBar,
+        decimal FlowM3H,
+        decimal RadiusM,
+        decimal? TrajectoryDegrees);
 
     public sealed record IrrigationCatalogPlatformCandidate(
         string ManufacturerName,
@@ -97,7 +122,11 @@ public static class IrrigationCatalogImportDtos
         string Name,
         IrrigationCompatibilityEvidenceLevel EvidenceLevel,
         string Notes,
-        IReadOnlyList<IrrigationCatalogNozzleSetComponentCandidate> Components);
+        IReadOnlyList<IrrigationCatalogNozzleSetComponentCandidate> Components,
+        string MainNozzleNumber = "",
+        string GenerationCode = "",
+        DateOnly? ValidFrom = null,
+        DateOnly? ValidUntil = null);
 
     public sealed record IrrigationCatalogPerformanceCandidate(
         string ManufacturerName,
@@ -109,5 +138,6 @@ public static class IrrigationCatalogImportDtos
         decimal? PrecipitationRateMmH,
         decimal? TrajectoryDegrees,
         decimal? RotationSeconds,
-        IrrigationCompatibilityEvidenceLevel EvidenceLevel);
+        IrrigationCompatibilityEvidenceLevel EvidenceLevel,
+        string GenerationCode = "");
 }

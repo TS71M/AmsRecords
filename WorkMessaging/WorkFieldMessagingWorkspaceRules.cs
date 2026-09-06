@@ -4,6 +4,9 @@ namespace AmsRecords.WorkMessaging;
 
 public static class WorkFieldMessagingWorkspaceRules
 {
+    public const string ReviewConversationType = "review";
+    public static bool IsReviewConversation(WorkConversationDto? conversation)
+        => string.Equals(conversation?.Type, ReviewConversationType, StringComparison.OrdinalIgnoreCase);
     public static WorkFieldMessagingWorkspaceDto BuildWorkspace(
         Guid fieldPubId,
         IReadOnlyList<WorkConversationDto> conversations,
@@ -35,7 +38,8 @@ public static class WorkFieldMessagingWorkspaceRules
            && IsFieldRoleConversation(conversation);
 
     public static bool IsFieldRoleConversation(WorkConversationDto conversation)
-        => string.Equals(conversation.Type, "superior", StringComparison.OrdinalIgnoreCase)
+        => IsReviewConversation(conversation)
+           || string.Equals(conversation.Type, "superior", StringComparison.OrdinalIgnoreCase)
            || string.Equals(conversation.Type, "subordinates", StringComparison.OrdinalIgnoreCase)
            || string.Equals(conversation.Type, "team", StringComparison.OrdinalIgnoreCase)
            || string.Equals(conversation.Type, "supervisor", StringComparison.OrdinalIgnoreCase)
@@ -53,7 +57,7 @@ public static class WorkFieldMessagingWorkspaceRules
 
         return conversations
             .Select(x => new { Conversation = x, Key = ConversationTargetKey(x) })
-            .Where(x => !string.IsNullOrWhiteSpace(x.Key) && targetKeys.Contains(x.Key))
+            .Where(x => !string.IsNullOrWhiteSpace(x.Key) && (targetKeys.Contains(x.Key) || IsReviewConversation(x.Conversation)))
             .GroupBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
             .Select(x => x
                 .OrderByDescending(item => item.Conversation.LastMessageUtc ?? DateTime.MinValue)
@@ -78,6 +82,7 @@ public static class WorkFieldMessagingWorkspaceRules
 
     public static string? ConversationTargetKey(WorkConversationDto conversation)
     {
+        if (IsReviewConversation(conversation)) return $"review:{conversation.PubId:N}";
         if (string.Equals(conversation.Type, "team", StringComparison.OrdinalIgnoreCase))
             return "team:group";
 

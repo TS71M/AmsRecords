@@ -14,6 +14,10 @@ public static class DualSourcePosition
     public const double DisagreementWarningMetres = 5d;
     public const double StrongDisagreementMetres = 15d;
     public const int ReliableTdrSatelliteCount = 8;
+    // The TDR 350 manual recommends ten or more for better position data.
+    // This admission rule is for new boundary READs, not an accuracy guarantee.
+    // Keep the existing threshold for moisture and synchronization of older drafts.
+    public const int MinimumBoundaryCaptureSatelliteCount = 10;
 
     public static PositionSelectionDto Select(double? tdrLatitude, double? tdrLongitude,
         PhonePositionDto? phone, DateTimeOffset eventAtUtc)
@@ -81,6 +85,9 @@ public static class DualSourcePosition
 
     public static bool HasReliableTdrSatellites(int? satelliteCount)
         => satelliteCount is >= ReliableTdrSatelliteCount;
+
+    public static bool CanCaptureBoundaryPoint(int? satelliteCount)
+        => satelliteCount is >= MinimumBoundaryCaptureSatelliteCount;
 
     public static double DistanceMetres(double lat1, double lon1, double lat2, double lon2)
     {

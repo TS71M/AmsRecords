@@ -2,6 +2,12 @@ namespace AmsRecords.Surfaces;
 
 public static class SurfaceDtos
 {
+    public sealed record SurfaceHoleAssignmentDto(
+        [property: JsonPropertyName("holePubId")] Guid HolePubId,
+        [property: JsonPropertyName("holeNumber")] int HoleNumber,
+        [property: JsonPropertyName("holeName")] string HoleName,
+        [property: JsonPropertyName("isPrimary")] bool IsPrimary);
+
     public sealed record SurfaceDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
@@ -15,10 +21,13 @@ public static class SurfaceDtos
         [property: JsonPropertyName("dryVwcThreshold")] decimal? DryVwcThreshold = null,
         [property: JsonPropertyName("wetVwcThreshold")] decimal? WetVwcThreshold = null,
         [property: JsonPropertyName("areaDryVwcThreshold")] decimal AreaDryVwcThreshold = 15m,
-        [property: JsonPropertyName("areaWetVwcThreshold")] decimal AreaWetVwcThreshold = 25m
+        [property: JsonPropertyName("areaWetVwcThreshold")] decimal AreaWetVwcThreshold = 25m,
+        [property: JsonPropertyName("surfaceLabel")] string? SurfaceLabel = null
     )
     {
         public string? ImageThumbDataUrl { get; set; }
+        public List<SurfaceHoleAssignmentDto> HoleAssignments { get; set; } = [];
+        public bool IsShared => HoleAssignments.Count > 1;
     }
 
     public sealed record SurfaceMiniDto(
@@ -28,8 +37,13 @@ public static class SurfaceDtos
        [property: JsonPropertyName("holeName")] string HoleName,
        [property: JsonPropertyName("holeNumber")] int HoleNumber,
        [property: JsonPropertyName("surfaceSize")] decimal SurfaceSize,
-       [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements
-    );
+       [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements,
+       [property: JsonPropertyName("surfaceLabel")] string? SurfaceLabel = null
+    )
+    {
+        public List<SurfaceHoleAssignmentDto> HoleAssignments { get; set; } = [];
+        public bool IsShared => HoleAssignments.Count > 1;
+    }
 
     public sealed record SurfaceCreateDto(
         [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
@@ -37,15 +51,20 @@ public static class SurfaceDtos
         [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
         [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements = true,
         [property: JsonPropertyName("dryVwcThreshold")] decimal? DryVwcThreshold = null,
-        [property: JsonPropertyName("wetVwcThreshold")] decimal? WetVwcThreshold = null
+        [property: JsonPropertyName("wetVwcThreshold")] decimal? WetVwcThreshold = null,
+        [property: JsonPropertyName("surfaceLabel")] string? SurfaceLabel = null
     );
 
     public sealed record SurfaceUpdateDto(
         [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
         [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements = true,
         [property: JsonPropertyName("dryVwcThreshold")] decimal? DryVwcThreshold = null,
-        [property: JsonPropertyName("wetVwcThreshold")] decimal? WetVwcThreshold = null
+        [property: JsonPropertyName("wetVwcThreshold")] decimal? WetVwcThreshold = null,
+        [property: JsonPropertyName("surfaceLabel")] string? SurfaceLabel = null
     );
+
+    public sealed record SurfaceHoleAssignmentChangeDto(
+        [property: JsonPropertyName("holePubId")] Guid HolePubId);
 
     public sealed record SurfacesIndexDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -80,9 +99,15 @@ public static class SurfaceDtos
         [property: JsonPropertyName("holeNumber")] int HoleNumber,
         [property: JsonPropertyName("surfaceSize")] decimal SurfaceSizeM2,
         [property: JsonPropertyName("useForClippingMeasurements")] bool UseForClippingMeasurements,
-        [property: JsonPropertyName("holeImgPubId")] Guid? HoleImgPubId
+        [property: JsonPropertyName("holeImgPubId")] Guid? HoleImgPubId,
+        [property: JsonPropertyName("dryVwcThreshold")] decimal? DryVwcThreshold = null,
+        [property: JsonPropertyName("wetVwcThreshold")] decimal? WetVwcThreshold = null,
+        [property: JsonPropertyName("canDelete")] bool CanDelete = false,
+        [property: JsonPropertyName("surfaceLabel")] string? SurfaceLabel = null
     )
     {
         public string? ImageThumbDataUrl { get; set; }
+        public List<SurfaceHoleAssignmentDto> HoleAssignments { get; set; } = [];
+        public bool IsShared => HoleAssignments.Count > 1;
     }
 }

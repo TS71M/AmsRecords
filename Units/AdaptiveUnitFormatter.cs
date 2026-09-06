@@ -89,7 +89,9 @@ public static class AdaptiveUnitFormatter
             ?? throw new InvalidOperationException($"No canonical unit is available for {quantity}.");
 
         var imperial = preferredUnit is not null && IsImperial(quantity, preferredUnit.UnitShort);
-        var targetShort = SelectTargetShort(canonicalValue, quantity, imperial);
+        var targetShort = canonicalValue == 0m && preferredUnit is not null
+            ? preferredUnit.UnitShort
+            : SelectTargetShort(canonicalValue, quantity, imperial);
         var targetUnit = Find(units, targetShort)
             ?? preferredUnit
             ?? canonicalUnit;
