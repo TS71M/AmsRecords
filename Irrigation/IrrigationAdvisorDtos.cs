@@ -218,7 +218,7 @@ public static class IrrigationAdvisorDtos
         [property: JsonPropertyName("generatedAtUtc")] DateTime GeneratedAtUtc,
         [property: JsonPropertyName("area")] IrrigationAnalysisAreaDetailsDto Area,
         [property: JsonPropertyName("installedHeads")] IReadOnlyList<IrrigationAnalysisHeadDto> InstalledHeads,
-        [property: JsonPropertyName("simulation")] IrrigationAnalysisSimulationDto Simulation,
+        [property: JsonPropertyName("simulation")] IrrigationAnalysisSimulationDto? Simulation,
         [property: JsonPropertyName("hydraulics")] IrrigationAnalysisHydraulicsDto? Hydraulics,
         [property: JsonPropertyName("nozzlePerformance")] IReadOnlyList<IrrigationAnalysisNozzlePerformanceDto> NozzlePerformance,
         [property: JsonPropertyName("waterDemand")] IrrigationAreaDemandResultDto? WaterDemand,
@@ -250,5 +250,13 @@ public static class IrrigationAdvisorDtos
         [property: JsonPropertyName("findings")] IReadOnlyList<IrrigationAdvisorFindingDto> Findings,
         [property: JsonPropertyName("limitations")] IReadOnlyList<string> Limitations,
         [property: JsonPropertyName("context")] IrrigationAnalysisContext Context,
-        [property: JsonPropertyName("advisoryOnly")] bool AdvisoryOnly = true);
+        [property: JsonPropertyName("advisoryOnly")] bool AdvisoryOnly = true,
+        [property: JsonPropertyName("sprinklerReviews")] IReadOnlyList<IrrigationAdvisorSprinklerReviewDto>? SprinklerReviews = null);
+
+    public sealed record IrrigationAdvisorSprinklerReviewDto(
+        Guid HeadPubId,
+        string Name,
+        bool DistributionAvailable,
+        string? Limitation,
+        IReadOnlyList<IrrigationVisualSimulatorDtos.IrrigationNozzleComparisonDto> Parts);
 }

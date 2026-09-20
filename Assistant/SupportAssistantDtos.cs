@@ -33,7 +33,8 @@ public sealed record SupportAssistantAskRequestDto(
     SupportAssistantPageInfoDto Page,
     SupportAssistantUserContextDto User,
     IReadOnlyList<SupportAssistantKnowledgeSnippetDto> Knowledge,
-    IReadOnlyList<SupportAssistantMessageDto> History);
+    IReadOnlyList<SupportAssistantMessageDto> History,
+    AssistantContextDto? Context = null);
 
 public sealed record SupportAssistantLinkDto(
     string Label,
@@ -45,7 +46,9 @@ public sealed record SupportAssistantAskResponseDto(
     bool EscalationRecommended,
     string? EscalationReason,
     IReadOnlyList<string> SuggestedQuestions,
-    IReadOnlyList<SupportAssistantLinkDto> Links);
+    IReadOnlyList<SupportAssistantLinkDto> Links,
+    IReadOnlyList<CourseAssistantSurfaceDto>? Sources = null,
+    bool CanGuideToSurfaces = false);
 
 public sealed record SupportAssistantLogDto(
     Guid PubId,
@@ -59,3 +62,14 @@ public sealed record SupportAssistantLogDto(
     bool EscalationRecommended,
     string? EscalationReason,
     string? Culture);
+
+// Client context is a scope request, never an authorization grant. User identity comes from authentication.
+public sealed record AssistantContextDto(
+    Guid? SelectedFieldId = null,
+    Guid? SelectedSurfaceId = null,
+    int? SelectedHole = null,
+    Guid? HistoryFieldId = null,
+    AssistantDeviceLocationDto? DeviceLocation = null);
+
+// Advisory match calculated on the device. Never conveys permission or raw coordinates.
+public sealed record AssistantDeviceLocationDto(Guid NearbySurfaceId, DateTimeOffset CapturedAtUtc);

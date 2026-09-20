@@ -269,7 +269,7 @@ public sealed class IrrigationPrecipitationEngine
                 throw new ArgumentException($"Head '{input.Head.Name}' performance belongs to a different nozzle.", nameof(sourceHeads));
 
             ValidatePerformance(input.Head.Name, input.Performance, sourceHeads);
-            var profile = PrepareProfile(input.Head.Name, input.Performance, input.DistributionProfile, sourceHeads);
+            var profile = PrepareProfile(input.Head.Name, arcDegrees, input.Performance, input.DistributionProfile, sourceHeads);
             prepared.Add(new PreparedHead(input, profile));
         }
 
@@ -301,6 +301,7 @@ public sealed class IrrigationPrecipitationEngine
 
     static PreparedProfile PrepareProfile(
         string headName,
+        decimal arcDegrees,
         SprinklerPerformanceResult performance,
         SprinklerDistributionProfileResult? source,
         IReadOnlyList<IrrigationSimulationHead> sourceHeads)
@@ -313,6 +314,11 @@ public sealed class IrrigationPrecipitationEngine
             throw new ArgumentException($"Head '{headName}' distribution profile was requested at a different pressure.", nameof(sourceHeads));
         if (!string.Equals(source.Status, DistributionProfileStatuses.Exact, StringComparison.Ordinal))
             return PreparedProfile.GenericFallback(source.Status);
+        // A retained measured curve must not be silently rescaled after a hydraulic edit or arc change.
+        if (source.TestContext is {} test &&
+            (test.ArcDegrees != arcDegrees || Math.Abs(test.RadiusM - performance.RadiusM!.Value) > 0.001m ||
+             Math.Abs(test.FlowM3H - performance.FlowM3H!.Value) > 0.0001m))
+            return PreparedProfile.GenericFallback(DistributionProfileStatuses.TestContextMismatch);
         if (source.Points is null || source.Points.Count < 2)
             throw new ArgumentException($"Head '{headName}' exact radial profile requires at least two points.", nameof(sourceHeads));
         if (!source.ProfilePressureBar.HasValue || source.ProfilePressureBar != performance.RequestedPressureBar)

@@ -76,7 +76,8 @@ public static class IrrigationDigitalTwinDtos
         [property: JsonPropertyName("maxY")] double MaxY,
         [property: JsonPropertyName("centroidX")] double CentroidX,
         [property: JsonPropertyName("centroidY")] double CentroidY,
-        [property: JsonPropertyName("points")] IReadOnlyList<IrrigationAreaBoundaryPointDto> Points);
+        [property: JsonPropertyName("points")] IReadOnlyList<IrrigationAreaBoundaryPointDto> Points,
+        IReadOnlyList<IReadOnlyList<IrrigationAreaBoundaryPointDto>>? Rings = null);
 
     public sealed record IrrigationAreaBoundarySaveDto(
         [property: JsonPropertyName("points")] IReadOnlyList<IrrigationAreaBoundaryPointDto> Points);

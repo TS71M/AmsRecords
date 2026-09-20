@@ -36,7 +36,7 @@ public sealed record IrrigationNozzleOptimizationProblem(
 /// Deterministic bounded nozzle/runtime optimizer. It uses diverse candidate filtering, a bounded beam search,
 /// and deterministic coordinate descent. It never mutates installed infrastructure or persistent scenarios.
 /// </summary>
-public sealed class IrrigationNozzleOptimizer
+public sealed partial class IrrigationNozzleOptimizer
 {
     const int MaximumHeadCount = 24;
     const int MaximumNozzleCandidatesPerHead = 6;
@@ -88,7 +88,8 @@ public sealed class IrrigationNozzleOptimizer
             .ToList();
 
         var baselineAssignment = preparedHeads.Select(x => x.InstalledCandidate).ToArray();
-        var baselineRuntimes = preparedHeads.Select(x => ClampRuntime(x.Source.CurrentRuntimeMinutes, request.MaximumRuntimeMinutes)).ToArray();
+        // Candidate constraints must not alter the installed configuration being compared.
+        var baselineRuntimes = preparedHeads.Select(x => x.Source.CurrentRuntimeMinutes).ToArray();
         var evaluationCount = 0;
         var baseline = Evaluate(
             baselineAssignment,
@@ -99,7 +100,7 @@ public sealed class IrrigationNozzleOptimizer
             objective,
             ref evaluationCount);
 
-        if (preparedHeads.Any(x => x.EligibleCandidates.Count == 0))
+        if (preparedHeads.Any(x => x.InstalledCandidate is null || x.EligibleCandidates.Count == 0))
         {
             resultReasonCodes.Add(IrrigationOptimizationReasonCodes.NoFeasibleNozzleCandidates);
             return EmptyResult(
@@ -565,12 +566,19 @@ public sealed class IrrigationNozzleOptimizer
         evaluationCount++;
         var depth = CombineDepths(assignment, runtimes, mask.CellCount);
         var metrics = CalculateFastMetrics(depth, assignment, runtimes, heads, mask, request);
-        var feasible = metrics.MeanDepthMm + Epsilon >= request.TargetDepthMm * (1d - request.TargetToleranceFraction) &&
+        var configurationFeasible = assignment.Select((candidate, index) =>
+            candidate is not null && heads[index].EligibleCandidates.Contains(candidate)).All(x => x) &&
+            metrics.NozzleChangeCount <= request.MaximumNozzleChanges;
+        var runtimeExcess = runtimes.Sum(x => Math.Max(0d, x - request.MaximumRuntimeMinutes));
+        var feasible = configurationFeasible && runtimeExcess <= Epsilon &&
+                       metrics.MeanDepthMm + Epsilon >= request.TargetDepthMm * (1d - request.TargetToleranceFraction) &&
                        metrics.MeanDepthMm - Epsilon <= request.TargetDepthMm * (1d + request.TargetToleranceFraction) &&
                        (!request.MaximumSimultaneousFlowM3H.HasValue ||
                         metrics.FlowM3H <= request.MaximumSimultaneousFlowM3H.Value + Epsilon);
         var score = ObjectiveScore(metrics, objective, request, mask);
-        var feasibilityPenalty = FeasibilityPenalty(metrics, request);
+        var feasibilityPenalty = FeasibilityPenalty(metrics, request) +
+                                 runtimeExcess / request.MaximumRuntimeMinutes * 1_000d +
+                                 (configurationFeasible ? 0d : 1_000d);
         return new ScenarioEvaluation(
             (PreparedCandidate?[])assignment.Clone(),
             runtimes.ToArray(),
@@ -753,13 +761,15 @@ public sealed class IrrigationNozzleOptimizer
         }
 
         var reasons = BuildReasonCodes(baseline.Fast, option.Fast, option.Runtimes, request);
+        // Replaying a catalog-based option must not silently apply a site calibration multiplier.
         var simulation = new IrrigationSimulatorRequestDto(
             problem.AreaPubId,
             request.DefaultCurrentRuntimeMinutes,
             request.TargetDepthMm,
             effectiveGridResolution,
             true,
-            settings);
+            settings,
+            ApplySiteCalibration: false);
         return new IrrigationOptimizationOptionDto(
             rank,
             $"Option {(char)('A' + rank - 1)}",
@@ -1042,6 +1052,8 @@ public sealed class IrrigationNozzleOptimizer
             throw new ArgumentException($"The small-area optimizer supports between 1 and {MaximumHeadCount} influencing heads.", nameof(problem));
         if (problem.Heads.Any(x => x.HeadPubId == Guid.Empty) || problem.Heads.GroupBy(x => x.HeadPubId).Any(x => x.Count() > 1))
             throw new ArgumentException("Optimization heads must have unique public identifiers.", nameof(problem));
+        if (problem.Heads.Any(x => !double.IsFinite(x.CurrentRuntimeMinutes) || x.CurrentRuntimeMinutes is < 0d or > 30d))
+            throw new ArgumentException("Installed head runtime must be between 0 and 30 minutes.", nameof(problem));
         if (problem.Heads.Any(x => x.Candidates is null || x.Candidates.Any(candidate =>
                 candidate.NozzlePubId == Guid.Empty ||
                 candidate.SimulationHead.Head.PubId != x.HeadPubId ||

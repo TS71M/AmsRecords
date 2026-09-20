@@ -19,6 +19,7 @@ public static class SprinklerPerformanceDtos
 
     public static class DistributionProfileStatuses
     {
+        public const string TestContextMismatch = "TEST_CONTEXT_MISMATCH";
         public const string Exact = "EXACT";
         public const string NoProfileAtPressure = "NO_PROFILE_AT_PRESSURE";
         public const string NoProfileData = "NO_PROFILE_DATA";
@@ -94,7 +95,8 @@ public static class SprinklerPerformanceDtos
         [property: JsonPropertyName("dataSource")] string DataSource,
         [property: JsonPropertyName("confidenceLevelCode")] string ConfidenceLevelCode,
         [property: JsonPropertyName("active")] bool Active,
-        [property: JsonPropertyName("points")] IReadOnlyList<SprinklerDistributionPointDto> Points);
+        [property: JsonPropertyName("points")] IReadOnlyList<SprinklerDistributionPointDto> Points,
+        [property: JsonPropertyName("measurementEvidenceJson")] string? MeasurementEvidenceJson = null);
 
     public sealed record SprinklerDistributionProfileSaveDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -119,5 +121,6 @@ public static class SprinklerPerformanceDtos
         [property: JsonPropertyName("confidenceLevelCode")] string? ConfidenceLevelCode,
         [property: JsonPropertyName("supportedPressuresBar")] IReadOnlyList<decimal> SupportedPressuresBar,
         [property: JsonPropertyName("points")] IReadOnlyList<SprinklerDistributionPointDto> Points,
-        [property: JsonPropertyName("warning")] string? Warning);
+        [property: JsonPropertyName("warning")] string? Warning,
+        [property: JsonPropertyName("testContext")] DistributionTestContext? TestContext = null);
 }

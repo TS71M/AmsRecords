@@ -23,9 +23,10 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("measuredAtUtc")] DateTime MeasuredAtUtc,
         [property: JsonPropertyName("volume")] decimal Volume,
         [property: JsonPropertyName("inputUnitPubId")] Guid? InputUnitPubId = null,
-        // Retained so older clients can submit their existing payload shape. The API ignores this
-        // value and derives chronology from clipping measurements for the same Surface.
-        [property: JsonPropertyName("previousCutAtUtc")] DateTime? PreviousCutAtUtc = null);
+        // Accepted only with explicit provenance: 0 unknown, 1 confirmed, 2 estimated.
+        // Omitted provenance preserves compatibility without trusting old automatic timestamps.
+        [property: JsonPropertyName("previousCutAtUtc")] DateTime? PreviousCutAtUtc = null,
+        [property: JsonPropertyName("cutIntervalSource")] int? CutIntervalSource = null);
 
     public sealed record ClippingVolumeDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -38,10 +39,14 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("volume")] decimal Volume,
         [property: JsonPropertyName("sampleAreaM2")] decimal? SampleAreaM2 = null,
         [property: JsonPropertyName("yieldMlPerM2")] decimal? YieldMlPerM2 = null,
-        // Backward-compatible JSON name; the value is the closest earlier measurement on this Surface.
+        // Explicitly confirmed or estimated previous cut, not the previous recording.
         [property: JsonPropertyName("previousCutAtUtc")] DateTime? PreviousCutAtUtc = null,
         [property: JsonPropertyName("accumulationHours")] decimal? AccumulationHours = null,
-        [property: JsonPropertyName("yieldMlPerM2PerDay")] decimal? YieldMlPerM2PerDay = null);
+        [property: JsonPropertyName("yieldMlPerM2PerDay")] decimal? YieldMlPerM2PerDay = null,
+        [property: JsonPropertyName("intervalStatus")] string IntervalStatus = "Unknown",
+        [property: JsonPropertyName("suggestedIntervalHours")] decimal? SuggestedIntervalHours = null,
+        [property: JsonPropertyName("recordingGapHours")] decimal? RecordingGapHours = null,
+        [property: JsonPropertyName("estimatedDailyRate")] decimal? EstimatedDailyRate = null);
 
     public sealed record ClippingVolumeTimelineDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,

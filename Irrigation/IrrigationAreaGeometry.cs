@@ -193,6 +193,28 @@ public readonly record struct IrrigationAreaGeometryMetrics(
 public sealed class IrrigationAreaPolygon
 {
     readonly IrrigationPlanarPoint[] _points;
+    readonly IReadOnlyList<IReadOnlyList<IrrigationAreaPolygon>>? _components;
+
+    public static IrrigationAreaPolygon FromComponents(IReadOnlyList<IReadOnlyList<IrrigationAreaPolygon>> components)
+    {
+        if (components.Count == 0 || components.Any(c => c.Count == 0))
+            throw new ArgumentException("A mapped surface needs a complete outline.");
+        return new(components);
+    }
+
+    IrrigationAreaPolygon(IReadOnlyList<IReadOnlyList<IrrigationAreaPolygon>> components)
+    {
+        _components = components;
+        _points = components[0][0]._points;
+        var outer = components.Select(c => c[0]).ToArray();
+        var area = components.Sum(c => c[0].Metrics.AreaM2 - c.Skip(1).Sum(h => h.Metrics.AreaM2));
+        if (area <= 0) throw new ArgumentException("The mapped surface has no watering area.");
+        Metrics = new(area, components.SelectMany(c => c).Sum(p => p.Metrics.PerimeterM),
+            new(outer.Min(p => p.Metrics.BoundingBox.MinX), outer.Min(p => p.Metrics.BoundingBox.MinY),
+                outer.Max(p => p.Metrics.BoundingBox.MaxX), outer.Max(p => p.Metrics.BoundingBox.MaxY)),
+            new(components.Sum(c => c[0].Metrics.Centroid.X * c[0].Metrics.AreaM2 - c.Skip(1).Sum(h => h.Metrics.Centroid.X * h.Metrics.AreaM2)) / area,
+                components.Sum(c => c[0].Metrics.Centroid.Y * c[0].Metrics.AreaM2 - c.Skip(1).Sum(h => h.Metrics.Centroid.Y * h.Metrics.AreaM2)) / area));
+    }
 
     internal IrrigationAreaPolygon(
         IrrigationPlanarPoint[] points,
@@ -205,8 +227,27 @@ public sealed class IrrigationAreaPolygon
     public IReadOnlyList<IrrigationPlanarPoint> Points => _points;
     public IrrigationAreaGeometryMetrics Metrics { get; }
 
+    public bool IntersectsCircle(double x, double y, double radius)
+    {
+        if (!double.IsFinite(radius) || radius < 0 || !double.IsFinite(x) || !double.IsFinite(y)) return false;
+        if (ContainsPoint(x, y)) return true;
+        var rings = _components?.SelectMany(c => c).Select(p => p.Points) ?? [Points];
+        foreach (var ring in rings)
+        for (var i = 0; i < ring.Count; i++)
+        {
+            var a = ring[i]; var b = ring[(i + 1) % ring.Count];
+            var dx = b.X - a.X; var dy = b.Y - a.Y;
+            var t = Math.Clamp(((x - a.X) * dx + (y - a.Y) * dy) / (dx * dx + dy * dy), 0, 1);
+            var ex = x - a.X - t * dx; var ey = y - a.Y - t * dy;
+            if (ex * ex + ey * ey <= radius * radius) return true;
+        }
+        return false;
+    }
+
     public bool ContainsPoint(double x, double y)
     {
+        if (_components is not null)
+            return _components.Any(c => c[0].ContainsPoint(x, y) && !c.Skip(1).Any(h => h.ContainsPoint(x, y)));
         if (!double.IsFinite(x) || !double.IsFinite(y) || !Metrics.BoundingBox.Contains(x, y))
             return false;
 
@@ -232,6 +273,21 @@ public sealed class IrrigationAreaPolygon
     public IrrigationAreaGridMask CreateGridMask(IrrigationGridDefinition grid)
     {
         grid.Validate();
+        if (_components is not null)
+        {
+            var combined = new bool[checked(grid.ColumnCount * grid.RowCount)];
+            foreach (var component in _components)
+            {
+                var componentCells = component[0].CreateGridMask(grid).Cells.ToArray();
+                foreach (var hole in component.Skip(1))
+                {
+                    var excluded = hole.CreateGridMask(grid).Cells;
+                    for (var i = 0; i < componentCells.Length; i++) componentCells[i] &= !excluded[i];
+                }
+                for (var i = 0; i < componentCells.Length; i++) combined[i] |= componentCells[i];
+            }
+            return new(grid, combined, combined.Count(x => x));
+        }
         var cells = new bool[checked(grid.ColumnCount * grid.RowCount)];
         var firstColumn = Math.Max(0, (int)Math.Ceiling(
             (Metrics.BoundingBox.MinX - grid.OriginX) / grid.CellWidthM - 0.5d));

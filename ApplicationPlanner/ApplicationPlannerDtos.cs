@@ -49,7 +49,8 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("rows")] IReadOnlyList<ApplicationPlanCalendarRowDto> Rows,
         [property: JsonPropertyName("availableProducts")] IReadOnlyList<ApplicationPlanCalendarProductOptionDto> AvailableProducts,
         [property: JsonPropertyName("nutrientTotals")] IReadOnlyList<ApplicationPlanCalendarNutrientTotalDto> NutrientTotals,
-        [property: JsonPropertyName("plannedCost")] decimal PlannedCost);
+        [property: JsonPropertyName("plannedCost")] decimal PlannedCost,
+        [property: JsonPropertyName("editToken")] string EditToken = "");
 
     public sealed record ApplicationPlanCalendarZoneDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -112,7 +113,8 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("totalCarrierVolumeLitres")] decimal? TotalCarrierVolumeLitres = null,
         [property: JsonPropertyName("fullTankLoads")] int? FullTankLoads = null,
         [property: JsonPropertyName("partialTankVolumeLitres")] decimal? PartialTankVolumeLitres = null,
-        [property: JsonPropertyName("totalTankLoads")] int? TotalTankLoads = null);
+        [property: JsonPropertyName("totalTankLoads")] int? TotalTankLoads = null,
+        [property: JsonPropertyName("productCategory")] string ProductCategory = "Unknown");
 
     public sealed record ApplicationPlanCalendarNutrientTotalDto(
         [property: JsonPropertyName("nutrientCode")] string NutrientCode,
@@ -539,7 +541,17 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("reason")][property: MaxLength(2000)] string Reason,
         [property: JsonPropertyName("instructions")][property: MaxLength(2000)] string Instructions,
         [property: JsonPropertyName("restrictions")][property: MaxLength(2000)] string Restrictions,
-        [property: JsonPropertyName("machineryPubId")] Guid? MachineryPubId = null);
+        [property: JsonPropertyName("machineryPubId")] Guid? MachineryPubId = null,
+        [property: JsonPropertyName("allowAdditionalApplication")] bool AllowAdditionalApplication = false);
+
+    public sealed record SaveApplicationPlanGridDto(
+        Guid FieldPubId, int Year, Guid AnnualPlanPubId, Guid RevisionPubId, Guid ZonePubId,
+        string ExpectedEditToken, Guid OperationId,
+        IReadOnlyList<SaveApplicationPlanCalendarCellDto> Cells,
+        IReadOnlyList<Guid> DeletedItemPubIds, bool PreviewOnly = false,
+        IReadOnlyList<Guid>? AddedProductSnapshotPubIds = null);
+
+    public sealed record ApplicationPlanGridResultDto(ApplicationPlanCalendarDto Calendar, int SavedCount, bool PreviewOnly);
 
     public sealed record BulkSaveApplicationPlanCalendarRowDto(
         [property: JsonPropertyName("annualPlanPubId")] Guid AnnualPlanPubId,
@@ -634,7 +646,8 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("notes")][property: MaxLength(2000)] string Notes,
         [property: JsonPropertyName("zonePubId")] Guid? ZonePubId = null,
         [property: JsonPropertyName("completesPlannedApplication")] bool CompletesPlannedApplication = true,
-        [property: JsonPropertyName("machineryPubId")] Guid? MachineryPubId = null);
+        [property: JsonPropertyName("machineryPubId")] Guid? MachineryPubId = null,
+        [property: JsonPropertyName("actualTreatedAreaM2")] decimal? ActualTreatedAreaM2 = null);
 
     public sealed record CreatePlanDeviationDto(
         [property: JsonPropertyName("annualPlanPubId")] Guid AnnualPlanPubId,
