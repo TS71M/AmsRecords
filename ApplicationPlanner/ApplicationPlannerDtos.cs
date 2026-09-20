@@ -624,7 +624,18 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("targetYear")] int TargetYear,
         [property: JsonPropertyName("planName")][property: MaxLength(120)] string PlanName,
         [property: JsonPropertyName("planPurpose")][property: MaxLength(1000)] string PlanPurpose,
-        [property: JsonPropertyName("includeValues")] bool IncludeValues);
+        [property: JsonPropertyName("includeValues")] bool IncludeValues,
+        [property: JsonPropertyName("sourceRevisionPubId")] Guid? SourceRevisionPubId = null,
+        [property: JsonPropertyName("unavailableWeekAction")] string UnavailableWeekAction = "RequireDecision",
+        [property: JsonPropertyName("expectedSourceToken")] string? ExpectedSourceToken = null);
+
+    public sealed record ApplicationPlanClonePreviewDto(Guid SourceRevisionPubId, int SourceRevisionNumber,
+        string SourceToken, bool CanCopy, IReadOnlyList<ApplicationPlanClonePreviewRowDto> Applications);
+
+    public sealed record ApplicationPlanClonePreviewRowDto(Guid PlanItemPubId, string ProductName,
+        string ZoneName, decimal Rate, DateOnly PlannedDate, DateOnly CurrentScheduledDate,
+        string ScheduleStatus, int ExecutionCount, DateOnly? LastExecutedDate,
+        DateOnly? TargetDate, string MappingStatus);
 
     public sealed record UpdateApplicationPlanItemScheduleDto(
         [property: JsonPropertyName("annualPlanPubId")] Guid AnnualPlanPubId,
