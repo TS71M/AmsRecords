@@ -3,7 +3,10 @@ namespace AmsRecords.Irrigation;
 /// <summary>User-approved visual legend; does not change catalogue compatibility or saved observations.</summary>
 public static class NozzleDisplayIdentity
 {
-    public sealed record ProductPhoto(string Part, string SourceUrl, string Description);
+    public sealed record ProductPhoto(string Part, string SourceUrl, string Description)
+    {
+        public string Extension { get; init; } = "jpg";
+    }
 
     // Original official-store photographs, reviewed 2026-09-20. Exact ordering IDs
     // only: size, colour and similar product names must not select another part's image.
@@ -11,7 +14,16 @@ public static class NozzleDisplayIdentity
     public static ProductPhoto? RainBirdProductPhoto(string? manufacturer, string? partNumber)
     {
         if (!string.Equals(manufacturer?.Trim(), "Rain Bird", StringComparison.OrdinalIgnoreCase)) return null;
-        var part = partNumber?.Trim();
+        // Match the catalogue identity's case-insensitive contract, while retaining
+        // the explicit allowlist: normalization must not admit aliases or generations.
+        var part = partNumber?.Trim().ToUpperInvariant();
+        // Individually labelled native-size crops, rotor catalogue PDF page 18 / printed 53.
+        // Do not alias model-local sizes or the earlier B00500 family to these parts.
+        if (part is "B81600-04" or "B81600-06" or "B81600-08" or "B81600-10" or
+            "B81600-12" or "B81600-14" or "B81600-16" or "B81600-18" or
+            "B81600-20" or "B81600-22" or "B81600-24" or "B81600-26")
+            return new(part, "https://www.rainbird.com/media/8388#page=18",
+                "Low-resolution oblique photograph from an individually labelled catalogue entry, printed page 53. Native crop, not enhanced; cannot establish exact aperture size or installed clock angle.") { Extension = "png" };
         var item = part switch
         {
             "213701" => ("rain-bird-700-751-spreader-nozzle-midrange-green.html",

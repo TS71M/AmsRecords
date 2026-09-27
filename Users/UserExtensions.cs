@@ -172,6 +172,12 @@ public static class UserExtensions
         user.ManagerUserId = null;
     }
 
+    // Snapshot projections often omit Name; fall back to the existing account display policy.
+    public static string? ResolveSnapshotDisplayName(this User? user)
+        => !string.IsNullOrWhiteSpace(user?.FullNameSnapshot)
+            ? user.FullNameSnapshot.Trim()
+            : ResolveDisplayName(user);
+
     static string? ResolveDisplayName(User? user)
     {
         if (user is null)

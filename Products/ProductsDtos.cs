@@ -64,7 +64,8 @@ public static class ProductsDtos
     public sealed record ProductCreateDto(
         [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,
         [property: JsonPropertyName("fieldPubId")] Guid? FieldPubId,
-        [property: JsonPropertyName("accountPubId")] Guid AccountPubId,
+        [property: JsonPropertyName("accountPubId"), DisplayName("Account")]
+        [param: Display(Name = "Account")] Guid AccountPubId,
         [property: JsonPropertyName("productTypePubId")] Guid? ProductTypePubId,
         [property: JsonPropertyName("name")]
         [property: DisplayName("Product Name")]
@@ -96,7 +97,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,
         [property: JsonPropertyName("fieldPubId")] Guid? FieldPubId,
-        [property: JsonPropertyName("accountPubId")] Guid AccountPubId,
+        [property: JsonPropertyName("accountPubId"), DisplayName("Account")]
+        [param: Display(Name = "Account")] Guid AccountPubId,
         [property: JsonPropertyName("productTypePubId")] Guid? ProductTypePubId,
         [property: JsonPropertyName("name")]
         [property: DisplayName("Product Name")]
@@ -146,35 +148,39 @@ public static class ProductsDtos
 
     public record ProductSupplierCreateDto(
         [property: JsonPropertyName("productPubId")] Guid ProductPubId,
-        [property: JsonPropertyName("supplierPubId")] Guid SupplierPubId,
-        [property: JsonPropertyName("supplierProductCode")][MaxLength(100)] string SupplierProductCode,
+        [property: JsonPropertyName("supplierPubId"), DisplayName("Supplier")][param: Display(Name = "Supplier")] Guid SupplierPubId,
+        [property: JsonPropertyName("supplierProductCode"), DisplayName("Supplier product code")]
+        [param: Display(Name = "Supplier product code"), MaxLength(100)] string? SupplierProductCode,
         [property: JsonPropertyName("packSize")] decimal? PackSize,
         [property: JsonPropertyName("unitPrice")] decimal? UnitPrice,
-        [property: JsonPropertyName("currencyCode")][MaxLength(3)] string CurrencyCode,
+        [property: JsonPropertyName("currencyCode"), DisplayName("Currency")]
+        [param: Display(Name = "Currency"), MaxLength(3)] string? CurrencyCode,
         [property: JsonPropertyName("leadTimeDays")] int? LeadTimeDays,
         [property: JsonPropertyName("minimumOrderQty")] decimal? MinimumOrderQty,
         [property: JsonPropertyName("isPreferred")] bool IsPreferred,
         [property: JsonPropertyName("canRequestPrice")] bool CanRequestPrice,
         [property: JsonPropertyName("canOrder")] bool CanOrder,
         [property: JsonPropertyName("isActive")] bool IsActive,
-        [property: JsonPropertyName("notes")][MaxLength(500)] string Notes
+        [property: JsonPropertyName("notes")][param: MaxLength(500)] string? Notes
     );
 
     public record ProductSupplierUpdateDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("productPubId")] Guid ProductPubId,
-        [property: JsonPropertyName("supplierPubId")] Guid SupplierPubId,
-        [property: JsonPropertyName("supplierProductCode")][MaxLength(100)] string SupplierProductCode,
+        [property: JsonPropertyName("supplierPubId"), DisplayName("Supplier")][param: Display(Name = "Supplier")] Guid SupplierPubId,
+        [property: JsonPropertyName("supplierProductCode"), DisplayName("Supplier product code")]
+        [param: Display(Name = "Supplier product code"), MaxLength(100)] string? SupplierProductCode,
         [property: JsonPropertyName("packSize")] decimal? PackSize,
         [property: JsonPropertyName("unitPrice")] decimal? UnitPrice,
-        [property: JsonPropertyName("currencyCode")][MaxLength(3)] string CurrencyCode,
+        [property: JsonPropertyName("currencyCode"), DisplayName("Currency")]
+        [param: Display(Name = "Currency"), MaxLength(3)] string? CurrencyCode,
         [property: JsonPropertyName("leadTimeDays")] int? LeadTimeDays,
         [property: JsonPropertyName("minimumOrderQty")] decimal? MinimumOrderQty,
         [property: JsonPropertyName("isPreferred")] bool IsPreferred,
         [property: JsonPropertyName("canRequestPrice")] bool CanRequestPrice,
         [property: JsonPropertyName("canOrder")] bool CanOrder,
         [property: JsonPropertyName("isActive")] bool IsActive,
-        [property: JsonPropertyName("notes")][MaxLength(500)] string Notes
+        [property: JsonPropertyName("notes")][param: MaxLength(500)] string? Notes
     );
 
     #endregion
@@ -201,20 +207,20 @@ public static class ProductsDtos
 
     public record ProductNutrientCreateDto(
         [property: JsonPropertyName("productPubId")] Guid ProductPubId,
-        [property: JsonPropertyName("nutrientPubId")] Guid NutrientPubId,
+        [property: JsonPropertyName("nutrientPubId"), DisplayName("Nutrient")][param: Display(Name = "Nutrient")] Guid NutrientPubId,
         [property: JsonPropertyName("amount")] decimal Amount,
         [property: JsonPropertyName("analysisBasis")] string AnalysisBasis = "PercentByMass",
-        [property: JsonPropertyName("analysisSource")][property: MaxLength(250)] string AnalysisSource = "",
+        [property: JsonPropertyName("analysisSource")][param: MaxLength(250)] string AnalysisSource = "",
         [property: JsonPropertyName("isVerified")] bool IsVerified = false
     );
 
     public record ProductNutrientUpdateDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("productPubId")] Guid ProductPubId,
-        [property: JsonPropertyName("nutrientPubId")] Guid NutrientPubId,
+        [property: JsonPropertyName("nutrientPubId"), DisplayName("Nutrient")][param: Display(Name = "Nutrient")] Guid NutrientPubId,
         [property: JsonPropertyName("amount")] decimal Amount,
         [property: JsonPropertyName("analysisBasis")] string AnalysisBasis = "PercentByMass",
-        [property: JsonPropertyName("analysisSource")][property: MaxLength(250)] string AnalysisSource = "",
+        [property: JsonPropertyName("analysisSource")][param: MaxLength(250)] string AnalysisSource = "",
         [property: JsonPropertyName("isVerified")] bool IsVerified = false
     );
 

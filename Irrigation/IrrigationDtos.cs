@@ -212,7 +212,13 @@ public static class IrrigationDtos
         // It is an alternate part identity, never installation or visual evidence.
         [JsonPropertyName("orderingPartNumber")]
         public string? OrderingPartNumber { get; init; }
+        [JsonPropertyName("catalogIdentity")]
+        public IrrigationNozzleCatalogIdentityDto? CatalogIdentity { get; init; }
     }
+
+    // Server-derived catalogue linkage, not independent visual or installation evidence.
+    public sealed record IrrigationNozzleCatalogIdentityDto(
+        Guid ComponentPubId, Guid ModelPubId, Guid OptionPubId, string CatalogCode, string OrderingPartNumber);
 
     public sealed record IrrigationNozzleConfigurationDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -275,7 +281,11 @@ public static class IrrigationDtos
         [property: JsonPropertyName("applicationEvidenceLevel")]
         IrrigationCompatibilityEvidenceLevel ApplicationEvidenceLevel = IrrigationCompatibilityEvidenceLevel.Unknown,
         [property: JsonPropertyName("applicationEvidenceSummary")] string ApplicationEvidenceSummary = "",
-        [property: JsonPropertyName("applicationEvidenceSourceUrl")] string? ApplicationEvidenceSourceUrl = null);
+        [property: JsonPropertyName("applicationEvidenceSourceUrl")] string? ApplicationEvidenceSourceUrl = null)
+    {
+        [JsonPropertyName("catalogIdentity")]
+        public IrrigationNozzleCatalogIdentityDto? CatalogIdentity { get; init; }
+    }
 
     public sealed record SurfaceSprinklerImageLocationDto(
         [property: JsonPropertyName("view")] string View,

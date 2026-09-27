@@ -4,17 +4,19 @@ public static class ProcurementSetupReadiness
 {
     public const int TotalSteps = 4;
 
-    public static IReadOnlyList<string> FindMissingCapabilities(IEnumerable<string> assignedCapabilities)
+    public static IReadOnlyList<string> FindMissingCapabilities(IEnumerable<string> assignedCapabilities, bool requireApproval = true, bool requireQuotations = true)
     {
         var assigned = assignedCapabilities.ToHashSet(StringComparer.OrdinalIgnoreCase);
         return ProcurementPermissionCatalog.All
+            .Where(x => requireApproval || x.Key is not (ProcurementPermissionCatalog.ReviewRequest or ProcurementPermissionCatalog.ApproveRequest))
+            .Where(x => requireQuotations || x.Key != ProcurementPermissionCatalog.ManageRfq)
             .Where(x => !assigned.Contains(x.Key))
             .Select(x => x.Key)
             .ToList();
     }
 
-    public static bool IsHubStepComplete(bool hubActive, int activeMemberCount)
-        => !hubActive || activeMemberCount > 0;
+    public static bool IsHubStepComplete(bool hubActive, int activeMemberCount, int activePrimaryMemberCount)
+        => !hubActive || (activeMemberCount > 0 && activePrimaryMemberCount == 1);
 
     public static bool IsRoutingReady(int activeFieldCount, int configuredFieldCount)
         => activeFieldCount > 0 && configuredFieldCount == activeFieldCount;
@@ -37,13 +39,14 @@ public sealed record ProcurementSetupReadinessDto(
     [property: JsonPropertyName("configuredFieldCount")] int ConfiguredFieldCount,
     [property: JsonPropertyName("activeSupplierCount")] int ActiveSupplierCount,
     [property: JsonPropertyName("activeProductCount")] int ActiveProductCount,
-    [property: JsonPropertyName("activeProductSupplierCount")] int ActiveProductSupplierCount)
+    [property: JsonPropertyName("activeProductSupplierCount")] int ActiveProductSupplierCount,
+    [property: JsonPropertyName("activePrimaryMemberCount")] int ActivePrimaryMemberCount = 0)
 {
     [JsonPropertyName("responsibilitiesComplete")]
     public bool ResponsibilitiesComplete => MissingCapabilities.Count == 0;
 
     [JsonPropertyName("hubComplete")]
-    public bool HubComplete => ProcurementSetupReadiness.IsHubStepComplete(HubActive, ActiveHubMemberCount);
+    public bool HubComplete => ProcurementSetupReadiness.IsHubStepComplete(HubActive, ActiveHubMemberCount, ActivePrimaryMemberCount);
 
     [JsonPropertyName("routingComplete")]
     public bool RoutingComplete => ProcurementSetupReadiness.IsRoutingReady(ActiveFieldCount, ConfiguredFieldCount);

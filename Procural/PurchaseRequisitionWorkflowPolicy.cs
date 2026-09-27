@@ -43,4 +43,9 @@ public static class PurchaseRequisitionWorkflowPolicy
 
     public static bool IsEditable(PurchaseRequisitionStatus status)
         => status is PurchaseRequisitionStatus.Draft or PurchaseRequisitionStatus.NeedsInformation;
+
+    // These statuses are owned by purchase-order receiving, not requisition updates.
+    public static bool IsOrderManagedStatus(PurchaseRequisitionStatus status)
+        => status is PurchaseRequisitionStatus.Ordered
+            or PurchaseRequisitionStatus.PartiallyReceived or PurchaseRequisitionStatus.Fulfilled;
 }

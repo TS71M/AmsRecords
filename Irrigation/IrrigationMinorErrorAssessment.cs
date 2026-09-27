@@ -30,12 +30,12 @@ public static partial class IrrigationNozzleConfigurationEvaluator
                 string.IsNullOrWhiteSpace(actual.NozzleCode)) return null;
             if (expected.PositionKind != IrrigationNozzlePositionKind.Rear &&
                 (actual.CompatibilityOverride || string.IsNullOrWhiteSpace(expected.NozzleCode) ||
-                 !CodeMatches(expected, actual.NozzleCode))) return null;
+                 !CodeMatches(expected, actual))) return null;
             // Replacing a required flowing partner is not an additional back nozzle.
             // Keep optional backflow and a spray nozzle replacing a plug as minor
             // application differences; paired-nozzle size conflicts need a real review.
             if (expected.PositionKind == IrrigationNozzlePositionKind.Rear && !expected.IsOptional &&
-                !IsPlugIdentity(expected.NozzleCode, expected.NozzleName) && !CodeMatches(expected, actual.NozzleCode)) return null;
+                !IsPlugIdentity(expected.NozzleCode, expected.NozzleName) && !CodeMatches(expected, actual)) return null;
         }
         if (observed.Any(x => !reference.Slots.Any(s => s.Position == x.Position) &&
             x.State is not (IrrigationNozzleState.Empty or IrrigationNozzleState.NotPresent) &&
@@ -46,7 +46,7 @@ public static partial class IrrigationNozzleConfigurationEvaluator
         foreach (var nozzle in observed.Where(x => x.State == IrrigationNozzleState.Installed))
         {
             if (nozzle.PositionKind == IrrigationNozzlePositionKind.Rear &&
-                !reference.Slots.Any(s => s.Position == nozzle.Position && CodeMatches(s, nozzle.NozzleCode)))
+                !reference.Slots.Any(s => s.Position == nozzle.Position && CodeMatches(s, nozzle)))
             {
                 // A substituted plug is not an additional spray nozzle.
                 if (IsPlugIdentity(nozzle.NozzleCode, nozzle.NozzleName)) return null;

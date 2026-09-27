@@ -11,7 +11,7 @@ public static class RemoteDeviceDtos
         string EnrollmentCode,
         DateTime ExpiresAtUtc);
 
-    public sealed record RemoteDeviceManagementAccessDto(bool CanManageDevices);
+    public sealed record RemoteDeviceManagementAccessDto(bool CanManageDevices, bool CanRemoveDevices = false);
 
     public sealed record RemoteDeviceUnattendedAccessUpdateDto(bool Enabled);
 

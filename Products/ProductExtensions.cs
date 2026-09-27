@@ -18,7 +18,7 @@ public static class ProductExtensions
         var packUnitLabel = product.UniWeiPack?.UnitShort ?? string.Empty;
         var packSize = string.IsNullOrWhiteSpace(packUnitLabel)
             ? product.Pack.ToString("N1")
-            : $"{product.Pack}/{packUnitLabel}";
+            : $"{product.Pack} {packUnitLabel}";
         var pricePerUnit = string.IsNullOrWhiteSpace(packUnitLabel)
             ? product.Price.ToString("N2")
             : $"{product.Price}/{packUnitLabel}";

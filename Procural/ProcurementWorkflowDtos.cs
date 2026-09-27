@@ -4,6 +4,11 @@ namespace AmsRecords.Procural;
 
 public static class ProcurementWorkflowDtos
 {
+    public record ProcurementOrderStockLineDto(Guid ProductPubId, string ProductName, string UnitLabel, decimal Quantity);
+
+    public record ProcurementOrderStockDto(Guid FieldPubId, DateTime CalculatedAtUtc, bool IsEnabled,
+        IReadOnlyList<ProcurementOrderStockLineDto> Lines);
+
     public record ProcurementQuoteLineDto(
         Guid ProductPubId,
         string ProductName,
@@ -30,42 +35,43 @@ public static class ProcurementWorkflowDtos
 
     public record ProcurementQuoteRequestDto(
         Guid RequisitionPubId,
-        [property: MinLength(1)] IReadOnlyList<Guid> SupplierPubIds,
-        [property: MaxLength(1000)] string? Note);
+        [param: MinLength(1)] IReadOnlyList<Guid> SupplierPubIds,
+        [param: MaxLength(1000)] string? Note);
 
     public record ProcurementQuoteLineUpdateDto(
         Guid ProductPubId,
-        [property: Range(typeof(decimal), "0", "999999999999.99")] decimal? UnitPrice,
-        [property: MaxLength(500)] string? Notes);
+        [param: Range(typeof(decimal), "0", "999999999999.99", ParseLimitsInInvariantCulture = true)] decimal? UnitPrice,
+        [param: MaxLength(500)] string? Notes);
 
     public record ProcurementQuoteUpdateDto(
         Guid PubId,
-        [property: StringLength(3, MinimumLength = 3)] string CurrencyCode,
+        [param: StringLength(3, MinimumLength = 3)] string CurrencyCode,
         DateTime? ValidUntilDate,
-        [property: MaxLength(500)] string? Terms,
-        [property: MaxLength(1000)] string? Notes,
+        [param: MaxLength(500)] string? Terms,
+        [param: MaxLength(1000)] string? Notes,
         Guid ConcurrencyToken,
         IReadOnlyList<ProcurementQuoteLineUpdateDto> Lines);
 
-    public record ProcurementQuoteSelectDto(Guid ConcurrencyToken, [property: MaxLength(1000)] string? Note);
+    public record ProcurementQuoteSelectDto(Guid ConcurrencyToken, [param: MaxLength(1000)] string? Note);
+    public record ProcurementQuoteReopenDto(Guid ConcurrencyToken);
 
     public record ProcurementPurchaseOrderLineInputDto(
         Guid ProductPubId,
         Guid? ProductSupplierPubId,
-        [property: Range(typeof(decimal), "0.001", "999999999999.999")] decimal Quantity,
-        [property: Range(typeof(decimal), "0", "999999999999.99")] decimal UnitPrice,
-        [property: MaxLength(500)] string? Notes);
+        [param: Range(typeof(decimal), "0.001", "999999999999.999", ParseLimitsInInvariantCulture = true)] decimal Quantity,
+        [param: Range(typeof(decimal), "0", "999999999999.99", ParseLimitsInInvariantCulture = true)] decimal UnitPrice,
+        [param: MaxLength(500)] string? Notes);
 
     public record ProcurementPurchaseOrderCreateDto(
         Guid RequisitionPubId,
         Guid SupplierPubId,
         Guid? SelectedQuotePubId,
-        [property: Required, MaxLength(100)] string OrderNumber,
-        [property: Required, StringLength(3, MinimumLength = 3)] string CurrencyCode,
+        [param: Required, MaxLength(100)] string OrderNumber,
+        [param: Required, StringLength(3, MinimumLength = 3)] string CurrencyCode,
         DateTime? ExpectedDeliveryDate,
-        [property: MaxLength(500)] string? DeliveryLocation,
-        [property: MaxLength(500)] string? Terms,
-        [property: MaxLength(1000)] string? Notes,
+        [param: MaxLength(500)] string? DeliveryLocation,
+        [param: MaxLength(500)] string? Terms,
+        [param: MaxLength(1000)] string? Notes,
         IReadOnlyList<ProcurementPurchaseOrderLineInputDto> Lines,
         bool PlaceImmediately = true,
         Guid RequisitionConcurrencyToken = default);
@@ -86,15 +92,15 @@ public static class ProcurementWorkflowDtos
 
     public record ProcurementReceiptLineInputDto(
         int OrderLineId,
-        [property: Range(typeof(decimal), "0", "999999999999.999")] decimal QuantityReceived,
-        [property: Range(typeof(decimal), "0", "999999999999.999")] decimal QuantityRejected,
-        [property: MaxLength(500)] string? DiscrepancyReason);
+        [param: ProcurementReceiptQuantity] decimal QuantityReceived,
+        [param: ProcurementReceiptQuantity] decimal QuantityRejected,
+        [param: MaxLength(500)] string? DiscrepancyReason);
 
     public record ProcurementReceiptCreateDto(
         Guid PurchaseOrderPubId,
         DateTime ReceivedDt,
-        [property: MaxLength(100)] string? DeliveryReference,
-        [property: MaxLength(1000)] string? Notes,
+        [param: MaxLength(100)] string? DeliveryReference,
+        [param: MaxLength(1000)] string? Notes,
         Guid OrderConcurrencyToken,
         IReadOnlyList<ProcurementReceiptLineInputDto> Lines);
 
@@ -104,7 +110,8 @@ public static class ProcurementWorkflowDtos
         string ReceivedByName,
         string DeliveryReference,
         string Notes,
-        IReadOnlyList<ProcurementReceiptLineInputDto> Lines);
+        IReadOnlyList<ProcurementReceiptLineInputDto> Lines,
+        DateTime? InventoryPostedDt = null);
 
     public record ProcurementPurchaseOrderListDto(
         Guid PubId,
@@ -144,5 +151,5 @@ public static class ProcurementWorkflowDtos
         IReadOnlyList<ProcurementReceiptDto> Receipts,
         decimal Total);
 
-    public record ProcurementOrderActionDto(Guid ConcurrencyToken, [property: MaxLength(1000)] string? Note);
+    public record ProcurementOrderActionDto(Guid ConcurrencyToken, [param: MaxLength(1000)] string? Note);
 }

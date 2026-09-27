@@ -238,7 +238,7 @@ public static partial class IrrigationNozzleConfigurationEvaluator
         {
             if (string.IsNullOrWhiteSpace(installed.NozzleCode))
                 review.Add($"Confirm nozzle code {expected.NozzleCode} at {expected.PositionLabel}.");
-            else if (!CodeMatches(expected, installed.NozzleCode))
+            else if (!CodeMatches(expected, installed))
                 deviations.Add($"{expected.PositionLabel} uses nozzle {installed.NozzleCode}; the selected documented set lists {expected.NozzleCode}.");
         }
         else if (!string.IsNullOrWhiteSpace(expected.NozzleName))
@@ -262,7 +262,7 @@ public static partial class IrrigationNozzleConfigurationEvaluator
         SurfaceSprinklerNozzleDto installed)
     {
         if (expected.NozzleOptionPubId.HasValue && installed.NozzleOptionPubId.HasValue)
-            return expected.NozzleOptionPubId.Value == installed.NozzleOptionPubId.Value;
+            return expected.NozzleOptionPubId.Value == installed.NozzleOptionPubId.Value || LinkedIdentityMatches(expected, installed);
         if (!string.IsNullOrWhiteSpace(expected.NozzleCode) && !string.IsNullOrWhiteSpace(installed.NozzleCode))
             return CodeMatches(expected, installed.NozzleCode);
         if (!string.IsNullOrWhiteSpace(expected.NozzleName) && !string.IsNullOrWhiteSpace(installed.NozzleName))
@@ -275,6 +275,21 @@ public static partial class IrrigationNozzleConfigurationEvaluator
     static bool CodeMatches(IrrigationNozzleConfigurationSlotDto expected, string observedCode)
         => Same(expected.NozzleCode, observedCode) ||
            (!string.IsNullOrWhiteSpace(expected.OrderingPartNumber) && Same(expected.OrderingPartNumber, observedCode));
+
+    static bool CodeMatches(IrrigationNozzleConfigurationSlotDto expected, SurfaceSprinklerNozzleDto installed)
+        => CodeMatches(expected, installed.NozzleCode) || LinkedIdentityMatches(expected, installed);
+
+    static bool LinkedIdentityMatches(IrrigationNozzleConfigurationSlotDto expected, SurfaceSprinklerNozzleDto installed)
+        => installed.State == IrrigationNozzleState.Installed && expected.PositionKind == installed.PositionKind &&
+           IrrigationRules.AreNozzlePositionsInterchangeable(expected.Position, installed.Position) &&
+           expected.CatalogIdentity is { } reference && installed.CatalogIdentity is { } observation &&
+           reference.ComponentPubId != Guid.Empty && reference.ComponentPubId == observation.ComponentPubId &&
+           reference.ModelPubId != Guid.Empty && reference.ModelPubId == observation.ModelPubId &&
+           reference.OptionPubId != Guid.Empty && reference.OptionPubId == expected.NozzleOptionPubId &&
+           observation.OptionPubId != Guid.Empty && observation.OptionPubId == installed.NozzleOptionPubId &&
+           !string.IsNullOrWhiteSpace(reference.OrderingPartNumber) && Same(reference.OrderingPartNumber, observation.OrderingPartNumber) &&
+           (Same(expected.NozzleCode, reference.CatalogCode) || Same(expected.NozzleCode, reference.OrderingPartNumber)) &&
+           (Same(installed.NozzleCode, observation.CatalogCode) || Same(installed.NozzleCode, observation.OrderingPartNumber));
 
     static bool Same(string? left, string? right)
         => string.Equals(left?.Trim(), right?.Trim(), StringComparison.OrdinalIgnoreCase);

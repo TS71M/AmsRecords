@@ -20,7 +20,7 @@ public static class ProcurementPermissionCatalog
         new(ReviewRequest, "Review requests", "Review requests, request more information, and assign procurement managers."),
         new(ApproveRequest, "Approve requests", "Approve or reject purchase requests."),
         new(ManageRfq, "Manage supplier enquiries", "Request, enter, compare, and select supplier quotations."),
-        new(PlaceOrder, "Place orders", "Create, place, amend, or cancel supplier purchase orders."),
+        new(PlaceOrder, "Place orders", "Create, place, or cancel supplier purchase orders."),
         new(ReceiveOrder, "Receive orders", "Record deliveries, discrepancies, and close completed purchase orders."),
         new(ManageMasterData, "Manage procurement master data", "Manage suppliers, products, catalogues, and supplier terms."),
         new(Configure, "Configure procurement", "Manage procurement hubs, routing modes, policies, and defaults.")

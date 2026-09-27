@@ -1,4 +1,5 @@
 using static AmsRecords.Procural.ProcurementDtos;
+using AmsRecords.Users;
 
 namespace AmsRecords.Procural;
 
@@ -21,7 +22,7 @@ public static class ProcurementExtensions
                 .Select(x => new ProcurementHubMemberDto(
                     PubId: x.PubId,
                     UserPubId: x.User.PubId,
-                    UserName: x.User.FullNameSnapshot,
+                    UserName: x.User.ResolveSnapshotDisplayName() ?? string.Empty,
                     UserEmail: x.User.Email ?? string.Empty,
                     Role: x.Role,
                     Active: x.Active,
@@ -73,7 +74,7 @@ public static class ProcurementExtensions
             PreferredProductSupplierPubId: line.PreferredProductSupplier?.PubId,
             PreferredSupplierName: line.PreferredProductSupplier?.Supplier?.SupNam ?? string.Empty,
             Quantity: line.Quantity,
-            QuantityLabel: $"{line.Quantity:N2} {(line.Product.UniWeiPack?.UnitShort ?? string.Empty)}",
+            QuantityLabel: $"{line.Quantity.ToString(ProcurementQuantityFormat.Display)} {(line.Product.UniWeiPack?.UnitShort ?? string.Empty)}",
             Notes: line.Notes
         );
 
@@ -89,11 +90,11 @@ public static class ProcurementExtensions
             RequestedDt: requisition.RequestedDt,
             NeedByDate: requisition.NeedByDate,
             RequestedByUserPubId: requisition.RequestedByUser.PubId,
-            RequestedByName: requisition.RequestedByUser.FullNameSnapshot,
+            RequestedByName: requisition.RequestedByUser.ResolveSnapshotDisplayName() ?? string.Empty,
             ProcurementHubIbuPubId: requisition.ProcurementHubIbu?.PubId,
             ProcurementHubIbuName: requisition.ProcurementHubIbu?.BusinessUnitName ?? string.Empty,
             ProcurementManagerUserPubId: requisition.ProcurementManagerUser?.PubId,
-            ProcurementManagerName: requisition.ProcurementManagerUser?.FullNameSnapshot ?? requisition.ProcurementManagerUser?.Email ?? string.Empty,
+            ProcurementManagerName: requisition.ProcurementManagerUser.ResolveSnapshotDisplayName() ?? string.Empty,
             LineCount: requisition.Lines.Count,
             TotalQuantity: requisition.Lines.Sum(x => x.Quantity),
             Urgency: requisition.Urgency,
@@ -115,11 +116,11 @@ public static class ProcurementExtensions
             NeedByDate: requisition.NeedByDate,
             ReviewedDt: requisition.ReviewedDt,
             RequestedByUserPubId: requisition.RequestedByUser.PubId,
-            RequestedByName: requisition.RequestedByUser.FullNameSnapshot,
+            RequestedByName: requisition.RequestedByUser.ResolveSnapshotDisplayName() ?? string.Empty,
             ProcurementHubIbuPubId: requisition.ProcurementHubIbu?.PubId,
             ProcurementHubIbuName: requisition.ProcurementHubIbu?.BusinessUnitName ?? string.Empty,
             ProcurementManagerUserPubId: requisition.ProcurementManagerUser?.PubId,
-            ProcurementManagerName: requisition.ProcurementManagerUser?.FullNameSnapshot ?? requisition.ProcurementManagerUser?.Email ?? string.Empty,
+            ProcurementManagerName: requisition.ProcurementManagerUser.ResolveSnapshotDisplayName() ?? string.Empty,
             Notes: requisition.Notes,
             DecisionNotes: requisition.DecisionNotes,
             Lines: requisition.Lines
@@ -128,6 +129,7 @@ public static class ProcurementExtensions
                 .ToList(),
             Urgency: requisition.Urgency,
             AllowSubstitution: requisition.AllowSubstitution,
+            BypassCentralReview: requisition.BypassCentralReview,
             DeliveryLocation: requisition.DeliveryLocation,
             CostCenter: requisition.CostCenter,
             BudgetReference: requisition.BudgetReference,
@@ -141,7 +143,7 @@ public static class ProcurementExtensions
                     x.FromStatus,
                     x.ToStatus,
                     x.ActorUser?.PubId,
-                    x.ActorUser?.FullNameSnapshot ?? x.ActorUser?.Email ?? (x.IsAutomatic ? "System" : string.Empty),
+                    x.ActorUser.ResolveSnapshotDisplayName() ?? (x.IsAutomatic ? "System" : string.Empty),
                     x.IsAutomatic,
                     x.CreatedDt,
                     x.Note))
