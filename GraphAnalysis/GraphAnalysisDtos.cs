@@ -14,6 +14,8 @@ public static class GraphAnalysisModes
 
 public static class GraphAnalysisOutcomes
 {
+    public const string DescriptiveStatistic = "descriptiveStatistic";
+    public const string AssistantAnswer = "assistantAnswer";
     public const string OutOfScope = "outOfScope";
     public const string InsufficientData = "insufficientData";
     public const string NoMeaningfulRelationship = "noMeaningfulRelationship";
@@ -90,9 +92,10 @@ public sealed record GraphAnalysisAskRequestDto(
     Guid? AreaPubId,
     [param: MaxLength(2)] IReadOnlyList<string> RequestedSeriesKeys,
     [param: MaxLength(16)] string? ExpectedDirection,
-    [param: MinLength(2), MaxLength(320)] IReadOnlyList<GraphAnalysisSeriesDto> Series,
+    [param: MaxLength(320)] IReadOnlyList<GraphAnalysisSeriesDto> Series,
     Guid? ParentAnalysisPubId = null,
-    [param: Range(0, 100)] int? ExpectedEvidenceScore = null);
+    [param: Range(0, 100)] int? ExpectedEvidenceScore = null,
+    [param: MaxLength(8)] IReadOnlyList<AmsRecords.Assistant.SupportAssistantMessageDto>? History = null);
 
 public sealed record GraphAnalysisEvidenceDto(
     string Kind,
@@ -162,7 +165,8 @@ public sealed record GraphAnalysisAskResponseDto(
     DateTime? CreatedAtUtc = null,
     int? CombinedEvidenceScore = null,
     GraphAnalysisScientificEvidenceDto? ScientificEvidence = null,
-    GraphAnalysisVerificationDto? Verification = null);
+    GraphAnalysisVerificationDto? Verification = null,
+    DryPeriodResult? DryPeriod = null);
 
 public sealed record GraphAnalysisHistoryItemDto(
     Guid AnalysisPubId,

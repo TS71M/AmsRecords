@@ -100,7 +100,7 @@ public static class ProcurementExtensions
             Urgency: requisition.Urgency,
             IsOverdue: requisition.NeedByDate.HasValue &&
                 requisition.NeedByDate.Value.Date < DateTime.UtcNow.Date &&
-                requisition.Status is not (PurchaseRequisitionStatus.Fulfilled or PurchaseRequisitionStatus.Closed or PurchaseRequisitionStatus.Cancelled)
+                requisition.Status is not (PurchaseRequisitionStatus.Rejected or PurchaseRequisitionStatus.Fulfilled or PurchaseRequisitionStatus.Closed or PurchaseRequisitionStatus.Cancelled)
         );
 
     public static PurchaseRequisitionDto ToDto(this PurchaseRequisition requisition)

@@ -51,6 +51,8 @@ public static class GraphRelationshipAnalyzer
 
     public static GraphAnalysisAskResponseDto Analyze(GraphAnalysisAskRequestDto request)
     {
+        var dryPeriod = DryPeriodAnalysis.AnalyzeGraph(request);
+        if (dryPeriod is not null) return dryPeriod;
         var availableSeries = request.Series
             .Where(x => GraphAnalysisSeriesCatalog.TryGet(x.Key, out _))
             .GroupBy(x => x.Key, StringComparer.Ordinal)

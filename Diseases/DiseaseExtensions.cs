@@ -116,7 +116,9 @@ public static class DiseaseExtensions
                     x.Confidence,
                     x.Note,
                     x.SortOrder))
-                .ToList());
+                .ToList(),
+            ConfirmationMethod: example.ConfirmationMethod,
+            OutbreakGroup: example.OutbreakGroup);
 
     static string BuildSummary(Disease disease)
     {

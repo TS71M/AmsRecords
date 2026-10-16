@@ -60,6 +60,11 @@ public static class GrassRecognition
         if (request.Photos.Any(x => x.PhotoPubId == Guid.Empty || !PhotoRoles.Contains(x.Role)
             || string.IsNullOrWhiteSpace(x.SampleKey) || x.SampleKey.Length > 64))
             return "Each photo needs a valid role and sample location.";
+        if (request.Mode == Identification && request.Photos.Select(x => x.SampleKey).Distinct().Count() != 1)
+            return "Identify one plant per submission. All diagnostic views must use the same plant key.";
+        if (request.Mode == Composition && request.Photos.Any(x => x.Role != "sample"
+            && !request.Photos.Any(sample => sample.Role == "sample" && sample.SampleKey == x.SampleKey)))
+            return "Associate each diagnostic view with a representative sample location.";
         if (request.Photos.Any(x => x.IdentificationPubId.HasValue && (request.Mode != Composition || x.Role == "sample" || x.IdentificationVersion is null or < 1
             || !request.Photos.Any(sample => sample.Role == "sample" && sample.SampleKey == x.SampleKey))))
             return "Link diagnostic evidence to an existing representative sample location.";

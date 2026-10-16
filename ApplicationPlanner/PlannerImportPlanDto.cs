@@ -1,4 +1,5 @@
 using static AmsRecords.ApplicationPlanner.ApplicationPlannerDtos;
+using System.Text.Json.Serialization;
 
 namespace AmsRecords.ApplicationPlanner;
 
@@ -9,6 +10,7 @@ public sealed record PlannerImportPlanDto(
     string SourceHash,
     bool ConfirmedPlanningIntent,
     bool ConfirmedProductDetails,
-    IReadOnlyList<PlannerImportPlanSourceDto> Sources);
+    IReadOnlyList<PlannerImportPlanSourceDto> Sources,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool ConfirmedPossibleDuplicates = false);
 
 public sealed record PlannerImportPlanSourceDto(Guid ClientEntryKey, string SourceId, string SourceExcerpt);

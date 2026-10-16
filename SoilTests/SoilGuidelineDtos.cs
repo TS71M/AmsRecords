@@ -83,8 +83,13 @@ public static class SoilGuidelineDtos
         [property: JsonPropertyName("baselineOwnerType")] int? BaselineOwnerType,
         [property: JsonPropertyName("baselineOwnerPubId")] Guid? BaselineOwnerPubId,
         [property: JsonPropertyName("overrideOwnerType")] int? OverrideOwnerType,
-        [property: JsonPropertyName("overrideOwnerPubId")] Guid? OverrideOwnerPubId
+        [property: JsonPropertyName("overrideOwnerPubId")] Guid? OverrideOwnerPubId,
+        [property: JsonPropertyName("provenance")] SoilGuidelineProvenanceDto? Provenance = null
     );
+
+    public sealed record SoilGuidelineProvenanceDto(Guid? StandardPubId, string? StandardVersion,
+        Guid? SelectionPubId, Guid? BaselineGuidelinePubId, Guid? OverrideGuidelinePubId,
+        string? BaselineMethod, string? OverrideMethod, bool MinimumFromOverride, bool UnitsCompatible);
 
 
 }

@@ -35,6 +35,8 @@ public sealed record PlanningGrassEvidenceDto(Guid? SpeciesPubId, string Name, d
 
 public sealed record PlanningSoilEvidenceDto(
     Guid SurfacePubId, Guid TestPubId, DateTime SampleDate, string? Method,
-    IReadOnlyList<PlanningSoilValueDto> Values, string SurfaceName = "");
+    IReadOnlyList<PlanningSoilValueDto> Values, string SurfaceName = "",
+    IReadOnlyList<AmsRecords.SoilTests.SoilGuidelineDtos.SoilEffectiveAnalyteGuidelineDto>? Guidelines = null);
 
-public sealed record PlanningSoilValueDto(Guid ChemicalPubId, string Name, decimal Value, string? Unit);
+public sealed record PlanningSoilValueDto(Guid ChemicalPubId, string Name, decimal Value, string? Unit,
+    string? ChemicalFormula = null, bool? IsElemental = null);

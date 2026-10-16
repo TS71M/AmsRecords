@@ -178,7 +178,11 @@ public static class IrrigationDtos
         [property: JsonPropertyName("nominalFlowM3H")] decimal? NominalFlowM3H = null,
         [property: JsonPropertyName("nominalRadiusM")] decimal? NominalRadiusM = null,
         [property: JsonPropertyName("nominalPressureBar")] decimal? NominalPressureBar = null,
-        [property: JsonPropertyName("referenceImageUrl")] string? ReferenceImageUrl = null);
+        [property: JsonPropertyName("referenceImageUrl")] string? ReferenceImageUrl = null)
+    {
+        [JsonPropertyName("referenceAttribution")]
+        public string ReferenceAttribution => HunterRackReferences.ImageAttribution(ReferenceImageUrl);
+    }
 
     public sealed record IrrigationSprinklerNozzleOptionSaveDto(
         [property: JsonPropertyName("pubId")] Guid PubId,

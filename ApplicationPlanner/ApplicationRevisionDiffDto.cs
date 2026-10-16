@@ -5,4 +5,9 @@ public sealed record ApplicationRevisionDiffRowDto(Guid LogicalApplicationPubId,
     string? BeforeProduct, string? AfterProduct, IReadOnlyList<ApplicationRevisionDiffValueDto> Differences);
 public sealed record ApplicationRevisionDiffDto(Guid BaselineRevisionPubId, Guid ComparedRevisionPubId,
     int Year, bool OriginalIntention, int Page, int TotalDifferences, int Added, int Removed, int Changed,
-    int Unchanged, bool HasUnavailableHistory, IReadOnlyList<ApplicationRevisionDiffRowDto> Rows);
+    int Unchanged, bool HasUnavailableHistory, IReadOnlyList<ApplicationRevisionDiffRowDto> Rows,
+    int TotalTargetDifferences = 0, IReadOnlyList<ApplicationRevisionTargetDiffDto>? TargetRows = null);
+
+public sealed record ApplicationRevisionTargetValueDto(string Field, int? Month, string? Before, string? After);
+public sealed record ApplicationRevisionTargetDiffDto(Guid ZoneIdentity, Guid NutrientPubId, string ZoneName,
+    string NutrientCode, string Change, IReadOnlyList<ApplicationRevisionTargetValueDto> Differences);

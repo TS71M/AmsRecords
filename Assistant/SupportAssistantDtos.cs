@@ -69,7 +69,9 @@ public sealed record AssistantContextDto(
     Guid? SelectedSurfaceId = null,
     int? SelectedHole = null,
     Guid? HistoryFieldId = null,
-    AssistantDeviceLocationDto? DeviceLocation = null);
+    AssistantDeviceLocationDto? DeviceLocation = null,
+    DateOnly? AnalysisFrom = null,
+    DateOnly? AnalysisTo = null);
 
 // Advisory match calculated on the device. Never conveys permission or raw coordinates.
 public sealed record AssistantDeviceLocationDto(Guid NearbySurfaceId, DateTimeOffset CapturedAtUtc);

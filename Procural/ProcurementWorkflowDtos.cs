@@ -113,6 +113,10 @@ public static class ProcurementWorkflowDtos
         IReadOnlyList<ProcurementReceiptLineInputDto> Lines,
         DateTime? InventoryPostedDt = null);
 
+    /// <param name="ReceivedPercent">Equal-weight average of accepted fractions per line;
+    /// incomplete orders remain below 100 even after rounding. Rejected goods do not contribute.</param>
+    /// <param name="FullyReceivedLineCount">Fully accepted lines, or null from an older API.</param>
+    /// <param name="LineCount">Total order lines, or null from an older API.</param>
     public record ProcurementPurchaseOrderListDto(
         Guid PubId,
         Guid RequisitionPubId,
@@ -125,7 +129,9 @@ public static class ProcurementWorkflowDtos
         string CurrencyCode,
         decimal Total,
         decimal ReceivedPercent,
-        ProcurementInventoryHandoffStatus InventoryHandoffStatus);
+        ProcurementInventoryHandoffStatus InventoryHandoffStatus,
+        int? FullyReceivedLineCount = null,
+        int? LineCount = null);
 
     public record ProcurementPurchaseOrderDto(
         Guid PubId,

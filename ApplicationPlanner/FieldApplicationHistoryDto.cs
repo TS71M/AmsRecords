@@ -7,7 +7,12 @@ namespace AmsRecords.ApplicationPlanner;
 /// Null cost/analysis status means unavailable, not zero/complete.</summary>
 public sealed record FieldApplicationHistoryDto(Guid FieldPubId, int Year, int Page,
     int PageSize, int TotalCount, IReadOnlyList<FieldApplicationHistoryRowDto> Rows,
-    decimal RecordedCost = 0, IReadOnlyList<ApplicationExecutionNutrientTotalDto>? RecordedNutrients = null);
+    decimal RecordedCost = 0, IReadOnlyList<ApplicationExecutionNutrientTotalDto>? RecordedNutrients = null)
+{
+    // TotalCount remains the audit pagination count. Null supports older APIs;
+    // zero explicitly means that no non-voided, unreplaced applications remain.
+    public int? CurrentRecordCount { get; init; }
+}
 
 public sealed record FieldApplicationHistoryRowDto(
     Guid ExecutionPubId, Guid? PassPubId, DateOnly Date,

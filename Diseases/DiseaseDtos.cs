@@ -213,7 +213,9 @@ public static class DiseaseDtos
         [property: JsonPropertyName("reviewedAtUtc")] DateTime? ReviewedAtUtc,
         [property: JsonPropertyName("submittedByName")] string? SubmittedByName,
         [property: JsonPropertyName("reviewedByName")] string? ReviewedByName,
-        [property: JsonPropertyName("findings")] IReadOnlyList<DiseaseFindingDto> Findings);
+        [property: JsonPropertyName("findings")] IReadOnlyList<DiseaseFindingDto> Findings,
+        [property: JsonPropertyName("confirmationMethod")] string? ConfirmationMethod = null,
+        [property: JsonPropertyName("outbreakGroup")] string? OutbreakGroup = null);
 
     public sealed record DiseaseTrainingExampleCreateDto(
         [property: JsonPropertyName("diseasePubId")]
@@ -260,7 +262,9 @@ public static class DiseaseDtos
         bool Active,
 
         [property: JsonPropertyName("findings")]
-        List<DiseaseFindingDto>? Findings);
+        List<DiseaseFindingDto>? Findings,
+        [property: JsonPropertyName("confirmationMethod")][MaxLength(40)] string? ConfirmationMethod = null,
+        [property: JsonPropertyName("outbreakGroup")][MaxLength(120)] string? OutbreakGroup = null);
 
     public sealed record DiseaseTrainingExampleUpdateDto(
         [property: JsonPropertyName("pubId")]
@@ -311,7 +315,9 @@ public static class DiseaseDtos
         bool Active,
 
         [property: JsonPropertyName("findings")]
-        List<DiseaseFindingDto>? Findings);
+        List<DiseaseFindingDto>? Findings,
+        [property: JsonPropertyName("confirmationMethod")][MaxLength(40)] string? ConfirmationMethod = null,
+        [property: JsonPropertyName("outbreakGroup")][MaxLength(120)] string? OutbreakGroup = null);
 
     public sealed record DiseaseTrainingAnalyzeDto(
         [property: JsonPropertyName("diseasePubId")]

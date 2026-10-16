@@ -60,6 +60,8 @@ public static class UserDtos
         )
     {
         public string? ImageThumbDataUrl { get; set; }
+        [JsonPropertyName("canManageAccount")]
+        public bool CanManageAccount { get; init; }
         [JsonPropertyName("managerUserPubIds")]
         public List<Guid> ManagerUserPubIds { get; init; } = [];
         [JsonPropertyName("managerUserNames")]

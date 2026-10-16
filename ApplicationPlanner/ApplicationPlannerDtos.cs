@@ -1,3 +1,5 @@
+using Lib.Planning;
+
 namespace AmsRecords.ApplicationPlanner;
 
 public static class ApplicationPlannerDtos
@@ -105,7 +107,10 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("sortOrder")] int SortOrder,
         [property: JsonPropertyName("costComplete")] bool CostComplete = true,
         [property: JsonPropertyName("intendedTotals")] ApplicationPlanRowTotalsDto? IntendedTotals = null,
-        [property: JsonPropertyName("scheduledTotals")] ApplicationPlanRowTotalsDto? ScheduledTotals = null);
+        [property: JsonPropertyName("scheduledTotals")] ApplicationPlanRowTotalsDto? ScheduledTotals = null,
+        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null,
+        [property: JsonPropertyName("nutrients")] IReadOnlyList<ApplicationPlanProductNutrientSnapshotDto>? Nutrients = null,
+        [property: JsonPropertyName("isAvailable")] bool? IsAvailable = null);
 
     public sealed record ApplicationPlanCalendarCellDto(
         [property: JsonPropertyName("planItemPubId")] Guid PlanItemPubId,
@@ -323,7 +328,8 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("appliedApplicationCount")] int AppliedApplicationCount,
         [property: JsonPropertyName("nutrients")] IReadOnlyList<ApplicationNutrientPerformanceDto> Nutrients,
         [property: JsonPropertyName("plannedNutrientsComplete")] bool PlannedNutrientsComplete = false,
-        [property: JsonPropertyName("appliedNutrientsComplete")] bool AppliedNutrientsComplete = false);
+        [property: JsonPropertyName("appliedNutrientsComplete")] bool AppliedNutrientsComplete = false,
+        [property: JsonPropertyName("monthlyDelivery")] ApplicationPlanMonthlyDelivery.Result? MonthlyDelivery = null);
 
     public sealed record ApplicationPlanZoneSummaryDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -348,7 +354,8 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("minimumGramsPerM2")] decimal? MinimumGramsPerM2,
         [property: JsonPropertyName("maximumGramsPerM2")] decimal? MaximumGramsPerM2,
         [property: JsonPropertyName("source")] string Source,
-        [property: JsonPropertyName("rationale")] string Rationale);
+        [property: JsonPropertyName("rationale")] string Rationale,
+        IReadOnlyList<ApplicationPlanMonthlyNutrientTarget>? MonthlyTargets = null);
 
     public sealed record SaveApplicationPlanZoneDto(
         [property: JsonPropertyName("annualPlanPubId")] Guid AnnualPlanPubId,
@@ -362,7 +369,8 @@ public static class ApplicationPlannerDtos
     public sealed record SaveApplicationPlanZoneTargetsDto(
         [property: JsonPropertyName("zonePubId")] Guid ZonePubId,
         [property: JsonPropertyName("targets")] IReadOnlyList<SaveApplicationPlanZoneTargetDto> Targets,
-        Guid? RevisionPubId = null, [param: MaxLength(64)] string? ExpectedTargetsToken = null);
+        Guid? RevisionPubId = null, [param: MaxLength(64)] string? ExpectedTargetsToken = null,
+        bool IncludesMonthlyTargets = false, [param: MaxLength(64)] string? ExpectedGrowthToken = null);
 
     public sealed record SaveApplicationPlanZoneTargetDto(
         [property: JsonPropertyName("nutrientPubId")] Guid NutrientPubId,
@@ -370,7 +378,8 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("minimumGramsPerM2")] decimal? MinimumGramsPerM2,
         [property: JsonPropertyName("maximumGramsPerM2")] decimal? MaximumGramsPerM2,
         [property: JsonPropertyName("source")][param: MaxLength(120)] string Source,
-        [property: JsonPropertyName("rationale")][param: MaxLength(1000)] string Rationale);
+        [property: JsonPropertyName("rationale")][param: MaxLength(1000)] string Rationale,
+        IReadOnlyList<ApplicationPlanMonthlyNutrientTarget>? MonthlyTargets = null);
 
     public sealed record ApplicationPlanSnapshotChangeDto(Guid AnnualPlanPubId, Guid RevisionPubId,
         UpdateApplicationPlanAreaSnapshotDto? Area = null, UpdateApplicationPlanProductSnapshotDto? Product = null,
@@ -644,7 +653,8 @@ public static class ApplicationPlannerDtos
         IReadOnlyList<Guid>? AddedProductSnapshotPubIds = null,
         IReadOnlyList<AmsRecords.ApplicationPlanner.SaveApplicationPlanPassDto>? Passes = null);
 
-    public sealed record ApplicationPlanGridResultDto(ApplicationPlanCalendarDto Calendar, int SavedCount, bool PreviewOnly);
+    public sealed record ApplicationPlanGridResultDto(ApplicationPlanCalendarDto Calendar, int SavedCount, bool PreviewOnly,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] Guid? OperationId = null);
 
     public sealed record BulkSaveApplicationPlanCalendarRowDto(
         [property: JsonPropertyName("annualPlanPubId")] Guid AnnualPlanPubId,
@@ -724,17 +734,54 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("sourceRevisionPubId")] Guid? SourceRevisionPubId = null,
         [property: JsonPropertyName("unavailableWeekAction")] string UnavailableWeekAction = "RequireDecision",
         [property: JsonPropertyName("expectedSourceToken")] string? ExpectedSourceToken = null,
-        [param: MaxLength(10000)] IReadOnlyList<ApplicationPlanCloneDateChoiceDto>? DateChoices = null);
+        [param: MaxLength(10000)] IReadOnlyList<ApplicationPlanCloneDateChoiceDto>? DateChoices = null,
+        [param: MaxLength(1000)] IReadOnlyList<Guid>? SelectedProductSnapshotPubIds = null,
+        [param: MaxLength(1000)] IReadOnlyList<ApplicationPlanCloneAdjustmentDto>? ProductAdjustments = null,
+        Guid? OperationId = null,
+        string TimingMode = "Scheduled",
+        string BoundaryDateAction = "RequireDecision",
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [param: MaxLength(1000)] IReadOnlyList<ApplicationPlanCloneAreaChoiceDto>? AreaChoices = null);
+
+    public sealed record ApplicationPlanCloneAreaChoiceDto(Guid ZonePubId, decimal TargetAreaM2, string AreaBasis,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [param: MaxLength(1000)] IReadOnlyList<Guid>? DestinationSurfacePubIds = null);
+
+    public sealed record ApplicationPlanCloneAdjustmentDto(Guid ProductSnapshotPubId, decimal PercentageChange);
 
     public sealed record ApplicationPlanCloneDateChoiceDto(Guid PlanItemPubId, DateOnly? TargetDate = null, bool Omit = false);
 
     public sealed record ApplicationPlanClonePreviewDto(Guid SourceRevisionPubId, int SourceRevisionNumber,
-        string SourceToken, bool CanCopy, IReadOnlyList<ApplicationPlanClonePreviewRowDto> Applications);
+        string SourceToken, bool CanCopy, IReadOnlyList<ApplicationPlanClonePreviewRowDto> Applications,
+        IReadOnlyList<ApplicationPlanCloneProductOptionDto>? Products = null,
+        IReadOnlyList<ApplicationPlanCloneAllocationPreviewDto>? Allocations = null,
+        IReadOnlyList<ApplicationPlanCloneBoundaryDto>? BoundaryApplications = null,
+        IReadOnlyList<ApplicationPlanCloneZonePreviewDto>? FrozenZones = null,
+        IReadOnlyList<ApplicationPlanClonePassPreviewDto>? Passes = null);
+
+    public sealed record ApplicationPlanClonePassPreviewDto(Guid PassPubId, string PassName,
+        decimal OriginalAreaM2, decimal TargetAreaM2, decimal CarrierVolumeLitres);
+
+    public sealed record ApplicationPlanCloneZonePreviewDto(Guid ZonePubId, string ZoneName,
+        decimal TreatedAreaM2, IReadOnlyList<ApplicationPlanZoneAreaSummaryDto> Areas,
+        decimal? TargetAreaM2 = null, string? AreaBasis = null,
+        IReadOnlyList<ApplicationPlanSourceSurfaceDto>? DestinationSurfaces = null);
+
+    public sealed record ApplicationPlanCloneBoundaryDto(Guid PlanItemPubId, string ProductName, string ZoneName,
+        DateOnly OriginalDate, decimal Quantity, string? QuantityUnit, int? TargetMonth, bool Omitted);
+
+    public sealed record ApplicationPlanCloneAllocationPreviewDto(Guid ProductSnapshotPubId, string ProductName, string ZoneName,
+        Lib.Planning.ApplicationPlanAllocationIntent Original, Lib.Planning.ApplicationPlanAllocationIntent Proposed,
+        Guid? ZonePubId = null, Lib.Planning.ApplicationPlanAllocationIntent? AreaAdjusted = null);
+
+    public sealed record ApplicationPlanCloneProductOptionDto(Guid SnapshotPubId, string ProductName, string RateUnitLabel);
 
     public sealed record ApplicationPlanClonePreviewRowDto(Guid PlanItemPubId, string ProductName,
         string ZoneName, decimal Rate, DateOnly PlannedDate, DateOnly CurrentScheduledDate,
         string ScheduleStatus, int ExecutionCount, DateOnly? LastExecutedDate,
-        DateOnly? TargetDate, string MappingStatus, Guid? PassPubId = null, string? PassName = null);
+        DateOnly? TargetDate, string MappingStatus, Guid? PassPubId = null, string? PassName = null,
+        decimal? TargetRate = null, decimal? RequestedQuantity = null, decimal? ScheduledQuantity = null,
+        string? QuantityUnit = null, decimal? TargetAreaM2 = null, decimal? AreaAdjustedQuantity = null);
 
     public sealed record UpdateApplicationPlanItemScheduleDto(
         [property: JsonPropertyName("annualPlanPubId")] Guid AnnualPlanPubId,

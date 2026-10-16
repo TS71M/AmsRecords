@@ -8,6 +8,7 @@ public sealed record IrrigationRecognitionCandidate(Guid ImagePubId, string Part
     public string ManufacturerName { get; init; } = "";
     public Guid? NozzleOptionPubId { get; init; }
     public string SprinklerModelCode { get; init; } = "";
+    public string ReferenceAttribution { get; init; } = "";
     public string DisplayName => string.Join(" · ", new[] { ManufacturerName, SprinklerModelCode, PartNumber }.Where(x => !string.IsNullOrWhiteSpace(x)));
     [System.Text.Json.Serialization.JsonIgnore]
     public string SelectionKey => NozzleOptionPubId is { } id && id != Guid.Empty
