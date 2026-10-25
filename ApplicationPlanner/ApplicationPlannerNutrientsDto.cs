@@ -4,4 +4,5 @@ namespace AmsRecords.ApplicationPlanner;
 
 public sealed record ApplicationPlannerNutrientsDto(Guid RevisionPubId,
     ApplicationPlanZoneSummaryDto Zone, ApplicationZonePerformanceDto? Performance,
-    PlannerAllocationGrowthGuidanceDto? GrowthGuidance = null, string? GrowthGuidanceToken = null);
+    PlannerAllocationGrowthGuidanceDto? GrowthGuidance = null, string? GrowthGuidanceToken = null,
+    string? GrowthGuidanceStatus = null);

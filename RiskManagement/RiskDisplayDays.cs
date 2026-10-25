@@ -3,6 +3,10 @@ namespace AmsRecords.RiskManagement;
 /// <summary>Selects dated forecast rows without treating row count as a calendar.</summary>
 public static class RiskDisplayDays
 {
+    public static IReadOnlyList<T> SelectIncludingUnavailable<T>(IEnumerable<T>? days, DateOnly today)
+        => days?.Where(day => Date(day) >= today && Date(day) <= today.AddDays(5))
+            .OrderBy(Date).ToList() ?? [];
+
     public static IReadOnlyList<T> Select<T>(IEnumerable<T>? days, DateOnly today)
         => days?.Where(day => HasData(day) && Date(day) >= today)
             .OrderBy(Date).Take(6).ToList() ?? [];

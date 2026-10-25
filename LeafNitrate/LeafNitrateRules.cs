@@ -32,6 +32,11 @@ public static class LeafNitrateRules
     public static CalibrationStatus ResolveCalibrationStatus(
         IEnumerable<LeafNitrateMeasurementDto> measurements,
         DateTime nowUtc)
+        => ResolveCalibrationStatus(measurements.Select(x => (x.SampledAtUtc, x.CalibrationAtUtc)), nowUtc);
+
+    public static CalibrationStatus ResolveCalibrationStatus(
+        IEnumerable<(DateTime SampledAtUtc, DateTime? CalibrationAtUtc)> measurements,
+        DateTime nowUtc)
     {
         var items = measurements.OrderBy(x => x.SampledAtUtc).ToList();
         var lastCalibrationAtUtc = items

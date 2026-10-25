@@ -8,6 +8,8 @@ public sealed record PlannerImportRecordsDto(Guid FieldPubId, Guid SubmissionId,
     IReadOnlyList<PlannerImportRecordDto> Records,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool ConfirmedPossibleDuplicates = false);
 public sealed record PlannerImportRecordDto(string SourceId, string SourceExcerpt, RecordFieldApplicationDto Application,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] IReadOnlyList<PlannerImportProductSourceDto>? ProductSources = null);
-public sealed record PlannerImportProductSourceDto(Guid ProductPubId, string SourceId, string SourceExcerpt);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] IReadOnlyList<PlannerImportProductSourceDto>? ProductSources = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PlannerImportManualEntryDto? ManualEntry = null);
+public sealed record PlannerImportProductSourceDto(Guid ProductPubId, string SourceId, string SourceExcerpt,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PlannerImportManualEntryDto? ManualEntry = null);
 public sealed record PlannerImportRecordsResultDto(Guid SubmissionId, IReadOnlyList<Guid> PassPubIds);

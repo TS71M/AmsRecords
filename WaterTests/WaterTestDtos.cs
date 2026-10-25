@@ -57,7 +57,11 @@ public static class WaterTestDtos
         [property: JsonPropertyName("samplerName")] string? SamplerName,
         [property: JsonPropertyName("ignore")] bool Ignore,
         [property: JsonPropertyName("results")] List<WaterTestResultUpsertDto> Results
-    );
+    )
+    {
+        [JsonPropertyName("requestId")]
+        public Guid RequestId { get; init; }
+    }
 
     public sealed record WaterTestUpdateDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -118,7 +122,10 @@ public static class WaterTestDtos
         [property: JsonPropertyName("isNumeric")] bool IsNumeric,
         [property: JsonPropertyName("value")] decimal? Value,
         [property: JsonPropertyName("textValue")] string? TextValue,
-        [property: JsonPropertyName("confidence")] decimal Confidence
+        [property: JsonPropertyName("confidence")] decimal Confidence,
+        [property: JsonPropertyName("reportedUnit")] string? ReportedUnit = null,
+        [property: JsonPropertyName("reportedBasis")] string? ReportedBasis = null,
+        [property: JsonPropertyName("needsReview")] bool NeedsReview = false
     );
 
     public sealed record WaterTestDocumentImportCreateDto(
@@ -135,12 +142,20 @@ public static class WaterTestDtos
         [property: JsonPropertyName("samplerName")] string? SamplerName,
         [property: JsonPropertyName("ignore")] bool Ignore,
         [property: JsonPropertyName("results")] List<WaterTestDocumentImportResultInputDto> Results
-    );
+    )
+    {
+        [JsonPropertyName("requestId")]
+        public Guid RequestId { get; init; }
+    }
 
     public sealed record WaterTestDocumentImportResultInputDto(
         [property: JsonPropertyName("resultCode")] string ResultCode,
         [property: JsonPropertyName("value")] decimal? Value,
         [property: JsonPropertyName("textValue")] string? TextValue,
-        [property: JsonPropertyName("detectedLabel")] string? DetectedLabel
+        [property: JsonPropertyName("detectedLabel")] string? DetectedLabel,
+        [property: JsonPropertyName("reportedUnit")] string? ReportedUnit = null,
+        [property: JsonPropertyName("reportedBasis")] string? ReportedBasis = null,
+        [property: JsonPropertyName("mappingReviewed")] bool MappingReviewed = false,
+        [property: JsonPropertyName("requiresSourceReview")] bool RequiresSourceReview = false
     );
 }

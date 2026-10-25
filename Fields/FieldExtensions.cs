@@ -211,7 +211,10 @@ public static class FieldDtoExtensions
             PrimaryRiskAreaPubId: dto.PrimaryRiskAreaPubId,
             GrowthPotentialAreaPubId: dto.GrowthPotentialAreaPubId,
             AppImagePubId: dto.AppImagePubId
-        );
+        )
+        {
+            IbuPubId = dto.IbuPubId
+        };
 
     public static FieldCreateDto ToCreateDto(this FieldUpdateDto dto)
         => new(

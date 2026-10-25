@@ -84,6 +84,18 @@ public static class MachineryDtos
         [property: JsonPropertyName("lastCalibratedOn")] DateOnly? LastCalibratedOn,
         [property: JsonPropertyName("calibrationDueOn")] DateOnly? CalibrationDueOn);
 
+    public sealed record MachineryIdentityMatchDto(
+        [property: JsonPropertyName("pubId")] Guid PubId,
+        [property: JsonPropertyName("name")] string Name,
+        [property: JsonPropertyName("categoryName")] string CategoryName,
+        [property: JsonPropertyName("manufacturerName")] string ManufacturerName,
+        [property: JsonPropertyName("modelName")] string ModelName,
+        [property: JsonPropertyName("serialNumber")] string SerialNumber,
+        [property: JsonPropertyName("registrationNumber")] string RegistrationNumber,
+        [property: JsonPropertyName("inventoryNumber")] string InventoryNumber,
+        [property: JsonPropertyName("matchReason")] string MatchReason,
+        [property: JsonPropertyName("active")] bool Active);
+
     public sealed record MachineryStationIbuDto(
         [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,
         [property: JsonPropertyName("ibuName")] string IbuName,
@@ -145,19 +157,19 @@ public static class MachineryDtos
         [JsonPropertyName("isDefaultApplicationMachine")]
         public bool IsDefaultApplicationMachine { get; set; }
 
-        [JsonPropertyName("workingWidth"), Range(typeof(decimal), "0.001", "9999999")]
+        [JsonPropertyName("workingWidth"), Range(typeof(decimal), "0.001", "9999999", ParseLimitsInInvariantCulture = true)]
         public decimal? WorkingWidth { get; set; }
 
         [JsonPropertyName("workingWidthUnitPubId")]
         public Guid? WorkingWidthUnitPubId { get; set; }
 
-        [JsonPropertyName("capacity"), Range(typeof(decimal), "0.001", "999999999")]
+        [JsonPropertyName("capacity"), Range(typeof(decimal), "0.001", "999999999", ParseLimitsInInvariantCulture = true)]
         public decimal? Capacity { get; set; }
 
         [JsonPropertyName("capacityUnitPubId")]
         public Guid? CapacityUnitPubId { get; set; }
 
-        [JsonPropertyName("defaultApplicationRate"), Range(typeof(decimal), "0.001", "999999999")]
+        [JsonPropertyName("defaultApplicationRate"), Range(typeof(decimal), "0.001", "999999999", ParseLimitsInInvariantCulture = true)]
         public decimal? DefaultApplicationRate { get; set; }
 
         [JsonPropertyName("defaultApplicationRateUnitPubId")]

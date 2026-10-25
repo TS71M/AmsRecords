@@ -2,6 +2,11 @@ namespace AmsRecords.Diagnostics;
 
 public static class FieldDiagnosticDtos
 {
+    // User history is a concise view; never truncate the persisted or supervisor assessment.
+    public static IReadOnlyList<FieldDiagnosticFindingDto> UserFindings(IReadOnlyList<FieldDiagnosticFindingDto>? findings)
+        => (findings ?? []).OrderByDescending(x => x.Confidence ?? -1m)
+            .ThenByDescending(x => string.Equals(x.Role, "Primary", StringComparison.OrdinalIgnoreCase)).Take(2).ToArray();
+
     public sealed record FieldDiagnosticFindingDto(
         [property: JsonPropertyName("conditionKey")] string ConditionKey,
         [property: JsonPropertyName("conditionTitle")] string ConditionTitle,
@@ -32,7 +37,8 @@ public static class FieldDiagnosticDtos
     );
 
     public sealed record FieldDiagnosticHistoryQueryDto(
-        [property: JsonPropertyName("take")] int? Take = null
+        [property: JsonPropertyName("take")] int? Take = null,
+        [property: JsonPropertyName("skip")] int? Skip = null
     );
 
     public sealed record FieldDiagnosticReviewQueryDto(
@@ -182,7 +188,14 @@ public static class FieldDiagnosticDtos
         [property: JsonPropertyName("labelDiagnosisTitle")] string LabelDiagnosisTitle,
         [property: JsonPropertyName("labelNote")] string? LabelNote,
         [property: JsonPropertyName("evidence")] FieldDiagnosticEvidenceDto? Evidence
-    );
+    )
+    {
+        [JsonPropertyName("reviewedByUserPubId")]
+        public Guid? ReviewedByUserPubId { get; init; }
+
+        [JsonPropertyName("reviewedAtUtc")]
+        public DateTime? ReviewedAtUtc { get; init; }
+    }
 
     public sealed record FieldDiagnosticHistoryItemDto(
         [property: JsonPropertyName("diagnosticRequestPubId")] Guid DiagnosticRequestPubId,
@@ -212,7 +225,8 @@ public static class FieldDiagnosticDtos
     public sealed record FieldDiagnosticHistoryDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
         [property: JsonPropertyName("fieldName")] string FieldName,
-        [property: JsonPropertyName("items")] IReadOnlyList<FieldDiagnosticHistoryItemDto> Items
+        [property: JsonPropertyName("items")] IReadOnlyList<FieldDiagnosticHistoryItemDto> Items,
+        [property: JsonPropertyName("hasMore")] bool HasMore = false
     );
 
     public sealed record FieldDiagnosticThresholdAdjustmentDto(

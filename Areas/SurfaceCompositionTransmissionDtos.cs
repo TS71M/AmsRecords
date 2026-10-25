@@ -25,7 +25,11 @@ public static class SurfaceCompositionTransmissionDtos
         [property: JsonPropertyName("analysisReviewOutcome")] string? AnalysisReviewOutcome = null,
         [property: JsonPropertyName("analysisReviewComment")] string? AnalysisReviewComment = null,
         [property: JsonPropertyName("analysisReviewedAtUtc")] DateTime? AnalysisReviewedAtUtc = null
-    );
+    )
+    {
+        [JsonPropertyName("analysisEvidence")]
+        public AmsRecords.GrassSpecies.GrassAnalysisEvidenceDtos.Evidence? AnalysisEvidence { get; init; }
+    }
 
     public sealed record SurfaceCompositionTransmissionSpeciesDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -93,11 +97,20 @@ public static class SurfaceCompositionTransmissionDtos
         [property: JsonPropertyName("rerunStatus")] string RerunStatus,
         [property: JsonPropertyName("rerunStatusName")] string RerunStatusName,
         [property: JsonPropertyName("hasPendingRerunResult")] bool HasPendingRerunResult
-    );
+    )
+    {
+        [JsonPropertyName("pointPreview")]
+        public AmsRecords.GrassSpecies.GrassCanopyPointDtos.Analysis? PointPreview { get; init; }
+    }
 
     public sealed record SurfaceCompositionRerunRequestDto(
         [property: JsonPropertyName("transmissionPubId")] Guid TransmissionPubId
-    );
+    )
+    {
+        [JsonPropertyName("pointSampling")]
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public AmsRecords.GrassSpecies.GrassCanopyPointDtos.SamplingPlan? PointSampling { get; init; }
+    }
 
     public sealed record SurfaceCompositionRerunQueuedDto(
         [property: JsonPropertyName("transmissionPubId")] Guid TransmissionPubId,

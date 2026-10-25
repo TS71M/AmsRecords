@@ -36,7 +36,11 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("productSnapshots")] IReadOnlyList<ApplicationPlanProductSnapshotDto>? ProductSnapshots = null,
         [property: JsonPropertyName("performance")] ApplicationPlanPerformanceDto? Performance = null,
         [property: JsonPropertyName("selectedRevisionPubId")] Guid? SelectedRevisionPubId = null,
-        string? MaterialEditToken = null);
+        string? MaterialEditToken = null,
+        ApplicationPlannerExecutionPageDto? ExecutionPage = null,
+        ApplicationPlanOperationalSelectionDto? OperationalSelection = null);
+
+    public sealed record ApplicationPlannerExecutionPageDto(int Page, int PageSize, int TotalCount);
 
     public sealed record FertilizerPlanWeekDto(
         [property: JsonPropertyName("weekNumber")] int WeekNumber,

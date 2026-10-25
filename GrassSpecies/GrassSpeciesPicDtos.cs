@@ -12,7 +12,11 @@ public static class GrassSpeciesPicDtos
 
         [property: JsonPropertyName("imagePubId")] Guid ImagePubId,
         [property: JsonPropertyName("relativePath")] string? RelativePath
-    );
+    )
+    {
+        [JsonPropertyName("isGlobal")]
+        public bool IsGlobal { get; init; }
+    }
 
     public sealed record GrassSpeciesPicCreateDto(
         [property: JsonPropertyName("imagePubId")] Guid ImagePubId

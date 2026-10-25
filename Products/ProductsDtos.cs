@@ -143,8 +143,16 @@ public static class ProductsDtos
         [property: JsonPropertyName("canRequestPrice")] bool CanRequestPrice,
         [property: JsonPropertyName("canOrder")] bool CanOrder,
         [property: JsonPropertyName("isActive")] bool IsActive,
-        [property: JsonPropertyName("notes")] string Notes
-    );
+        [property: JsonPropertyName("notes")] string Notes,
+        [property: JsonPropertyName("productActive")] bool ProductActive = true,
+        [property: JsonPropertyName("productFieldPubId")] Guid? ProductFieldPubId = null
+    )
+    {
+        public bool SupportsOrdering(Guid fieldPubId) => CanOrder && AvailableFor(fieldPubId);
+        public bool SupportsEnquiries(Guid fieldPubId) => CanRequestPrice && AvailableFor(fieldPubId);
+        bool AvailableFor(Guid fieldPubId) => IsActive && ProductActive
+            && (!ProductFieldPubId.HasValue || ProductFieldPubId == fieldPubId);
+    }
 
     public record ProductSupplierCreateDto(
         [property: JsonPropertyName("productPubId")] Guid ProductPubId,
@@ -321,6 +329,14 @@ public static class ProductsDtos
         [property: JsonPropertyName("isImage")] bool IsImage
     );
 
+    public record ProductWebsiteImportMatchDto(
+        [property: JsonPropertyName("productPubId")] Guid ProductPubId,
+        [property: JsonPropertyName("name")] string Name,
+        [property: JsonPropertyName("scopeLabel")] string ScopeLabel,
+        [property: JsonPropertyName("matchReason")] string MatchReason,
+        [property: JsonPropertyName("identityVerified")] bool IdentityVerified
+    );
+
     public record ProductWebsiteImportPreviewDto(
         [property: JsonPropertyName("websiteUrl")] string WebsiteUrl,
         [property: JsonPropertyName("name")] string? Name,
@@ -336,7 +352,9 @@ public static class ProductsDtos
         [property: JsonPropertyName("supplements")] List<ProductWebsiteImportSupplementDto> Supplements,
         [property: JsonPropertyName("labels")] List<ProductWebsiteImportLabelDto> Labels,
         [property: JsonPropertyName("sourceUrls")] List<string> SourceUrls,
-        [property: JsonPropertyName("notes")] List<string> Notes
+        [property: JsonPropertyName("notes")] List<string> Notes,
+        [property: JsonPropertyName("evidenceToken")] string? EvidenceToken = null,
+        [property: JsonPropertyName("existingMatches")] IReadOnlyList<ProductWebsiteImportMatchDto>? ExistingMatches = null
     );
 
     #endregion

@@ -13,4 +13,5 @@ public sealed record PlannerImportPlanDto(
     IReadOnlyList<PlannerImportPlanSourceDto> Sources,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] bool ConfirmedPossibleDuplicates = false);
 
-public sealed record PlannerImportPlanSourceDto(Guid ClientEntryKey, string SourceId, string SourceExcerpt);
+public sealed record PlannerImportPlanSourceDto(Guid ClientEntryKey, string SourceId, string SourceExcerpt,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PlannerImportManualEntryDto? ManualEntry = null);

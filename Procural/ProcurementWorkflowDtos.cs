@@ -66,8 +66,10 @@ public static class ProcurementWorkflowDtos
         Guid RequisitionPubId,
         Guid SupplierPubId,
         Guid? SelectedQuotePubId,
-        [param: Required, MaxLength(100)] string OrderNumber,
-        [param: Required, StringLength(3, MinimumLength = 3)] string CurrencyCode,
+        [property: System.ComponentModel.DisplayName("Order Number")]
+        [param: Display(Name = "Order Number"), Required, MaxLength(100)] string OrderNumber,
+        [property: System.ComponentModel.DisplayName("Currency")]
+        [param: Display(Name = "Currency"), Required, StringLength(3, MinimumLength = 3)] string CurrencyCode,
         DateTime? ExpectedDeliveryDate,
         [param: MaxLength(500)] string? DeliveryLocation,
         [param: MaxLength(500)] string? Terms,
@@ -155,7 +157,8 @@ public static class ProcurementWorkflowDtos
         Guid ConcurrencyToken,
         IReadOnlyList<ProcurementPurchaseOrderLineDto> Lines,
         IReadOnlyList<ProcurementReceiptDto> Receipts,
-        decimal Total);
+        decimal Total,
+        string? PlacementBlockReason = null);
 
     public record ProcurementOrderActionDto(Guid ConcurrencyToken, [param: MaxLength(1000)] string? Note);
 }

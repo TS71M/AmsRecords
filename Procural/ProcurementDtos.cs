@@ -12,7 +12,8 @@ public static class ProcurementDtos
         [property: JsonPropertyName("userEmail")] string UserEmail,
         [property: JsonPropertyName("role")] string Role,
         [property: JsonPropertyName("active")] bool Active,
-        [property: JsonPropertyName("isPrimary")] bool IsPrimary
+        [property: JsonPropertyName("isPrimary")] bool IsPrimary,
+        [property: JsonPropertyName("userAvailable")] bool UserAvailable = true
     );
 
     public record ProcurementHubSettingDto(
@@ -211,7 +212,8 @@ public static class ProcurementDtos
         [property: JsonPropertyName("concurrencyToken")] Guid ConcurrencyToken = default,
         [property: JsonPropertyName("events")] IReadOnlyList<PurchaseRequisitionEventDto>? Events = null,
         [property: JsonPropertyName("bypassCentralReview")] bool BypassCentralReview = false,
-        [property: JsonPropertyName("canApprove")] bool CanApprove = false
+        [property: JsonPropertyName("canApprove")] bool CanApprove = false,
+        [property: JsonPropertyName("canMarkReadyToOrder")] bool CanMarkReadyToOrder = false
     );
 
     public record PurchaseRequisitionCreateDto(

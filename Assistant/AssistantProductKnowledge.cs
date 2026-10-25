@@ -7,6 +7,16 @@ public static class AssistantProductKnowledge
     static readonly IReadOnlyList<SupportAssistantKnowledgeSnippetDto> Core =
     [
         Snippet(
+            "Field risk badge interpretation",
+            """
+            The field/course overview risk badge shows the highest available risk across today and the next five forecast days, not just today's risk, and is not a sum or average.
+            Its compact visible text is only the risk level and trend arrow. On the WebApp, hover over the badge for the causing risks; on mobile, tap it to show those risks and optionally open the full forecast.
+            Multiple causes can share the highest severity. Do not infer which disease or condition caused a particular badge from its colour alone; use the supplied current risk data or say the causes are unavailable.
+            The forecast-period explanation belongs in page information, not repeated badge tooltips.
+            Daily forecast arrows are a separate comparison with the next day: up above +1 percentage point, down below -1, steady within the inclusive ±1 band. The last day or missing comparison data has no trend available, shown as a dash.
+            A predicted high risk is a planning/scouting signal, not confirmation of disease.
+            """),
+        Snippet(
             "Agronomy Manager glossary",
             """
             Agronomy Manager is built for golf course and turf management.

@@ -6,7 +6,9 @@ namespace AmsRecords.Procural;
 public static class ProcurementExtensions
 {
     public static ProcurementHubSettingDto ToDto(this ProcurementHubSetting setting)
-        => new(
+    {
+        var userAvailable = ProcurementUserAvailability.At(DateTimeOffset.UtcNow).Compile(preferInterpretation: true);
+        return new(
             PubId: setting.PubId,
             HubIbuPubId: setting.HubIbu.PubId,
             HubIbuName: setting.HubIbu.BusinessUnitName,
@@ -26,12 +28,14 @@ public static class ProcurementExtensions
                     UserEmail: x.User.Email ?? string.Empty,
                     Role: x.Role,
                     Active: x.Active,
-                    IsPrimary: x.IsPrimary))
+                    IsPrimary: x.IsPrimary,
+                    UserAvailable: userAvailable(x.User)))
                 .ToList(),
             RequireApprovalDefault: setting.RequireApprovalDefault,
             AllowSelfApprovalDefault: setting.AllowSelfApprovalDefault,
             RequireRequestForQuoteDefault: setting.RequireRequestForQuoteDefault
         );
+    }
 
     public static FieldProcurementSettingDto ToDto(
         this FieldProcurementSetting setting,

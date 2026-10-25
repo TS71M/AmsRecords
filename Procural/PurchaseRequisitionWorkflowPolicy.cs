@@ -44,6 +44,23 @@ public static class PurchaseRequisitionWorkflowPolicy
     public static bool IsEditable(PurchaseRequisitionStatus status)
         => status is PurchaseRequisitionStatus.Draft or PurchaseRequisitionStatus.NeedsInformation;
 
+    public static bool AllowsManagerAssignment(PurchaseRequisitionStatus status)
+        => status is PurchaseRequisitionStatus.Draft or PurchaseRequisitionStatus.Submitted
+            or PurchaseRequisitionStatus.NeedsInformation or PurchaseRequisitionStatus.UnderReview
+            or PurchaseRequisitionStatus.Approved or PurchaseRequisitionStatus.Rejected
+            or PurchaseRequisitionStatus.PriceRequested or PurchaseRequisitionStatus.ReadyToOrder;
+
+    // State-only ordering gates; authorization and commercial validation remain
+    // at the service boundary, even when a client hides an unavailable action.
+    public static bool IsReadyForOrdering(PurchaseRequisitionStatus status)
+        => status == PurchaseRequisitionStatus.ReadyToOrder;
+
+    public static bool HasBlockingOrder(IEnumerable<ProcurementPurchaseOrderStatus> orderStatuses)
+        => orderStatuses.Any(status => status != ProcurementPurchaseOrderStatus.Cancelled);
+
+    public static bool CanCreateOrder(PurchaseRequisitionStatus status, IEnumerable<ProcurementPurchaseOrderStatus> orderStatuses)
+        => IsReadyForOrdering(status) && !HasBlockingOrder(orderStatuses);
+
     // These statuses are owned by purchase-order receiving, not requisition updates.
     public static bool IsOrderManagedStatus(PurchaseRequisitionStatus status)
         => status is PurchaseRequisitionStatus.Ordered

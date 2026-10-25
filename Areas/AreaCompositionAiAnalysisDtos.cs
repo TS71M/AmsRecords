@@ -17,6 +17,9 @@ public static class AreaCompositionAiAnalysisDtos
         [property: JsonPropertyName("images")] IReadOnlyList<AreaCompositionAiImageSuitabilityDto> Images
     )
     {
+        [JsonPropertyName("analysisEvidence")]
+        public AmsRecords.GrassSpecies.GrassAnalysisEvidenceDtos.Evidence? AnalysisEvidence { get; init; }
+
         [JsonPropertyName("imageCompositions")]
         public IReadOnlyList<AreaCompositionAiImageCompositionDto> ImageCompositions { get; init; } = [];
     }

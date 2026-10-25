@@ -4,6 +4,17 @@ namespace AmsRecords.Diseases;
 
 public static class DiseaseDtos
 {
+    public sealed record DiseaseImageLibraryDto(Guid PubId, string Name, int ImageCount);
+
+    public sealed record DiseaseLibraryImageDto(
+        Guid PubId, Guid ImagePubId, string? AiPredictedCondition, string? FinalCondition,
+        decimal? Confidence, bool IsApproved, bool UseForLearning, bool UseForRetrieval,
+        bool Active, string? ConfirmationMethod, string? ReviewNote, string? OutbreakGroup);
+
+    public sealed record DiseaseLibraryImagesPageDto(
+        Guid DiseasePubId, string DiseaseName, int PageNumber, int PageSize, int TotalCount,
+        List<DiseaseLibraryImageDto> Items);
+
     public sealed record DiseaseFindingDto(
         [property: JsonPropertyName("pubId")] Guid? PubId,
         [property: JsonPropertyName("diseasePubId")] Guid? DiseasePubId,
@@ -74,7 +85,12 @@ public static class DiseaseDtos
         [property: JsonPropertyName("aliasCount")] int AliasCount,
         [property: JsonPropertyName("grassTypeCount")] int GrassTypeCount,
         [property: JsonPropertyName("pictureCount")] int PictureCount,
-        [property: JsonPropertyName("trainingExampleCount")] int TrainingExampleCount);
+        [property: JsonPropertyName("trainingExampleCount")] int TrainingExampleCount)
+    {
+        // A display fallback does not change the disease's assigned cover image.
+        [JsonPropertyName("previewPicturePubId")]
+        public Guid? PreviewPicturePubId { get; init; }
+    }
 
     public sealed record DiseaseCreateDto(
         [property: JsonPropertyName("name")]

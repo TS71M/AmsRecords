@@ -181,7 +181,9 @@ public static class ProductExtensions
             CanRequestPrice: productSupplier.CanRequestPrice,
             CanOrder: productSupplier.CanOrder,
             IsActive: productSupplier.IsActive,
-            Notes: productSupplier.Notes
+            Notes: productSupplier.Notes,
+            ProductActive: productSupplier.Product.Active,
+            ProductFieldPubId: productSupplier.Product.Field?.PubId
         );
 
     public static ProductTypeDto ToDto(this ProductType productType)

@@ -31,7 +31,8 @@ public static class RiskDtos
     public sealed record RiskMiniDto(
         [property: JsonPropertyName("level")] RiskLevel Level,
         [property: JsonPropertyName("items")] AppMessageDto[] Items,
-        [property: JsonPropertyName("trend")] string? Trend = null
+        [property: JsonPropertyName("trend")] string? Trend = null,
+        [property: JsonPropertyName("highestRiskMessageCodes")] string[]? HighestRiskMessageCodes = null
     );
 
     public sealed record RiskHistoryDto(

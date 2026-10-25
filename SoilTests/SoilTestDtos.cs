@@ -1,4 +1,4 @@
-﻿namespace AmsRecords.SoilTests;
+namespace AmsRecords.SoilTests;
 
 public static class SoilTestDtos
 {
@@ -82,8 +82,9 @@ public static class SoilTestDtos
 
     public sealed record SoilTestResultUpsertDto(
         [property: JsonPropertyName("analytePubId")] Guid AnalytePubId,
-        [property: JsonPropertyName("value")] decimal Value,
-        [property: JsonPropertyName("unitPubId")] Guid? UnitPubId
+        [property: JsonPropertyName("value")] decimal? Value,
+        [property: JsonPropertyName("unitPubId")] Guid? UnitPubId,
+        [property: JsonPropertyName("textValue")] string? TextValue = null
     );
 
     public sealed record SoilExtractMethodDto(
@@ -131,7 +132,8 @@ public static class SoilTestDtos
         [property: JsonPropertyName("value")] decimal Value,
         [property: JsonPropertyName("unitPubId")] Guid? UnitPubId,
         [property: JsonPropertyName("unitShort")] string? UnitShort,
-        [property: JsonPropertyName("confidence")] decimal Confidence
+        [property: JsonPropertyName("confidence")] decimal Confidence,
+        [property: JsonPropertyName("textValue")] string? TextValue = null
     );
 
     public sealed record SoilTestDocumentImportPreviewDto(
@@ -160,17 +162,19 @@ public static class SoilTestDtos
         [property: JsonPropertyName("matchScore")] decimal? MatchScore,
         [property: JsonPropertyName("canCreate")] bool CanCreate,
         [property: JsonPropertyName("warnings")] List<string> Warnings,
-        [property: JsonPropertyName("results")] List<SoilTestDocumentImportResultPreviewDto> Results
+        [property: JsonPropertyName("results")] List<SoilTestDocumentImportResultPreviewDto> Results,
+        [property: JsonPropertyName("sampleNotes")] string? SampleNotes = null
     );
 
     public sealed record SoilTestDocumentImportResultPreviewDto(
         [property: JsonPropertyName("analytePubId")] Guid AnalytePubId,
         [property: JsonPropertyName("analyteName")] string AnalyteName,
         [property: JsonPropertyName("detectedLabel")] string DetectedLabel,
-        [property: JsonPropertyName("value")] decimal Value,
+        [property: JsonPropertyName("value")] decimal? Value,
         [property: JsonPropertyName("unitPubId")] Guid? UnitPubId,
         [property: JsonPropertyName("unitShort")] string? UnitShort,
-        [property: JsonPropertyName("confidence")] decimal Confidence
+        [property: JsonPropertyName("confidence")] decimal Confidence,
+        [property: JsonPropertyName("textValue")] string? TextValue = null
     );
 
     public sealed record SoilTestDocumentImportCreateDto(
@@ -187,14 +191,16 @@ public static class SoilTestDtos
         [property: JsonPropertyName("surfaceName")] string SurfaceName,
         [property: JsonPropertyName("rawSurfaceLabel")] string RawSurfaceLabel,
         [property: JsonPropertyName("selected")] bool Selected,
-        [property: JsonPropertyName("results")] List<SoilTestDocumentImportCreateResultInputDto> Results
+        [property: JsonPropertyName("results")] List<SoilTestDocumentImportCreateResultInputDto> Results,
+        [property: JsonPropertyName("sampleNotes")] string? SampleNotes = null
     );
 
     public sealed record SoilTestDocumentImportCreateResultInputDto(
         [property: JsonPropertyName("analytePubId")] Guid AnalytePubId,
-        [property: JsonPropertyName("value")] decimal Value,
+        [property: JsonPropertyName("value")] decimal? Value,
         [property: JsonPropertyName("unitPubId")] Guid? UnitPubId,
-        [property: JsonPropertyName("detectedLabel")] string? DetectedLabel
+        [property: JsonPropertyName("detectedLabel")] string? DetectedLabel,
+        [property: JsonPropertyName("textValue")] string? TextValue = null
     );
 
     public sealed record SoilTestDocumentImportCreateResultDto(
