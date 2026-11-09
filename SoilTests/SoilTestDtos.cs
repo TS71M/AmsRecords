@@ -23,7 +23,10 @@ public static class SoilTestDtos
         [property: JsonPropertyName("ignore")] bool Ignore,
         [property: JsonPropertyName("resultCount")] int ResultCount,
         [property: JsonPropertyName("results")] List<SoilTestResultDto> Results
-    );
+    )
+    {
+        [JsonPropertyName("originalDocument")] public AmsRecords.LabReportDocumentDto? OriginalDocument { get; init; }
+    }
 
     public sealed record SoilTestChemUpsertDto(
         [property: JsonPropertyName("chemPubId")] Guid ChemPubId,
@@ -44,7 +47,10 @@ public static class SoilTestDtos
         [property: JsonPropertyName("methodCode")] string? MethodCode,
         [property: JsonPropertyName("methodRaw")] string? MethodRaw,
         [property: JsonPropertyName("results")] List<SoilTestResultUpsertDto> Results
-    );
+    )
+    {
+        [JsonPropertyName("originalDocumentPubId")] public Guid? OriginalDocumentPubId { get; init; }
+    }
 
     public sealed record SoilTestUpdateDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
@@ -69,7 +75,10 @@ public static class SoilTestDtos
         [property: JsonPropertyName("methodCode")] string? MethodCode,
         [property: JsonPropertyName("methodRaw")] string? MethodRaw,
         [property: JsonPropertyName("results")] List<SoilTestResultDto> Results
-    );
+    )
+    {
+        [JsonPropertyName("originalDocument")] public AmsRecords.LabReportDocumentDto? OriginalDocument { get; init; }
+    }
     public sealed record SoilTestResultDto(
         [property: JsonPropertyName("analytePubId")] Guid AnalytePubId,
         [property: JsonPropertyName("analyteName")] string AnalyteName,
@@ -102,7 +111,7 @@ public static class SoilTestDtos
         [property: JsonPropertyName("selectedMethodCode")] string? SelectedMethodCode,
         [property: JsonPropertyName("availableMethods")] List<SoilExtractMethodDto> AvailableMethods,
         [property: JsonPropertyName("series")] List<SoilTestTimelineSeriesDto> Series
-    );
+    ) { public bool ThresholdsIncluded { get; init; } }
 
     public sealed record SoilTestTimelineSeriesDto(
         [property: JsonPropertyName("analytePubId")] Guid AnalytePubId,
@@ -116,7 +125,11 @@ public static class SoilTestDtos
         [property: JsonPropertyName("soilTestDateUtc")] DateTime SoilTestDateUtc,
         [property: JsonPropertyName("value")] decimal Value,
         [property: JsonPropertyName("sampleCount")] int SampleCount
-    );
+    ) { public SoilTimelineThresholdDto? Threshold { get; init; } }
+
+    public sealed record SoilTimelineThresholdDto(string State, decimal? MinValue, decimal? MaxValue,
+        IReadOnlyList<SoilTimelineThresholdSourceDto> Sources);
+    public sealed record SoilTimelineThresholdSourceDto(string? BaselineStandardCode, int? BaselineOwnerType, int? OverrideOwnerType, bool Inherited = false);
 
     public sealed record SoilTestScanImportDto(
         [property: JsonPropertyName("fileName")] string FileName,
@@ -148,7 +161,10 @@ public static class SoilTestDtos
         [property: JsonPropertyName("surfaces")] List<SoilTestDocumentImportSurfacePreviewDto> Surfaces,
         [property: JsonPropertyName("warnings")] List<string> Warnings,
         [property: JsonPropertyName("extractedTextPreview")] string? ExtractedTextPreview
-    );
+    )
+    {
+        [JsonPropertyName("originalDocument")] public AmsRecords.LabReportDocumentDto? OriginalDocument { get; init; }
+    }
 
     public sealed record SoilTestDocumentImportSurfaceOptionDto(
         [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,
@@ -184,7 +200,10 @@ public static class SoilTestDtos
         [property: JsonPropertyName("methodCode")] string? MethodCode,
         [property: JsonPropertyName("methodRaw")] string? MethodRaw,
         [property: JsonPropertyName("items")] List<SoilTestDocumentImportCreateItemDto> Items
-    );
+    )
+    {
+        [JsonPropertyName("originalDocumentPubId")] public Guid? OriginalDocumentPubId { get; init; }
+    }
 
     public sealed record SoilTestDocumentImportCreateItemDto(
         [property: JsonPropertyName("surfacePubId")] Guid SurfacePubId,

@@ -6,6 +6,56 @@ public static class AssistantProductKnowledge
 {
     static readonly IReadOnlyList<SupportAssistantKnowledgeSnippetDto> Core =
     [
+        Snippet("Workflow: GP-scaled fertilizer programmes", """
+            The WebApp Fertilizer Planner has GP-scaled applications for recurring, user-selected nitrogen programmes.
+            The dose belongs to each application. A four-week reference of 2 g N/m² means 0.5 g per weekly application
+            or 1 g per fortnightly application at 100% GP. Five weekly dates keep five doses; three fortnightly dates
+            keep three doses. Never shrink the dose to fit a calendar-month total. Other intervals require an explicit
+            per-application dose. Dates follow the chosen interval continuously from an explicit first date through
+            the reviewed last date, including leap days and month boundaries.
+            For the 40% cutoff programme, each dose is baseline N times captured monthly GP/100 when GP is at least 40%;
+            below 40% it supplies zero nitrogen. Missing GP is unknown. Zero-dose dates preserve cadence and receive
+            no application record. Excluded doses are not redistributed. This is a user's planning rule, not a universal
+            fertilizer recommendation or a live forecast. An explicitly strict monthly cap uses monthly allocation instead.
+            Choose the exact frozen product with verified N analysis; never assume ammonium sulphate's percentage.
+            Preview dates, captured GP, requested/delivered nitrogen and product quantities before saving.
+            Save adds the product to the zone's used products when needed, with dated plan items in one transaction.
+            Products absent from the frozen inputs must first be captured and reviewed through Plans & history.
+            Planning edit permission and field scope are required; recording rights do not grant them.
+            Existing identifiable GP programmes in editable drafts can change between weekly and fortnightly while
+            preserving their saved four-week N reference and cutoff. The server derives the new per-application dose.
+            Select the exact product, zone and explicit first/last dates; preview existing and replacement applications,
+            then confirm Save. Changed rates, mixed programmes, preparation details, executions and operational history
+            block bulk replacement. Never claim a capability question has changed a programme.
+            """),
+        Snippet("Workflow: alternative fertilizer programmes", """
+            The WebApp alternative fertilizer plan editor creates a separate same-year draft from a selected revision.
+            When the invariant is unclear, ASK whether to preserve annual nitrogen or the four-week nitrogen reference.
+            These are different constraints; never silently pick one. Annual mode balances against the intended annual
+            nitrogen of explicitly reviewed source products in one zone. Other products and zones are copied unchanged.
+            Four-week mode requires an identifiable saved GP reference and can change annual totals with new dates.
+            Alternatives support changed intervals and verified replacement products or explicit nitrogen-share blends.
+            Shares are percentages of N, not product mass. Missing or ambiguous products and shares need review;
+            never infer a nominal formulation, stock or blend. Captured GP weights dates and below-cutoff dates get zero N.
+            Preview source/proposed nitrogen, delivered rounding difference, other captured nutrients, dates, analyses
+            and quantities. Annual mode blocks a difference beyond 0.001 g N/m². Matching N alone does not establish
+            product suitability, release pattern, other nutrients or tank compatibility. Confirm Save creates a draft;
+            source plans, actual work, operational selection and procurement remain separate. Source/date/basis ambiguity
+            requires clarification. Physical area, boundary dates and shared preparation need explicit individual review.
+            """),
+        Snippet("Workflow: stock-first fertilizer cost alternatives", """
+            Explicit cheaper-alternative requests can use a stock-first cost search while preserving annual N, captured
+            GP scaling, cutoff and the reviewed interval. Compare currently active, tenant/field-scoped catalogue products
+            already captured in the revision. Use usable captured stock first after unchanged planned demand, then compare
+            one purchase product at a time for remaining N. This is not a global optimum across every possible purchasing blend.
+            Rank estimated new-pack purchasing cost first, with material value as a tie breaker. Show both values, stock used,
+            shortfall, rounded new packs, savings and other nutrients against the source. Stock is not free material.
+            Zero/unknown prices, ambiguous units, missing packaging and unknown stock do not establish savings. Products with
+            stock but incomplete inputs require review before searching. If no cheaper proposal is found, say so and disable
+            creation in cheaper mode. Explicit review and confirmation create a separate draft; no stock reservations, orders,
+            actuals or operational selection changes occur. Refresh frozen price/stock evidence explicitly when needed.
+            Native clients can explain this rule; the GP programme editor is a WebApp workflow.
+            """),
         Snippet(
             "Field risk badge interpretation",
             """

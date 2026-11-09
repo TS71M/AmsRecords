@@ -43,5 +43,6 @@ public static class IbuTravelDirectoryDtos
         [property: JsonPropertyName("targetPubId")][param: Required] Guid TargetPubId,
         [property: JsonPropertyName("source")][param: Required, MaxLength(20)] string Source,
         [property: JsonPropertyName("phone")][param: MaxLength(60)] string? Phone,
-        [property: JsonPropertyName("email")][param: MaxLength(250), EmailAddress] string? Email);
+        [property: JsonPropertyName("email")][param: MaxLength(250), EmailAddress] string? Email,
+        [property: JsonPropertyName("fieldPubId")] Guid? FieldPubId = null);
 }

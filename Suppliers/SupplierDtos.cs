@@ -6,6 +6,9 @@ namespace AmsRecords.Suppliers;
 
 public static class SupplierDtos
 {
+    public sealed record SupplierDirectoryItemDto(Guid PubId, Guid IbuPubId, Guid? FieldPubId, string Name, bool Active, bool IsVisible);
+    public sealed record SupplierDirectoryPageDto(IReadOnlyList<SupplierDirectoryItemDto> Suppliers, bool HasMore, int? NextOffset, bool PagingLimitReached = false);
+    public sealed record SupplierRelatedPageDto<T>(Guid SupplierPubId, Guid IbuPubId, IReadOnlyList<T> Items, bool HasMore, int? NextOffset, bool PagingLimitReached);
     public record SupplierMiniDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("name")] string Name

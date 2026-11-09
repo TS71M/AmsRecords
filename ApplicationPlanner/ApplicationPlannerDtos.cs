@@ -745,7 +745,8 @@ public static class ApplicationPlannerDtos
         string TimingMode = "Scheduled",
         string BoundaryDateAction = "RequireDecision",
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        [param: MaxLength(1000)] IReadOnlyList<ApplicationPlanCloneAreaChoiceDto>? AreaChoices = null);
+        [param: MaxLength(1000)] IReadOnlyList<ApplicationPlanCloneAreaChoiceDto>? AreaChoices = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PlannerNitrogenAlternativeOptionsDto? NitrogenAlternative = null);
 
     public sealed record ApplicationPlanCloneAreaChoiceDto(Guid ZonePubId, decimal TargetAreaM2, string AreaBasis,
         [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -761,7 +762,8 @@ public static class ApplicationPlannerDtos
         IReadOnlyList<ApplicationPlanCloneAllocationPreviewDto>? Allocations = null,
         IReadOnlyList<ApplicationPlanCloneBoundaryDto>? BoundaryApplications = null,
         IReadOnlyList<ApplicationPlanCloneZonePreviewDto>? FrozenZones = null,
-        IReadOnlyList<ApplicationPlanClonePassPreviewDto>? Passes = null);
+        IReadOnlyList<ApplicationPlanClonePassPreviewDto>? Passes = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] PlannerNitrogenAlternativePreviewDto? NitrogenAlternative = null);
 
     public sealed record ApplicationPlanClonePassPreviewDto(Guid PassPubId, string PassName,
         decimal OriginalAreaM2, decimal TargetAreaM2, decimal CarrierVolumeLitres);

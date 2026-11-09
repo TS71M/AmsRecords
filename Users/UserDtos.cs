@@ -8,6 +8,8 @@ namespace AmsRecords.Users;
 
 public static class UserDtos
 {
+    public sealed record UserDirectoryPageDto(IReadOnlyList<UserDto> Users, bool HasMore, int? NextOffset);
+
     public interface IUserPreferenceUpdateDto
     {
         Guid PubId { get; }

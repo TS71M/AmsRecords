@@ -2,6 +2,25 @@ namespace AmsRecords.FieldMeasurements;
 
 public static class FieldMeasurementDtos
 {
+    public sealed record MeasurementRecordingSelectionDto(Guid? AreaPubId = null, Guid? SurfacePubId = null,
+        int? Hole = null, string? AreaName = null);
+    public sealed record MeasurementRecordingAreaDto(
+        [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
+        [property: JsonPropertyName("areaName")] string AreaName);
+    // Recording choices only. No measurement values, dates or historical IDs.
+    public sealed record MeasurementRecordingSetupDto(
+        [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
+        [property: JsonPropertyName("fieldName")] string FieldName,
+        [property: JsonPropertyName("unit")] string Unit,
+        [property: JsonPropertyName("unitPubId")] Guid UnitPubId,
+        [property: JsonPropertyName("areas")] IReadOnlyList<MeasurementRecordingAreaDto> Areas,
+        [property: JsonPropertyName("greenSpeedSurfaces")] IReadOnlyList<GreenSpeedSurfaceDto> GreenSpeedSurfaces,
+        [property: JsonPropertyName("canViewHistory")] bool CanViewHistory,
+        [property: JsonPropertyName("clippingSurfaces")] IReadOnlyList<ClippingSurfaceDto>? ClippingSurfaces = null);
+    public sealed record MeasurementRecordingReceiptDto(
+        [property: JsonPropertyName("recordPubId")] Guid RecordPubId,
+        [property: JsonPropertyName("recorded")] bool Recorded);
+
     public sealed record MeasurementTimelineQueryDto(
         [property: JsonPropertyName("fromUtc")] DateTime? FromUtc,
         [property: JsonPropertyName("toUtc")] DateTime? ToUtc,
@@ -98,7 +117,8 @@ public static class FieldMeasurementDtos
         [property: JsonPropertyName("areaPubId")] Guid AreaPubId,
         [property: JsonPropertyName("measuredOn")] DateTime MeasuredOn,
         [property: JsonPropertyName("height")] decimal Height,
-        [property: JsonPropertyName("inputUnitPubId")] Guid? InputUnitPubId = null);
+        [property: JsonPropertyName("inputUnitPubId")] Guid? InputUnitPubId = null,
+        [property: JsonPropertyName("utcOffsetMinutes")] int? UtcOffsetMinutes = null);
 
     public sealed record CuttingHeightDto(
         [property: JsonPropertyName("pubId")] Guid PubId,

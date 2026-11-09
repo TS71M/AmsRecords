@@ -14,7 +14,8 @@ public sealed record CourseAssistantSurfaceDto(
     Guid SurfacePubId, Guid AreaPubId, string Name, int HoleNumber,
     decimal? AreaM2,
     CourseAssistantMeasurementDto? LatestMoisture,
-    CourseAssistantMeasurementDto? LatestGreenSpeed);
+    CourseAssistantMeasurementDto? LatestGreenSpeed,
+    Guid? FieldPubId = null);
 
 public sealed record CourseAssistantAnswerDto(
     string Answer,

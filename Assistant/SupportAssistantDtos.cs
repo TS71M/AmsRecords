@@ -2,7 +2,9 @@ namespace AmsRecords.Assistant;
 
 public sealed record SupportAssistantMessageDto(
     string Role,
-    string Content);
+    string Content,
+    Guid? FieldPubId = null,
+    bool ScopeKnown = false);
 
 public sealed record SupportAssistantPageInfoDto(
     string? Area,
@@ -14,7 +16,9 @@ public sealed record SupportAssistantPageInfoDto(
     string? BrowserTitle,
     IReadOnlyList<string> VisibleHeadings,
     IReadOnlyList<string> VisibleActions,
-    IReadOnlyList<string> FormLabels);
+    IReadOnlyList<string> FormLabels,
+    AssistantFormSnapshotDto? Form = null,
+    AssistantNavigationSnapshotDto? Navigation = null);
 
 public sealed record SupportAssistantUserContextDto(
     Guid? UserPubId,
@@ -34,7 +38,21 @@ public sealed record SupportAssistantAskRequestDto(
     SupportAssistantUserContextDto User,
     IReadOnlyList<SupportAssistantKnowledgeSnippetDto> Knowledge,
     IReadOnlyList<SupportAssistantMessageDto> History,
-    AssistantContextDto? Context = null);
+    AssistantContextDto? Context = null,
+    IReadOnlyList<string>? SupportedDraftKinds = null,
+    AssistantImageDto? Image = null,
+    Guid? ActionId = null,
+    IReadOnlyList<string>? SupportedActions = null,
+    Guid? RequestId = null,
+    string? ActionKind = null,
+    AssistantContextDto? ActionContext = null,
+    bool ReviewBeforeSave = true,
+    bool NavigationOnly = false,
+    bool FormOnly = false,
+    bool PhotoReview = false);
+
+// Current request only; never included in history or conversation logging.
+public sealed record AssistantImageDto(string Base64);
 
 public sealed record SupportAssistantLinkDto(
     string Label,
@@ -48,7 +66,32 @@ public sealed record SupportAssistantAskResponseDto(
     IReadOnlyList<string> SuggestedQuestions,
     IReadOnlyList<SupportAssistantLinkDto> Links,
     IReadOnlyList<CourseAssistantSurfaceDto>? Sources = null,
-    bool CanGuideToSurfaces = false);
+    bool CanGuideToSurfaces = false,
+    AssistantDraftDto? Draft = null,
+    AssistantConversationActionDto? Action = null,
+    AssistantFormPatchDto? Form = null,
+    bool OpenDraftForReview = false,
+    string? ReviewUrl = null,
+    AssistantNavigationPatchDto? Navigation = null,
+    IReadOnlyList<AssistantLabReportSourceDto>? LabReportSources = null,
+    IReadOnlyList<AmsRecords.Products.ProductsDtos.ProductWebsiteImportMatchDto>? ProductMatches = null);
+
+public sealed record AssistantLabReportSourceDto(Guid DocumentPubId, Guid FieldPubId, string FileName,
+    string MimeType, int ByteLength, int PageNumber, int PageCount);
+
+public static class AssistantActionKinds
+{
+    public const string CreateProduct = "create_product";
+    public const string RecordMeasurement = "record_measurement";
+    public const string FillForm = "fill_form";
+    public const string Navigate = "navigate";
+    public const string ImportLab = "import_lab";
+    public const string ViewLabReport = "view_lab_report";
+    public const string ViewProduct = "view_product";
+}
+
+// Opaque, user-bound continuation. This is never an authorization grant.
+public sealed record AssistantConversationActionDto(Guid Id, string Kind, string Status, Guid? CreatedRecordPubId = null);
 
 public sealed record SupportAssistantLogDto(
     Guid PubId,
@@ -71,7 +114,15 @@ public sealed record AssistantContextDto(
     Guid? HistoryFieldId = null,
     AssistantDeviceLocationDto? DeviceLocation = null,
     DateOnly? AnalysisFrom = null,
-    DateOnly? AnalysisTo = null);
+    DateOnly? AnalysisTo = null,
+    int? UtcOffsetMinutes = null,
+    AssistantPlannerContextDto? Planner = null,
+    Guid? SelectedAreaId = null,
+    string? SoilMethodCode = null, string? TimeZoneId = null,
+    bool UseCurrentMeasurementSelection = false);
+
+public sealed record AssistantPlannerContextDto(int? Year = null, Guid? PlanPubId = null,
+    Guid? RevisionPubId = null, Guid? ZonePubId = null);
 
 // Advisory match calculated on the device. Never conveys permission or raw coordinates.
 public sealed record AssistantDeviceLocationDto(Guid NearbySurfaceId, DateTimeOffset CapturedAtUtc);

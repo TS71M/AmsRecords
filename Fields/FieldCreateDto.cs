@@ -161,6 +161,8 @@ public sealed record FieldCreateDto(
 )
 {
     public AppImageCreateDto? ImageCreateDto { get; set; } = null;
+    public AmsRecords.Assistant.AssistantFieldDetailsDto? ReviewedSiteDetails { get; set; }
+    public Guid? AssistantDraftId { get; set; }
 }
 
 public sealed record FieldAiSeedDto(

@@ -6,6 +6,22 @@ namespace AmsRecords.Products;
 
 public static class ProductsDtos
 {
+    public sealed record ProductPhotoImportRequestDto([param: Required, MaxLength(Lib.Images.PhotoUploadPolicy.MaximumOriginalBase64Length)] string ImageBase64);
+    public sealed record ProductImageImportPreviewDto([property: JsonPropertyName("name")] string? Name,
+        [property: JsonPropertyName("imageBase64")] string ImageBase64, [property: JsonPropertyName("contentType")] string ContentType);
+    public sealed record ProductImageAttachmentDto(Guid PubId, Guid ProductPubId, string Kind, string Name,
+        DateTime? UploadedAt, Guid? ImagePubId, bool CanReadImage);
+    public sealed record ProductImageAttachmentPageDto(Guid CompanyPubId, Guid ProductPubId,
+        IReadOnlyList<ProductImageAttachmentDto> Attachments, bool HasMore, int? NextOffset);
+    public sealed record ProductCatalogueIdentityDto(Guid PubId, Guid IbuPubId, Guid? FieldPubId, string Name, bool Active);
+    public sealed record ProductCataloguePageDto(IReadOnlyList<ProductCatalogueIdentityDto> Products, bool HasMore, int? NextOffset);
+    public sealed record ProductImportCompletionRequest(ProductWebsiteImportPreviewDto Preview, string? OriginalImageBase64 = null);
+    public sealed record ProductImportCompletionDto(IReadOnlyList<string> Warnings);
+    public sealed record ProductListImportItemDto(Guid Id, ProductWebsiteImportPreviewDto Preview,
+        IReadOnlyList<int> SourceRows, string? SourceUnit, Guid? CreatedProductPubId = null, string? CreatedName = null);
+    public sealed record ProductListImportPreviewDto(Guid IbuPubId, string IbuName,
+        IReadOnlyList<ProductListImportItemDto> Items, ProductImageImportPreviewDto SourcePhoto,
+        string SourceImageSha256, IReadOnlyList<string> Notes, Guid? AssignmentFieldPubId = null);
     #region Products
 
     public record ProductMiniDto(
@@ -23,7 +39,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("active")] bool Active,
         [property: JsonPropertyName("packSize")] string PackSize,
         [property: JsonPropertyName("pricePerUnit")] string PricePerUnit,
-        [property: JsonPropertyName("image")] string? Image
+        [property: JsonPropertyName("image")] string? Image,
+        [property: JsonPropertyName("ownerName")] string OwnerName = ""
     );
 
     public sealed record ProductFormDto(
@@ -88,7 +105,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("sdsPath")][param: MaxLength(1000)] string? SdsPath = null,
         [property: JsonPropertyName("sdsSize")] int? SdsSize = null,
         [property: JsonPropertyName("sdsUploadDt")] DateTime? SdsUploadDt = null,
-        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null)
+        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null,
+        [property: JsonPropertyName("captureReviewToken")][param: MaxLength(4096)] string? CaptureReviewToken = null)
     {
         public AppImageCreateDto ImageCreateDto { get; set; } = new(null, ImageCategories.Products);
     }
@@ -354,7 +372,10 @@ public static class ProductsDtos
         [property: JsonPropertyName("sourceUrls")] List<string> SourceUrls,
         [property: JsonPropertyName("notes")] List<string> Notes,
         [property: JsonPropertyName("evidenceToken")] string? EvidenceToken = null,
-        [property: JsonPropertyName("existingMatches")] IReadOnlyList<ProductWebsiteImportMatchDto>? ExistingMatches = null
+        [property: JsonPropertyName("existingMatches")] IReadOnlyList<ProductWebsiteImportMatchDto>? ExistingMatches = null,
+        [property: JsonPropertyName("uploadedPhotoSuitableForProductImage")] bool? UploadedPhotoSuitableForProductImage = null,
+        [property: JsonPropertyName("uploadedPhotoPreview")] ProductImageImportPreviewDto? UploadedPhotoPreview = null,
+        [property: JsonPropertyName("captureReviewToken")] string? CaptureReviewToken = null
     );
 
     #endregion

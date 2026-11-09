@@ -49,5 +49,6 @@ public static class ModuleReleaseSettingDtos
         [property: JsonPropertyName("expiresAtUtc")] DateTime? ExpiresAtUtc);
 
     public sealed record SaveModulePilotAccessDto(
-        [property: JsonPropertyName("ibus")] List<ModulePilotGrantSelectionDto> Ibus);
+        [property: JsonPropertyName("ibus")] List<ModulePilotGrantSelectionDto> Ibus,
+        [property: JsonPropertyName("changedIbuPubIds")] IReadOnlyList<Guid>? ChangedIbuPubIds = null);
 }

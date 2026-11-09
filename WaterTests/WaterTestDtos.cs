@@ -20,7 +20,10 @@ public static class WaterTestDtos
         [property: JsonPropertyName("ignore")] bool Ignore,
         [property: JsonPropertyName("completedResultCount")] int CompletedResultCount,
         [property: JsonPropertyName("totalResultCount")] int TotalResultCount
-    );
+    )
+    {
+        [JsonPropertyName("originalDocument")] public AmsRecords.LabReportDocumentDto? OriginalDocument { get; init; }
+    }
 
     public sealed record WaterTestResultUpsertDto(
         [property: JsonPropertyName("resultCode")] string ResultCode,
@@ -59,6 +62,7 @@ public static class WaterTestDtos
         [property: JsonPropertyName("results")] List<WaterTestResultUpsertDto> Results
     )
     {
+        [JsonPropertyName("originalDocumentPubId")] public Guid? OriginalDocumentPubId { get; init; }
         [JsonPropertyName("requestId")]
         public Guid RequestId { get; init; }
     }
@@ -94,7 +98,10 @@ public static class WaterTestDtos
         [property: JsonPropertyName("samplerName")] string? SamplerName,
         [property: JsonPropertyName("ignore")] bool Ignore,
         [property: JsonPropertyName("results")] List<WaterTestResultDto> Results
-    );
+    )
+    {
+        [JsonPropertyName("originalDocument")] public AmsRecords.LabReportDocumentDto? OriginalDocument { get; init; }
+    }
 
     public sealed record WaterTestDocumentImportPreviewDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
@@ -113,7 +120,10 @@ public static class WaterTestDtos
         [property: JsonPropertyName("results")] List<WaterTestDocumentImportResultPreviewDto> Results,
         [property: JsonPropertyName("warnings")] List<string> Warnings,
         [property: JsonPropertyName("extractedTextPreview")] string? ExtractedTextPreview
-    );
+    )
+    {
+        [JsonPropertyName("originalDocument")] public AmsRecords.LabReportDocumentDto? OriginalDocument { get; init; }
+    }
 
     public sealed record WaterTestDocumentImportResultPreviewDto(
         [property: JsonPropertyName("resultCode")] string ResultCode,
@@ -144,6 +154,7 @@ public static class WaterTestDtos
         [property: JsonPropertyName("results")] List<WaterTestDocumentImportResultInputDto> Results
     )
     {
+        [JsonPropertyName("originalDocumentPubId")] public Guid? OriginalDocumentPubId { get; init; }
         [JsonPropertyName("requestId")]
         public Guid RequestId { get; init; }
     }

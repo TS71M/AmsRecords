@@ -34,17 +34,31 @@ public static class FieldDiagnosticDtos
         [property: JsonPropertyName("findings")] IReadOnlyList<FieldDiagnosticFindingDto> Findings,
         [property: JsonPropertyName("currentRiskLevel")] string CurrentRiskLevel,
         [property: JsonPropertyName("thresholdAdjustment")] FieldDiagnosticThresholdAdjustmentDto ThresholdAdjustment
-    );
+    )
+    {
+        [JsonPropertyName("translationPending")]
+        public bool TranslationPending { get; init; }
+    }
 
     public sealed record FieldDiagnosticHistoryQueryDto(
         [property: JsonPropertyName("take")] int? Take = null,
         [property: JsonPropertyName("skip")] int? Skip = null
-    );
+    )
+    {
+        [JsonPropertyName("includeThumbnails")]
+        public bool IncludeThumbnails { get; init; } = true;
+    }
 
     public sealed record FieldDiagnosticReviewQueryDto(
         [property: JsonPropertyName("take")] int? Take = null,
         [property: JsonPropertyName("skip")] int? Skip = null
-    );
+    )
+    {
+        [JsonPropertyName("countOnly")]
+        public bool CountOnly { get; init; }
+        [JsonPropertyName("includeThumbnails")]
+        public bool IncludeThumbnails { get; init; } = true;
+    }
 
     public sealed record FieldDiagnosticTrainingDatasetQueryDto(
         [property: JsonPropertyName("take")] int? Take = null,
@@ -101,7 +115,11 @@ public static class FieldDiagnosticDtos
         [property: JsonPropertyName("correctionNote")] string? CorrectionNote,
         [property: JsonPropertyName("correctedByName")] string? CorrectedByName,
         [property: JsonPropertyName("reviewedOutcome")] FieldDiagnosticReviewedOutcomeDto? ReviewedOutcome = null
-    );
+    )
+    {
+        [JsonPropertyName("translationPending")]
+        public bool TranslationPending { get; init; }
+    }
 
     public sealed record FieldDiagnosticReviewedOutcomeDto(
         [property: JsonPropertyName("diagnosisTitle")] string DiagnosisTitle,
@@ -155,7 +173,11 @@ public static class FieldDiagnosticDtos
         [property: JsonPropertyName("images")] IReadOnlyList<FieldDiagnosticImageDto> Images,
         [property: JsonPropertyName("createdByName")] string? CreatedByName,
         [property: JsonPropertyName("evidence")] FieldDiagnosticEvidenceDto? Evidence
-    );
+    )
+    {
+        [JsonPropertyName("translationPending")]
+        public bool TranslationPending { get; init; }
+    }
 
     public sealed record FieldDiagnosticReviewQueueDto(
         [property: JsonPropertyName("query")] FieldDiagnosticReviewQueryDto Query,
@@ -220,7 +242,11 @@ public static class FieldDiagnosticDtos
         [property: JsonPropertyName("createdByName")] string? CreatedByName,
         [property: JsonPropertyName("correction")] FieldDiagnosticCorrectionDto? Correction,
         [property: JsonPropertyName("evidence")] FieldDiagnosticEvidenceDto? Evidence
-    );
+    )
+    {
+        [JsonPropertyName("translationPending")]
+        public bool TranslationPending { get; init; }
+    }
 
     public sealed record FieldDiagnosticHistoryDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,

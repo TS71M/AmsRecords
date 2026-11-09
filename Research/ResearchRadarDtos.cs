@@ -2,6 +2,13 @@ namespace AmsRecords.Research;
 
 public static class ResearchRadarDtos
 {
+    public sealed record PublishedResearchEvidenceDto(Guid PubId, string SourceName, string OriginalUrl,
+        string Title, string? Author, string? Publisher, DateTime? PublishedAtUtc, DateTime? PublishedUtc,
+        string? EditorialSummary, string? WhyItMatters, string? EvidenceAssessment, string? Limitations, string? TopicTags);
+
+    public sealed record PublishedResearchEvidencePageDto(IReadOnlyList<PublishedResearchEvidenceDto> Items,
+        bool HasMore, int? NextOffset, bool PagingLimitReached);
+
     public sealed record ResearchSourceDto(
         Guid PubId,
         string Name,

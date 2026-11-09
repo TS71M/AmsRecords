@@ -2,6 +2,14 @@ namespace AmsRecords.WorkMessaging;
 
 public static class WorkMessagingDtos
 {
+    public sealed record WorkConversationReadQueryDto(int Offset = 0, Guid? FieldPubId = null, string? Search = null);
+    public sealed record WorkConversationReadPageDto(IReadOnlyList<WorkConversationDto> Conversations, bool HasMore, int NextOffset);
+    public sealed record WorkMessageReadDto(Guid MessagePubId, Guid SenderUserPubId, string SenderName,
+        DateTime CreatedUtc, string Body, bool BodyHasMore, Guid? ImagePubId);
+    public sealed record WorkMessageReadPageDto(Guid ConversationPubId, string? ContextType, Guid? ContextPubId,
+        IReadOnlyList<WorkMessageReadDto> Messages, bool HasMore, int NextOffset);
+    public sealed record WorkMessageTextDto(Guid ConversationPubId, Guid MessagePubId, DateTime CreatedUtc,
+        string Body, int ChunkIndex, bool HasMore, int? NextOffset);
     public sealed record WorkConversationDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("type")] string Type,

@@ -4,8 +4,24 @@ namespace AmsRecords.ApplicationEvidence;
 
 public static class ApplicationEvidenceDtos
 {
+    public sealed record ProductDocumentDto(Guid PubId, Guid ProductPubId, string Title, string ContentType,
+        long? ContentLengthBytes, string ContentSha256, string DocumentRevision, string JurisdictionCode, string SourceUri,
+        ApplicationEvidenceKind EvidenceKind, ApplicationEvidenceSourceKind SourceKind, ApplicationEvidenceTrustLevel TrustLevel,
+        ApplicationEvidenceReviewStatus ReviewStatus, bool Active, DateOnly? EffectiveFrom, DateOnly? EffectiveTo,
+        DateTime RetrievedAtUtc, ApplicationEvidenceFreshnessStatus FreshnessStatus, bool HasStoredContent)
+    {
+        // Supply authoritative names as well as existing enum values; a model
+        // must not guess what an application's numeric status code means.
+        public string EvidenceKindName => EvidenceKind.ToString();
+        public string SourceKindName => SourceKind.ToString();
+        public string TrustLevelName => TrustLevel.ToString();
+        public string ReviewStatusName => ReviewStatus.ToString();
+        public string FreshnessStatusName => FreshnessStatus.ToString();
+    }
+    public sealed record ProductDocumentPageDto(Guid CompanyPubId, IReadOnlyList<ProductDocumentDto> Documents, bool HasMore, int? NextOffset);
+
     public sealed record ImportEvidenceRequest(
-        [property: JsonPropertyName("token"), Required, StringLength(100000)] string Token);
+        [property: JsonPropertyName("token")][Required, StringLength(100000)] string Token);
 
     public sealed class RegisterEvidenceRequest
     {
