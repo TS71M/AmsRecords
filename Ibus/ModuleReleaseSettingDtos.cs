@@ -48,7 +48,13 @@ public static class ModuleReleaseSettingDtos
         [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,
         [property: JsonPropertyName("expiresAtUtc")] DateTime? ExpiresAtUtc);
 
+    public sealed record ModulePilotGrantReviewDto(
+        [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,
+        [property: JsonPropertyName("wasGranted"), JsonRequired] bool WasGranted,
+        [property: JsonPropertyName("expiresAtUtc")] DateTime? ExpiresAtUtc);
+
     public sealed record SaveModulePilotAccessDto(
         [property: JsonPropertyName("ibus")] List<ModulePilotGrantSelectionDto> Ibus,
-        [property: JsonPropertyName("changedIbuPubIds")] IReadOnlyList<Guid>? ChangedIbuPubIds = null);
+        [property: JsonPropertyName("changedIbuPubIds")] IReadOnlyList<Guid>? ChangedIbuPubIds = null,
+        [property: JsonPropertyName("review")] ModulePilotGrantReviewDto? Review = null);
 }

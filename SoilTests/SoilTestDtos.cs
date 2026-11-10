@@ -125,7 +125,12 @@ public static class SoilTestDtos
         [property: JsonPropertyName("soilTestDateUtc")] DateTime SoilTestDateUtc,
         [property: JsonPropertyName("value")] decimal Value,
         [property: JsonPropertyName("sampleCount")] int SampleCount
-    ) { public SoilTimelineThresholdDto? Threshold { get; init; } }
+    )
+    {
+        public SoilTimelineThresholdDto? Threshold { get; init; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? HoleCount { get; init; }
+    }
 
     public sealed record SoilTimelineThresholdDto(string State, decimal? MinValue, decimal? MaxValue,
         IReadOnlyList<SoilTimelineThresholdSourceDto> Sources);

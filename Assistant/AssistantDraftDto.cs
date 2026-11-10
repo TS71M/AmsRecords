@@ -1,3 +1,7 @@
+using AmsRecords.LeafNitrate;
+using static AmsRecords.LeafNitrate.LeafNitrateDtos;
+using static AmsRecords.RiskManagement.DollarSpotDtos;
+
 namespace AmsRecords.Assistant;
 
 public static class AssistantDraftKinds
@@ -6,6 +10,9 @@ public static class AssistantDraftKinds
     public const string GreenSpeed = "green_speed";
     public const string CuttingHeight = "cutting_height";
     public const string ClippingVolume = "clipping_volume";
+    public const string LeafNitrate = "leaf_nitrate";
+    public const string DollarSpotObservation = "dollar_spot_observation";
+    public const string CatchCanTest = "catch_can_test";
     public const string Fertilizer = "fertilizer_gp";
     public const string FertilizerAlternative = "fertilizer_alternative";
     public const string Product = "product";
@@ -13,6 +20,8 @@ public static class AssistantDraftKinds
     public const string SoilImport = "soil_import";
     public const string WaterImport = "water_import";
     public const string ModuleAccess = "module_access";
+    public const string ModulePilotRevocation = "module_pilot_revocation";
+    public const string ModulePilotExpiry = "module_pilot_expiry";
 }
 
 // An editable proposal, never a command to save or a permission grant.
@@ -33,10 +42,98 @@ public sealed record AssistantDraftDto(
     AmsRecords.SoilTests.SoilTestDtos.SoilTestDocumentImportCreateDto? SoilReview = null,
     AmsRecords.WaterTests.WaterTestDtos.WaterTestDocumentImportCreateDto? WaterReview = null,
     AssistantModuleAccessDraftDto? ModuleAccess = null,
-    AmsRecords.Products.ProductsDtos.ProductListImportPreviewDto? ProductList = null);
+    AmsRecords.Products.ProductsDtos.ProductListImportPreviewDto? ProductList = null)
+{
+    public AssistantLeafNitrateDraftDto? LeafNitrate { get; init; }
+    public AssistantDollarSpotObservationDraftDto? DollarSpotObservation { get; init; }
+    public AmsRecords.Irrigation.CatchCanCalibrationDtos.CatchCanTestSaveDto? CatchCanTest { get; init; }
+}
+
+public sealed record AssistantDollarSpotObservationDraftDto(string? MorningMyceliumObserved,
+    string? LeafLesionsObserved, string? ActiveExpansionObserved, string? LdsOrHydrophobicityPresent)
+{
+    public const string Present = "present";
+    public const string Absent = "absent";
+    public const string NotChecked = "not_checked";
+    public AssistantDollarSpotDewRemovalDraftDto? DewRemoval { get; init; }
+
+    public bool IsValid()
+    {
+        string?[] answers = [MorningMyceliumObserved, LeafLesionsObserved, ActiveExpansionObserved, LdsOrHydrophobicityPresent];
+        return (DewRemoval is not null || answers.Any(answer => answer is not null))
+            && answers.All(answer => answer is null or Present or Absent or NotChecked)
+            && (DewRemoval is null || DewRemoval.IsValid());
+    }
+
+    public static DollarSpotObservationDto? PrepareReview(AssistantDraftDto draft, DollarSpotEarlyWarningStatusDto status)
+    {
+        if (draft.Kind != AssistantDraftKinds.DollarSpotObservation || status.FieldPubId == Guid.Empty || draft.FieldPubId != status.FieldPubId
+            || !status.FieldEnabled || draft.MeasuredOn != status.TodayLocal
+            || status.TodayObservation is { } prior && prior.DateLocal != status.TodayLocal
+            || draft.DollarSpotObservation is not { } answers || !answers.IsValid()) return null;
+
+        var current = status.TodayObservation ?? new DollarSpotObservationDto(null, status.TodayLocal,
+            null, null, null, null, null, null, null);
+        if (answers.DewRemoval is { } dew)
+            current = current with
+            {
+                DewManuallyRemoved = dew.Status switch { AssistantDollarSpotDewRemovalDraftDto.No => false, NotChecked => null, _ => true },
+                DewRemovedAtLocal = dew.FinishLocal,
+                DewRemovalStartedAtLocal = dew.StartLocal,
+                DewRemovalCompletedAtLocal = dew.FinishLocal,
+                DewRemovalCoveragePct = dew.CoveragePercent
+            };
+        return current with
+        {
+            MorningMyceliumObserved = Apply(answers.MorningMyceliumObserved, current.MorningMyceliumObserved),
+            LeafLesionsObserved = Apply(answers.LeafLesionsObserved, current.LeafLesionsObserved),
+            ActiveExpansionObserved = Apply(answers.ActiveExpansionObserved, current.ActiveExpansionObserved),
+            LdsOrHydrophobicityPresent = Apply(answers.LdsOrHydrophobicityPresent, current.LdsOrHydrophobicityPresent)
+        };
+    }
+
+    static bool? Apply(string? answer, bool? current) => answer switch
+    {
+        Present => true,
+        Absent => false,
+        NotChecked => null,
+        _ => current
+    };
+}
+
+public sealed record AssistantDollarSpotDewRemovalDraftDto(string Status, TimeOnly? StartLocal, TimeOnly? FinishLocal, decimal? CoveragePercent)
+{
+    public const string No = "no";
+    public const string InProgress = "inProgress";
+    public const string Completed = "completed";
+    public const string PartiallyCompleted = "partiallyCompleted";
+
+    public bool IsValid()
+    {
+        if (StartLocal is { } start && start.Ticks % TimeSpan.TicksPerMinute != 0
+            || FinishLocal is { } finish && finish.Ticks % TimeSpan.TicksPerMinute != 0
+            || CoveragePercent is { } coverage && (coverage is < 0m or > 100m || coverage != decimal.Truncate(coverage))) return false;
+        return Status switch
+        {
+            No or AssistantDollarSpotObservationDraftDto.NotChecked => StartLocal is null && FinishLocal is null && CoveragePercent is null,
+            InProgress => StartLocal.HasValue && FinishLocal is null && CoveragePercent.HasValue,
+            Completed or PartiallyCompleted => StartLocal.HasValue && FinishLocal.HasValue && FinishLocal >= StartLocal
+                && (Status == Completed ? CoveragePercent == 100m : CoveragePercent is < 100m),
+            _ => false
+        };
+    }
+}
+
+public sealed record AssistantLeafNitrateDraftDto(decimal Reading1, decimal? Reading2, string Basis, string Unit)
+{
+    public bool IsValid() => Basis is MeasurementBases.No3 or MeasurementBases.No3N
+        && Unit is MeasurementUnits.Ppm or MeasurementUnits.MgPerL
+        && LeafNitrateRules.IsWithinMeterRange(Reading1, Basis)
+        && (Reading2 is not { } second || LeafNitrateRules.IsWithinMeterRange(second, Basis));
+}
 
 public sealed record AssistantModuleAccessDraftDto(string ModuleKey, Guid IbuPubId, string IbuName,
-    bool WasGranted, DateTime? ExpiresAtUtc);
+    bool WasGranted, DateTime? ExpiresAtUtc, DateOnly? AccessThrough = null);
 
 public sealed record AssistantProductSetupDto(Guid? AccountPubId, Guid? RateUnitPubId, Guid? AreaUnitPubId,
     Guid? PackUnitPubId, decimal? Pack, decimal? Price, Guid? FieldPubId, string? SourceImageSha256 = null);

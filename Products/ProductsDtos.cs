@@ -15,13 +15,18 @@ public static class ProductsDtos
         IReadOnlyList<ProductImageAttachmentDto> Attachments, bool HasMore, int? NextOffset);
     public sealed record ProductCatalogueIdentityDto(Guid PubId, Guid IbuPubId, Guid? FieldPubId, string Name, bool Active);
     public sealed record ProductCataloguePageDto(IReadOnlyList<ProductCatalogueIdentityDto> Products, bool HasMore, int? NextOffset);
-    public sealed record ProductImportCompletionRequest(ProductWebsiteImportPreviewDto Preview, string? OriginalImageBase64 = null);
+    public sealed record ProductImportCompletionRequest(ProductWebsiteImportPreviewDto Preview, string? OriginalImageBase64 = null,
+        IReadOnlyList<string>? ReviewedNitrogenForms = null);
     public sealed record ProductImportCompletionDto(IReadOnlyList<string> Warnings);
     public sealed record ProductListImportItemDto(Guid Id, ProductWebsiteImportPreviewDto Preview,
-        IReadOnlyList<int> SourceRows, string? SourceUnit, Guid? CreatedProductPubId = null, string? CreatedName = null);
+        IReadOnlyList<int> SourceRows, string? SourceUnit, Guid? CreatedProductPubId = null, string? CreatedName = null,
+        Guid? SuggestedAccountPubId = null);
     public sealed record ProductListImportPreviewDto(Guid IbuPubId, string IbuName,
         IReadOnlyList<ProductListImportItemDto> Items, ProductImageImportPreviewDto SourcePhoto,
-        string SourceImageSha256, IReadOnlyList<string> Notes, Guid? AssignmentFieldPubId = null);
+        string SourceImageSha256, IReadOnlyList<string> Notes, Guid? AssignmentFieldPubId = null)
+    {
+        public static readonly TimeSpan ReviewLifetime = TimeSpan.FromHours(24);
+    }
     #region Products
 
     public record ProductMiniDto(
@@ -75,8 +80,11 @@ public static class ProductsDtos
         [property: JsonPropertyName("nutrients")] List<ProductNutrientDto> Nutrients,
         [property: JsonPropertyName("supplements")] List<ProductSupplementDto> Supplements,
         [property: JsonPropertyName("labels")] List<ProductLabelDto> Labels,
-        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null
+        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null,
+        IReadOnlyList<ProductAllowedFieldDto>? AllowedFields = null
     );
+
+    public sealed record ProductAllowedFieldDto(Guid PubId, string Name);
 
     public sealed record ProductCreateDto(
         [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,
@@ -106,7 +114,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("sdsSize")] int? SdsSize = null,
         [property: JsonPropertyName("sdsUploadDt")] DateTime? SdsUploadDt = null,
         [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null,
-        [property: JsonPropertyName("captureReviewToken")][param: MaxLength(4096)] string? CaptureReviewToken = null)
+        [property: JsonPropertyName("captureReviewToken")][param: MaxLength(4096)] string? CaptureReviewToken = null,
+        IReadOnlyList<Guid>? AllowedFieldPubIds = null)
     {
         public AppImageCreateDto ImageCreateDto { get; set; } = new(null, ImageCategories.Products);
     }
@@ -140,7 +149,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("sdsPath")][param: MaxLength(1000)] string? SdsPath = null,
         [property: JsonPropertyName("sdsSize")] int? SdsSize = null,
         [property: JsonPropertyName("sdsUploadDt")] DateTime? SdsUploadDt = null,
-        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null)
+        [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null,
+        IReadOnlyList<Guid>? AllowedFieldPubIds = null)
     {
         public AppImageCreateDto ImageCreateDto { get; set; } = new(null, ImageCategories.Products);
     }
@@ -163,13 +173,17 @@ public static class ProductsDtos
         [property: JsonPropertyName("isActive")] bool IsActive,
         [property: JsonPropertyName("notes")] string Notes,
         [property: JsonPropertyName("productActive")] bool ProductActive = true,
-        [property: JsonPropertyName("productFieldPubId")] Guid? ProductFieldPubId = null
+        [property: JsonPropertyName("productFieldPubId")] Guid? ProductFieldPubId = null,
+        IReadOnlyList<Guid>? ProductAllowedFieldPubIds = null,
+        Guid? SupplierFieldPubId = null
     )
     {
         public bool SupportsOrdering(Guid fieldPubId) => CanOrder && AvailableFor(fieldPubId);
         public bool SupportsEnquiries(Guid fieldPubId) => CanRequestPrice && AvailableFor(fieldPubId);
         bool AvailableFor(Guid fieldPubId) => IsActive && ProductActive
-            && (!ProductFieldPubId.HasValue || ProductFieldPubId == fieldPubId);
+            && (!SupplierFieldPubId.HasValue || SupplierFieldPubId == fieldPubId)
+            && (ProductAllowedFieldPubIds is { Count: > 0 } fields ? fields.Contains(fieldPubId)
+                : !ProductFieldPubId.HasValue || ProductFieldPubId == fieldPubId);
     }
 
     public record ProductSupplierCreateDto(
@@ -228,8 +242,22 @@ public static class ProductsDtos
         [property: JsonPropertyName("amount")] decimal Amount,
         [property: JsonPropertyName("analysisBasis")] string AnalysisBasis = "PercentByMass",
         [property: JsonPropertyName("analysisSource")] string AnalysisSource = "",
-        [property: JsonPropertyName("isVerified")] bool IsVerified = false
+        [property: JsonPropertyName("isVerified")] bool IsVerified = false,
+        [property: JsonPropertyName("forms")] IReadOnlyList<ProductNutrientFormDto>? Forms = null
     );
+
+    public sealed record ProductNutrientFormDto(string FormCode, string Label, decimal Amount, bool IsMinimum);
+    public const int MaximumNutrientConfirmationRows = 100;
+    public sealed record ProductNutrientConfirmationDto(
+        [param: Required, MinLength(1), MaxLength(MaximumNutrientConfirmationRows)] List<ProductNutrientConfirmationRowDto> Rows);
+    public sealed record ProductNutrientConfirmationRowDto(Guid PubId, Guid NutrientPubId,
+        [param: Required] decimal? Amount, [param: Required, MaxLength(32)] string AnalysisBasis,
+        [param: MaxLength(250)] string? AnalysisSource);
+
+    public sealed record ProductNitrogenFormSaveDto(Guid ProductPubId,
+        [param: Required, MaxLength(24)] string FormCode,
+        [param: Required] decimal? Amount, bool IsMinimum = false,
+        [param: MaxLength(24)] string? OriginalFormCode = null);
 
     public record ProductNutrientCreateDto(
         [property: JsonPropertyName("productPubId")] Guid ProductPubId,
@@ -330,7 +358,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("nutrientName")] string NutrientName,
         [property: JsonPropertyName("sourceName")] string SourceName,
         [property: JsonPropertyName("amount")] decimal Amount,
-        [property: JsonPropertyName("isMatched")] bool IsMatched
+        [property: JsonPropertyName("isMatched")] bool IsMatched,
+        [property: JsonPropertyName("declaredCode")] string? DeclaredCode = null
     );
 
     public record ProductWebsiteImportSupplementDto(
@@ -352,8 +381,16 @@ public static class ProductsDtos
         [property: JsonPropertyName("name")] string Name,
         [property: JsonPropertyName("scopeLabel")] string ScopeLabel,
         [property: JsonPropertyName("matchReason")] string MatchReason,
-        [property: JsonPropertyName("identityVerified")] bool IdentityVerified
+        [property: JsonPropertyName("identityVerified")] bool IdentityVerified,
+        [property: JsonPropertyName("catalogue")] ProductMatchCatalogueDto? Catalogue = null
     );
+
+    public sealed record ProductMatchCatalogueDto(string CompanyName, decimal Pack, string? PackUnit, bool Active);
+
+    public sealed record ProductResearchRequestDto(Guid IbuPubId, [Required, MaxLength(250)] string Name);
+
+    public sealed record ProductSourceRateDto(string? SiteOrTarget, decimal? Minimum, decimal? Maximum, string Unit,
+        string? SourceLocation);
 
     public record ProductWebsiteImportPreviewDto(
         [property: JsonPropertyName("websiteUrl")] string WebsiteUrl,
@@ -375,7 +412,8 @@ public static class ProductsDtos
         [property: JsonPropertyName("existingMatches")] IReadOnlyList<ProductWebsiteImportMatchDto>? ExistingMatches = null,
         [property: JsonPropertyName("uploadedPhotoSuitableForProductImage")] bool? UploadedPhotoSuitableForProductImage = null,
         [property: JsonPropertyName("uploadedPhotoPreview")] ProductImageImportPreviewDto? UploadedPhotoPreview = null,
-        [property: JsonPropertyName("captureReviewToken")] string? CaptureReviewToken = null
+        [property: JsonPropertyName("captureReviewToken")] string? CaptureReviewToken = null,
+        [property: JsonPropertyName("sourceRates")] IReadOnlyList<ProductSourceRateDto>? SourceRates = null
     );
 
     #endregion

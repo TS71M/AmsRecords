@@ -8,6 +8,11 @@ namespace AmsRecords.LeafNitrate;
 /// </summary>
 public static class LeafNitrateRules
 {
+    public static bool CanReviewRawCorrection(LeafNitrateMeasurementDto measurement)
+        => measurement.Readings is { Count: 1 or 2 } readings
+            && IsSupportedBasis(readings[0].RawBasis) && IsSupportedUnit(readings[0].RawUnit)
+            && readings.All(r => r.RawBasis == readings[0].RawBasis && r.RawUnit == readings[0].RawUnit);
+
     public const decimal No3ToNo3NFactor = 14m / 62m;
     public const decimal MinimumNo3Ppm = 6m;
     public const decimal MaximumNo3Ppm = 9900m;

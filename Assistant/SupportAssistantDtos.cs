@@ -4,7 +4,9 @@ public sealed record SupportAssistantMessageDto(
     string Role,
     string Content,
     Guid? FieldPubId = null,
-    bool ScopeKnown = false);
+    bool ScopeKnown = false,
+    IReadOnlyList<Guid>? EvidenceFieldIds = null,
+    IReadOnlyList<AssistantLabEvidenceReferenceDto>? LabEvidence = null);
 
 public sealed record SupportAssistantPageInfoDto(
     string? Area,
@@ -57,7 +59,8 @@ public sealed record AssistantImageDto(string Base64);
 public sealed record SupportAssistantLinkDto(
     string Label,
     string Url,
-    string? Description = null);
+    string? Description = null,
+    bool IsProductMatch = false);
 
 public sealed record SupportAssistantAskResponseDto(
     string Answer,
@@ -74,7 +77,12 @@ public sealed record SupportAssistantAskResponseDto(
     string? ReviewUrl = null,
     AssistantNavigationPatchDto? Navigation = null,
     IReadOnlyList<AssistantLabReportSourceDto>? LabReportSources = null,
-    IReadOnlyList<AmsRecords.Products.ProductsDtos.ProductWebsiteImportMatchDto>? ProductMatches = null);
+    IReadOnlyList<AmsRecords.Products.ProductsDtos.ProductWebsiteImportMatchDto>? ProductMatches = null,
+    IReadOnlyList<Guid>? EvidenceFieldIds = null,
+    IReadOnlyList<AssistantLabEvidenceReferenceDto>? LabEvidence = null);
+
+public sealed record AssistantLabEvidenceReferenceDto(Guid FieldPubId, string Tool,
+    Guid? ResultPubId = null, Guid? DocumentPubId = null, string? Label = null);
 
 public sealed record AssistantLabReportSourceDto(Guid DocumentPubId, Guid FieldPubId, string FileName,
     string MimeType, int ByteLength, int PageNumber, int PageCount);
@@ -83,6 +91,7 @@ public static class AssistantActionKinds
 {
     public const string CreateProduct = "create_product";
     public const string RecordMeasurement = "record_measurement";
+    public const string ReviewDollarSpotDewRemoval = "review_dollar_spot_dew_removal";
     public const string FillForm = "fill_form";
     public const string Navigate = "navigate";
     public const string ImportLab = "import_lab";
@@ -119,7 +128,21 @@ public sealed record AssistantContextDto(
     AssistantPlannerContextDto? Planner = null,
     Guid? SelectedAreaId = null,
     string? SoilMethodCode = null, string? TimeZoneId = null,
-    bool UseCurrentMeasurementSelection = false);
+    bool UseCurrentMeasurementSelection = false)
+{
+    public AssistantLabReportPageContextDto? LabReportPage { get; init; }
+    public Guid? LabResultPubId { get; init; }
+    public Guid? SelectedProductPubId { get; init; }
+    public AssistantTdrChartContextDto? TdrChart { get; init; }
+}
+
+public sealed record AssistantLabReportPageContextDto(Guid DocumentPubId, int PageNumber);
+
+public sealed record AssistantTdrChartContextDto(
+    [property: JsonRequired] DateOnly FromDayUtc,
+    [property: JsonRequired] DateOnly ToDayUtc,
+    Guid? SurfacePubId = null,
+    Guid? SessionId = null);
 
 public sealed record AssistantPlannerContextDto(int? Year = null, Guid? PlanPubId = null,
     Guid? RevisionPubId = null, Guid? ZonePubId = null);
