@@ -13,8 +13,13 @@ public static class AssistantDraftKinds
     public const string LeafNitrate = "leaf_nitrate";
     public const string DollarSpotObservation = "dollar_spot_observation";
     public const string CatchCanTest = "catch_can_test";
+    public const string DiaryEvent = "diary_event";
+    public const string SnagReport = "snag_report";
+    public const string SnagCompletion = "snag_completion";
     public const string Fertilizer = "fertilizer_gp";
     public const string FertilizerAlternative = "fertilizer_alternative";
+    public const string FertilizerAllocation = "fertilizer_allocation";
+    public const string FieldApplication = "field_application";
     public const string Product = "product";
     public const string ProductList = "product_list";
     public const string SoilImport = "soil_import";
@@ -22,6 +27,7 @@ public static class AssistantDraftKinds
     public const string ModuleAccess = "module_access";
     public const string ModulePilotRevocation = "module_pilot_revocation";
     public const string ModulePilotExpiry = "module_pilot_expiry";
+    public const string ModulePilotNoExpiry = "module_pilot_no_expiry";
 }
 
 // An editable proposal, never a command to save or a permission grant.
@@ -47,7 +53,26 @@ public sealed record AssistantDraftDto(
     public AssistantLeafNitrateDraftDto? LeafNitrate { get; init; }
     public AssistantDollarSpotObservationDraftDto? DollarSpotObservation { get; init; }
     public AmsRecords.Irrigation.CatchCanCalibrationDtos.CatchCanTestSaveDto? CatchCanTest { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public AmsRecords.Fields.FieldDiaryDtos.FieldDiaryManualEventUpsertDto? DiaryEvent { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public AssistantSnagReportDto? SnagReport { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public AssistantSnagCompletionDto? SnagCompletion { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? SnagPhotoSha256 { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public AssistantFertilizerAllocationDraftDto? FertilizerAllocation { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public AssistantFieldApplicationDraftDto? FieldApplication { get; init; }
 }
+
+public sealed record AssistantFieldApplicationDraftDto(AmsRecords.ApplicationPlanner.RecordFieldApplicationDto Entry,
+    IReadOnlyList<AmsRecords.ApplicationPlanner.FieldApplicationCandidateDto> Products,
+    IReadOnlyList<AmsRecords.ApplicationPlanner.FieldApplicationCandidateDto> Surfaces);
+
+public sealed record AssistantFertilizerAllocationDraftDto(AmsRecords.ApplicationPlanner.PlannerAllocationScopeDto Scope,
+    string EditToken, Lib.Planning.ApplicationPlanAllocationIntent Intent);
 
 public sealed record AssistantDollarSpotObservationDraftDto(string? MorningMyceliumObserved,
     string? LeafLesionsObserved, string? ActiveExpansionObserved, string? LdsOrHydrophobicityPresent)
@@ -133,10 +158,14 @@ public sealed record AssistantLeafNitrateDraftDto(decimal Reading1, decimal? Rea
 }
 
 public sealed record AssistantModuleAccessDraftDto(string ModuleKey, Guid IbuPubId, string IbuName,
-    bool WasGranted, DateTime? ExpiresAtUtc, DateOnly? AccessThrough = null);
+    bool WasGranted, DateTime? ExpiresAtUtc, DateOnly? AccessThrough = null,
+    IReadOnlyList<AssistantModulePilotTargetDto>? AdditionalTargets = null);
+
+public sealed record AssistantModulePilotTargetDto(Guid IbuPubId, string IbuName);
 
 public sealed record AssistantProductSetupDto(Guid? AccountPubId, Guid? RateUnitPubId, Guid? AreaUnitPubId,
-    Guid? PackUnitPubId, decimal? Pack, decimal? Price, Guid? FieldPubId, string? SourceImageSha256 = null);
+    Guid? PackUnitPubId, decimal? Pack, decimal? Price, Guid? FieldPubId, string? SourceImageSha256 = null,
+    IReadOnlyList<Guid>? AllowedFieldPubIds = null);
 
 public sealed record AssistantFertilizerAlternativeProductDto(Guid? ProductSnapshotPubId, string ProductName, decimal? NitrogenSharePercent);
 public sealed record AssistantFertilizerAlternativeDraftDto(Guid PlanPubId, Guid RevisionPubId, Guid ZonePubId, int Year,
@@ -171,4 +200,14 @@ public static class AssistantDraftNumbers
         => decimal.TryParse(text?.Trim().Replace(',', '.'),
             System.Globalization.NumberStyles.AllowDecimalPoint,
             System.Globalization.CultureInfo.InvariantCulture, out value) && value > 0;
+
+    public static bool TryGreenSpeedFeet(string? wholeFeet, string? unit, decimal inches, out decimal value)
+    {
+        value = 0;
+        if (!string.Equals(unit, "ft", StringComparison.OrdinalIgnoreCase) || inches is < 0 or >= 12
+            || !decimal.TryParse(wholeFeet?.Trim(), System.Globalization.NumberStyles.None,
+                System.Globalization.CultureInfo.InvariantCulture, out var feet) || feet > 999) return false;
+        value = feet + inches / 12m;
+        return value is > 0 and <= 999.999m;
+    }
 }

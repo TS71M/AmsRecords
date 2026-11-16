@@ -9,6 +9,28 @@ namespace AmsRecords.FieldMeasurements;
 // eligible targets and configured units; these snapshots contain no history.
 public static class MeasurementEntryReview
 {
+    public static GreenSpeedSurfaceDto? ResolveGreenSpeedTarget(this GreenSpeedTimelineDto entry, AssistantDraftDto draft)
+    {
+        if (!MatchesEntry(draft, AssistantDraftKinds.GreenSpeed, entry.FieldPubId, entry.UnitPubId)
+            || draft.SurfacePubId is null || draft.SurfacePubId == Guid.Empty
+            || !draft.MeasuredAt.HasValue) return null;
+        var matches = entry.GreenSpeedSurfaces.Where(surface => surface.SurfacePubId == draft.SurfacePubId).Take(2).ToArray();
+        return matches is [var target] && target.AreaPubId == draft.AreaPubId ? target : null;
+    }
+
+    public static MeasurementRecordingAreaDto? ResolveCuttingHeightTarget(this MeasurementRecordingSetupDto entry, AssistantDraftDto draft)
+    {
+        if (!MatchesEntry(draft, AssistantDraftKinds.CuttingHeight, entry.FieldPubId, entry.UnitPubId)
+            || draft.SurfacePubId.HasValue || !draft.MeasuredOn.HasValue) return null;
+        var matches = entry.Areas.Where(area => area.AreaPubId == draft.AreaPubId).Take(2).ToArray();
+        return matches is [var target] ? target : null;
+    }
+
+    static bool MatchesEntry(AssistantDraftDto draft, string kind, Guid field, Guid? unit)
+        => draft.Kind == kind && draft.Id != Guid.Empty && field != Guid.Empty && draft.FieldPubId == field
+            && unit.HasValue && unit != Guid.Empty && draft.UnitPubId == unit
+            && draft.AreaPubId.HasValue && draft.AreaPubId != Guid.Empty && draft.Value is > 0;
+
     public static string RecordingPath(Guid field, string kind) => $"/{ApiControllers.FieldMeasurements}/" + (kind switch {
         AssistantDraftKinds.GreenSpeed => "green-speeds",
         AssistantDraftKinds.CuttingHeight => "cutting-heights",

@@ -8,6 +8,44 @@ namespace AmsRecords.LeafNitrate;
 /// </summary>
 public static class LeafNitrateRules
 {
+    public static LeafNitrateThresholdDto? ResolveThreshold(LeafNitrateMeasurementDto measurement,
+        IReadOnlyList<LeafNitrateThresholdDto> thresholds)
+    {
+        var candidates = thresholds
+            .Where(x => x.EffectiveFromUtc <= measurement.SampledAtUtc &&
+                        (!x.EffectiveToUtc.HasValue || measurement.SampledAtUtc < x.EffectiveToUtc.Value))
+            .Where(x => string.Equals(x.SampleMethod, measurement.SampleMethod, StringComparison.OrdinalIgnoreCase))
+            .Where(x => AppliesToMonth(x, measurement.SampledAtUtc.Month));
+
+        if (measurement.SurfacePubId.HasValue)
+        {
+            var surface = SelectMostSpecificSeason(candidates.Where(x =>
+                x.ScopeType == ThresholdScopes.Surface && x.SurfacePubId == measurement.SurfacePubId));
+            if (surface is not null) return surface;
+        }
+
+        return SelectMostSpecificSeason(candidates.Where(x =>
+            x.ScopeType == ThresholdScopes.Area && x.AreaPubId == measurement.AreaPubId));
+    }
+
+    static LeafNitrateThresholdDto? SelectMostSpecificSeason(IEnumerable<LeafNitrateThresholdDto> candidates)
+        => candidates.OrderBy(MonthSpan).ThenByDescending(x => x.EffectiveFromUtc)
+            .ThenByDescending(x => x.CreatedAtUtc).FirstOrDefault();
+
+    static int MonthSpan(LeafNitrateThresholdDto threshold)
+    {
+        var start = threshold.StartMonth ?? 1;
+        var end = threshold.EndMonth ?? 12;
+        return start <= end ? end - start + 1 : 12 - start + 1 + end;
+    }
+
+    static bool AppliesToMonth(LeafNitrateThresholdDto threshold, int month)
+    {
+        var start = threshold.StartMonth ?? 1;
+        var end = threshold.EndMonth ?? 12;
+        return start <= end ? month >= start && month <= end : month >= start || month <= end;
+    }
+
     public static bool CanReviewRawCorrection(LeafNitrateMeasurementDto measurement)
         => measurement.Readings is { Count: 1 or 2 } readings
             && IsSupportedBasis(readings[0].RawBasis) && IsSupportedUnit(readings[0].RawUnit)

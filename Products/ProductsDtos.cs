@@ -6,6 +6,8 @@ namespace AmsRecords.Products;
 
 public static class ProductsDtos
 {
+    public const int MaximumCaptureReviewTokenLength = 5120;
+
     public sealed record ProductPhotoImportRequestDto([param: Required, MaxLength(Lib.Images.PhotoUploadPolicy.MaximumOriginalBase64Length)] string ImageBase64);
     public sealed record ProductImageImportPreviewDto([property: JsonPropertyName("name")] string? Name,
         [property: JsonPropertyName("imageBase64")] string ImageBase64, [property: JsonPropertyName("contentType")] string ContentType);
@@ -23,7 +25,8 @@ public static class ProductsDtos
         Guid? SuggestedAccountPubId = null);
     public sealed record ProductListImportPreviewDto(Guid IbuPubId, string IbuName,
         IReadOnlyList<ProductListImportItemDto> Items, ProductImageImportPreviewDto SourcePhoto,
-        string SourceImageSha256, IReadOnlyList<string> Notes, Guid? AssignmentFieldPubId = null)
+        string SourceImageSha256, IReadOnlyList<string> Notes, Guid? AssignmentFieldPubId = null,
+        IReadOnlyList<Guid>? AllowedFieldPubIds = null)
     {
         public static readonly TimeSpan ReviewLifetime = TimeSpan.FromHours(24);
     }
@@ -114,7 +117,7 @@ public static class ProductsDtos
         [property: JsonPropertyName("sdsSize")] int? SdsSize = null,
         [property: JsonPropertyName("sdsUploadDt")] DateTime? SdsUploadDt = null,
         [property: JsonPropertyName("densityKgPerL")] decimal? DensityKgPerL = null,
-        [property: JsonPropertyName("captureReviewToken")][param: MaxLength(4096)] string? CaptureReviewToken = null,
+        [property: JsonPropertyName("captureReviewToken")][param: MaxLength(MaximumCaptureReviewTokenLength)] string? CaptureReviewToken = null,
         IReadOnlyList<Guid>? AllowedFieldPubIds = null)
     {
         public AppImageCreateDto ImageCreateDto { get; set; } = new(null, ImageCategories.Products);

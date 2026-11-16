@@ -8,6 +8,17 @@ public static class ClippingIntervalPolicy
     public sealed record Assessment(string Status, decimal? Hours, decimal? SuggestedHours, decimal? RecordingGapHours);
 
     public sealed record DisplayRate(decimal? Hours, decimal? DailyRate, bool IsEstimated);
+    public sealed record PeriodRate(decimal? DailyRate, bool IsEstimated, int ComparableCount, int MeasurementCount);
+
+    public static PeriodRate SummarizePeriod(IReadOnlyList<FieldMeasurementDtos.ClippingVolumeDto> measurements)
+    {
+        var comparable = measurements.Select(measurement => (measurement.YieldMlPerM2, Rate: ResolveDisplay(measurement)))
+            .Where(point => point.YieldMlPerM2.HasValue && point.Rate.Hours > 0m).ToArray();
+        var hours = comparable.Sum(point => point.Rate.Hours!.Value);
+        var rate = hours <= 0m ? (decimal?)null : decimal.Round(
+            comparable.Sum(point => point.YieldMlPerM2!.Value) * 24m / hours, 2, MidpointRounding.AwayFromZero);
+        return new(rate, comparable.Any(point => point.Rate.IsEstimated), comparable.Length, measurements.Count);
+    }
 
     // Derived presentation only: never turn inferred cadence into a confirmed mowing record.
     public static DisplayRate ResolveDisplay(FieldMeasurementDtos.ClippingVolumeDto measurement)

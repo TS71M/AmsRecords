@@ -12,6 +12,9 @@ public static class ProcurementReceivingPolicy
         if (quantityOrdered <= 0 || quantityAlreadyReceived < 0 || quantityReceived < 0 || quantityRejected < 0)
             return "Quantities cannot be negative and the ordered quantity must be positive.";
 
+        if (decimal.Round(quantityReceived, 3) != quantityReceived || decimal.Round(quantityRejected, 3) != quantityRejected)
+            return "Received and rejected quantities must have at most three decimal places.";
+
         if (quantityAlreadyReceived > quantityOrdered)
             return "The stored received quantity exceeds the order quantity.";
 

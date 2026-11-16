@@ -26,15 +26,22 @@ public static class TaskAdministrationDtos
         [property: JsonPropertyName("mappedTaskCount")] int MappedTaskCount,
         [property: JsonPropertyName("unmappedTaskCount")] int UnmappedTaskCount);
 
+    public sealed record TaskDefinitionPageDto(IReadOnlyList<TaskDefinitionDto> Tasks, bool HasMore, int? NextOffset,
+        bool PagingLimitReached);
+
     public sealed class TaskDefinitionSaveDto
     {
+        public const int MaximumDurationMinutes = 1435;
+        public const int DurationStepMinutes = 15;
+        public static bool IsDurationOnStep(int minutes) => minutes % DurationStepMinutes == 0;
+
         [JsonPropertyName("name"), Required, StringLength(250, MinimumLength = 1)]
         public string Name { get; set; } = "";
 
         [JsonPropertyName("description"), StringLength(1000)]
         public string Description { get; set; } = "";
 
-        [JsonPropertyName("standardDurationMinutes"), Range(0, 1435)]
+        [JsonPropertyName("standardDurationMinutes"), Range(0, MaximumDurationMinutes)]
         public int StandardDurationMinutes { get; set; }
 
         [JsonPropertyName("active")]

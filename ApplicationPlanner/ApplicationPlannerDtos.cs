@@ -727,7 +727,8 @@ public static class ApplicationPlannerDtos
         [property: JsonPropertyName("annualPlanPubId")] Guid AnnualPlanPubId,
         [property: JsonPropertyName("revisionPubId")] Guid RevisionPubId,
         [property: JsonPropertyName("changeSummary")][param: MaxLength(1000)] string ChangeSummary,
-        [param: MaxLength(64)] string? ExpectedRevisionToken = null);
+        [param: MaxLength(64)] string? ExpectedRevisionToken = null,
+        bool ReplaceApproved = false, bool Refuse = false);
 
     public sealed record CloneAnnualApplicationPlanDto(
         [property: JsonPropertyName("sourceAnnualPlanPubId")] Guid SourceAnnualPlanPubId,

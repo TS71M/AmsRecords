@@ -5,6 +5,8 @@ namespace AmsRecords.Ibus;
 public static class ManagementTransitionDtos
 {
     public sealed record ReviewPage<T>(IReadOnlyList<T> Items, int TotalCount, int Page);
+    public const int ManagedFieldsPageSize = 50;
+    public sealed record ManagedField(string FieldName, string OwnerName, string ManagerName);
     public sealed record Routing(Guid FieldPubId, ProcurementMode Mode, Guid? HubPubId,
         bool AllowDirectOrdering, bool Consolidate);
     public sealed record CopyRequest(Guid ProductPubId, Guid DestinationIbuPubId, string TargetName, bool IncludePrice);

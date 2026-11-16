@@ -26,7 +26,12 @@ public static class GtsDtos
         [property: JsonPropertyName("lastAvailableDate")] DateOnly? LastAvailableDate,
         [property: JsonPropertyName("backfillRateDaysPerRun")] int BackfillRateDaysPerRun,
         [property: JsonPropertyName("estimatedReadyDays")] int EstimatedReadyDays
-    );
+    )
+    {
+        [JsonPropertyName("completeThroughDate")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public DateOnly? CompleteThroughDate { get; init; }
+    }
 
     public sealed record GtsThresholdHitDto(
         [property: JsonPropertyName("threshold")] decimal Threshold,

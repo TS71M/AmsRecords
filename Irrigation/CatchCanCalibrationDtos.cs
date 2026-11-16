@@ -25,7 +25,13 @@ public static class CatchCanCalibrationDtos
         [property: JsonPropertyName("weatherNotes")][param: MaxLength(2000)] string? WeatherNotes,
         [property: JsonPropertyName("windSpeedMps")] decimal? WindSpeedMps,
         [property: JsonPropertyName("windDirectionDegrees")] decimal? WindDirectionDegrees,
-        [property: JsonPropertyName("measurements")] IReadOnlyList<CatchCanMeasurementSaveDto> Measurements);
+        [property: JsonPropertyName("measurements")] IReadOnlyList<CatchCanMeasurementSaveDto> Measurements)
+    {
+        [JsonPropertyName("clientRequestId"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public Guid? ClientRequestId { get; init; }
+        [JsonPropertyName("expectedFieldPubId"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public Guid? ExpectedFieldPubId { get; init; }
+    }
 
     public sealed record CatchCanDistributionMetricsDto(
         [property: JsonPropertyName("measurementCount")] int MeasurementCount,

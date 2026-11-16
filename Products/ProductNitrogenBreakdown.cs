@@ -34,7 +34,7 @@ public static partial class ProductNitrogenBreakdown
             .Select(row => (Row: row, Code: FormCode(row.SourceName)))
             .Where(x => x.Code is not null)
             .Select(x => new ProductNutrientFormDto(x.Code!, x.Row.SourceName.Trim(), x.Row.Amount,
-                Minimum().IsMatch(x.Row.SourceName)))
+                IsMinimumLabel(x.Row.SourceName)))
             .Distinct().ToArray();
         var grouped = forms.GroupBy(x => x.FormCode).ToArray();
         var conflict = totals.Length > 1 || forms.Any(f => !IsValid(f))
@@ -47,6 +47,8 @@ public static partial class ProductNitrogenBreakdown
         => form.FormCode is not null && FormLabels.ContainsKey(form.FormCode)
             && form.Label is { Length: > 0 and <= 250 } && FormCode(form.Label) == form.FormCode
             && form.Amount is >= 0m and <= 100m && decimal.Round(form.Amount, 4) == form.Amount;
+
+    public static bool IsMinimumLabel(string label) => Minimum().IsMatch(label);
 
     static bool IsTotal(ProductWebsiteImportNutrientDto row)
         => row.IsMatched && row.NutrientPubId is { } id && id != Guid.Empty && row.Amount is >= 0m and <= 100m

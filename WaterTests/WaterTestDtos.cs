@@ -2,6 +2,12 @@ namespace AmsRecords.WaterTests;
 
 public static class WaterTestDtos
 {
+    public static string NavigationIdentity(string title, DateTime reportDate, DateTime? collectionDate,
+        string? reportNumber, string? analysisNumber)
+        => string.Join(" · ", new[] { title, reportDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+            collectionDate?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), reportNumber, analysisNumber }
+            .Where(part => !string.IsNullOrWhiteSpace(part)));
+
     public sealed record WaterTestIndexDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
         [property: JsonPropertyName("fieldName")] string FieldName,

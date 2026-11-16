@@ -1,9 +1,14 @@
+using System.Security.Cryptography;
+using System.Text.Json;
 using Lib.Enums;
 
 namespace AmsRecords.Machinery;
 
 public static class MachineryDtos
 {
+    public static string ReviewStamp(MachineryFormDto machine)
+        => Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(machine)));
+
     public sealed record MachineryListDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("name")] string Name,

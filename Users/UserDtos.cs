@@ -72,7 +72,12 @@ public static class UserDtos
         public int? UserPositionHierarchyLevel { get; init; }
         [JsonPropertyName("userPositionDepartmentName")]
         public string? UserPositionDepartmentName { get; init; }
+        [JsonPropertyName("directReportingReview")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public DirectReportingReviewDto? DirectReportingReview { get; init; }
     };
+
+    public sealed record DirectReportingReviewDto(string Stamp, IReadOnlyList<Guid> ReportIds);
 
     public record UserCreateDto(
         [property: JsonPropertyName("email")][Required, EmailAddress] string Email,
@@ -186,6 +191,14 @@ public static class UserDtos
 
         [JsonPropertyName("replaceDirectReports")]
         public bool ReplaceDirectReports { get; set; }
+
+        [JsonPropertyName("expectedReportingStamp")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? ExpectedReportingStamp { get; set; }
+
+        [JsonPropertyName("expectedDirectReportingStamp")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? ExpectedDirectReportingStamp { get; set; }
     }
 
     public sealed record UserProfileUpdateDto(

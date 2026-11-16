@@ -6,7 +6,8 @@ public static class UserFieldPermissionDtos
         [property: JsonPropertyName("ibuPubId")] Guid IbuPubId,
         [property: JsonPropertyName("ibuName")] string? IbuName,
         [property: JsonPropertyName("fields")] IReadOnlyList<FieldPermissionItemDto> Fields,
-        [property: JsonPropertyName("users")] IReadOnlyList<UserPermissionRowDto> Users);
+        [property: JsonPropertyName("users")] IReadOnlyList<UserPermissionRowDto> Users,
+        [property: JsonPropertyName("reviewStamp")] string? ReviewStamp = null);
 
     public sealed record FieldPermissionItemDto(
         [property: JsonPropertyName("fieldPubId")] Guid FieldPubId,
@@ -24,7 +25,8 @@ public static class UserFieldPermissionDtos
 
     public sealed record SaveUserFieldPermissionMatrixDto(
         [property: JsonPropertyName("ibuPubId")][Required] Guid IbuPubId,
-        [property: JsonPropertyName("users")][Required] IReadOnlyList<SaveUserPermissionRowDto> Users);
+        [property: JsonPropertyName("users")][Required] IReadOnlyList<SaveUserPermissionRowDto> Users,
+        [property: JsonPropertyName("expectedReviewStamp")] string? ExpectedReviewStamp = null);
 
     public sealed record SaveUserPermissionRowDto(
         [property: JsonPropertyName("userPubId")][Required] Guid UserPubId,

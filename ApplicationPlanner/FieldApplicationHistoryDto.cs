@@ -1,4 +1,5 @@
 using Lib.Planning;
+using System.Text.Json.Serialization;
 using static AmsRecords.ApplicationPlanner.ApplicationPlannerDtos;
 
 namespace AmsRecords.ApplicationPlanner;
@@ -12,6 +13,19 @@ public sealed record FieldApplicationHistoryDto(Guid FieldPubId, int Year, int P
     // TotalCount remains the audit pagination count. Null supports older APIs;
     // zero explicitly means that no non-voided, unreplaced applications remain.
     public int? CurrentRecordCount { get; init; }
+    [JsonIgnore] public FieldApplicationHistoryPeriod? Period { get; init; }
+    [JsonIgnore] public FieldApplicationLocationEvidence? LocationEvidence { get; init; }
+}
+
+public sealed record FieldApplicationHistoryLocation(Guid PubId, bool IsSurface);
+
+public sealed record FieldApplicationLocationEvidence(FieldApplicationHistoryLocation Location, string Name,
+    int ConfirmedRecords, int SharedRecords, int UnresolvedRecords, int OtherLocationRecords);
+
+public sealed record FieldApplicationHistoryPeriod(DateOnly From, DateOnly Through)
+{
+    public bool IsValid() => From.Year >= 1900 && Through.Year <= 2100
+        && Through.DayNumber - From.DayNumber is >= 0 and <= 365;
 }
 
 public sealed record FieldApplicationHistoryRowDto(

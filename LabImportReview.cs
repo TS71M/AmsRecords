@@ -1,3 +1,4 @@
+using Lib.Lookups.WaterTests;
 using static AmsRecords.SoilTests.SoilTestDtos;
 using static AmsRecords.WaterTests.WaterTestDtos;
 
@@ -12,7 +13,14 @@ public static class LabImportReview
         var input = draft.SoilReview ?? preview.ToReviewInput(source);
         return input.FieldPubId == draft.FieldPubId && input.OriginalDocumentPubId == source.PubId
             && input.Items.Count == preview.Surfaces.Count
-            && input.Items.Select((s, i) => s.Results.Count == preview.Surfaces[i].Results.Count).All(m => m) ? input : null;
+            && input.Items.Select((sample, index) => {
+                var extracted = preview.Surfaces[index].Results;
+                return sample.Results.Count >= extracted.Count
+                    && sample.Results.Take(extracted.Count).Select(reading => reading.DetectedLabel)
+                        .SequenceEqual(extracted.Select(reading => reading.DetectedLabel), StringComparer.Ordinal)
+                    && sample.Results.Skip(extracted.Count).All(reading => reading.DetectedLabel is null && reading.AnalytePubId != Guid.Empty
+                        && (reading.Value.HasValue || !string.IsNullOrWhiteSpace(reading.TextValue)));
+            }).All(valid => valid) ? input : null;
     }
 
     public static WaterTestDocumentImportCreateDto? WaterInput(Assistant.AssistantDraftDto draft, LabReportDocumentDto source)
@@ -20,8 +28,19 @@ public static class LabImportReview
         if (draft.WaterImport is not { } preview) return null;
         var input = draft.WaterReview ?? preview.ToReviewInput(source, draft.Id);
         return input.FieldPubId == draft.FieldPubId && input.OriginalDocumentPubId == source.PubId && input.RequestId != Guid.Empty
-            && input.Results.Select(r => r.ResultCode).SequenceEqual(preview.Results.Select(r => r.ResultCode), StringComparer.Ordinal) ? input : null;
+            && HasMatchingWaterRows(preview, input) ? input : null;
     }
+
+    public static bool HasMatchingWaterRows(WaterTestDocumentImportPreviewDto preview, WaterTestDocumentImportCreateDto input)
+        => input.Results is not null && preview.Results is not null && input.Results.Count >= preview.Results.Count
+            && input.Results.Count <= WaterTestCatalog.All.Count
+            && input.Results.Take(preview.Results.Count).Select(row => row.ResultCode)
+                .SequenceEqual(preview.Results.Select(row => row.ResultCode), StringComparer.Ordinal)
+            && input.Results.Select(row => row.ResultCode).Distinct(StringComparer.OrdinalIgnoreCase).Count() == input.Results.Count
+            && input.Results.Skip(preview.Results.Count).All(row => row.DetectedLabel is null && !row.RequiresSourceReview
+                && WaterTestCatalog.Find(row.ResultCode) is not null
+                && !WaterTestCatalog.NeedsMappingReview(row.ResultCode, row.ReportedUnit, row.ReportedBasis));
+
     public static bool MatchesSource(LabReportDocumentDto? expected, LabReportDocumentDto? current)
         => expected is { PubId: var id } && id != Guid.Empty && current is not null
             && id == current.PubId && expected.ByteLength == current.ByteLength && expected.MimeType == current.MimeType;

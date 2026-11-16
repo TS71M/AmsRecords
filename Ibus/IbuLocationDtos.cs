@@ -2,6 +2,9 @@ namespace AmsRecords.Ibus;
 
 public static class IbuLocationDtos
 {
+    public static string ReviewStamp(IbuLocationDto location) => Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+        System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(location)));
+
     public sealed record IbuLocationDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("name")] string Name,

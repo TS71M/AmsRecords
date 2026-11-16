@@ -47,6 +47,9 @@ public static class FieldDiagnosticDtos
     {
         [JsonPropertyName("includeThumbnails")]
         public bool IncludeThumbnails { get; init; } = true;
+
+        [JsonPropertyName("diagnosticRequestPubId")]
+        public Guid? DiagnosticRequestPubId { get; init; }
     }
 
     public sealed record FieldDiagnosticReviewQueryDto(

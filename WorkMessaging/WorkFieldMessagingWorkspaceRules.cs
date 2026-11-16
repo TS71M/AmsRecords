@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using static AmsRecords.WorkMessaging.WorkMessagingDtos;
 
 namespace AmsRecords.WorkMessaging;
@@ -5,6 +7,10 @@ namespace AmsRecords.WorkMessaging;
 public static class WorkFieldMessagingWorkspaceRules
 {
     public const string ReviewConversationType = "review";
+    public static string AudienceToken(IEnumerable<Guid> recipients)
+        => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
+            string.Join(",", recipients.Order().Select(recipient => recipient.ToString("N"))))));
+
     public static bool IsReviewConversation(WorkConversationDto? conversation)
         => string.Equals(conversation?.Type, ReviewConversationType, StringComparison.OrdinalIgnoreCase);
     public static WorkFieldMessagingWorkspaceDto BuildWorkspace(

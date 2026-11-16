@@ -32,7 +32,11 @@ public static class IrrigationAdvisorDesignDtos
         DesignOption? Option, IReadOnlyList<string> Notes);
     public sealed record DesignResult(Guid SurfacePubId, string SurfaceName, string Mode,
         IReadOnlyList<DesignOption> Options, int TestedCandidates, int TestedCombinations,
-        double GridResolutionM, IReadOnlyList<string> Notes, string Fingerprint = "", Workspace? Basis = null, CurrentSetup? Current = null);
+        double GridResolutionM, IReadOnlyList<string> Notes, string Fingerprint = "", Workspace? Basis = null, CurrentSetup? Current = null)
+    {
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public string? AssistantPreviewToken { get; init; }
+    }
     public sealed record SaveScenario(DesignRequest Design, int Rank, string Name, string Fingerprint);
     public sealed record ScenarioSummary(Guid PubId, string Name, string Mode, DateTime CreatedUtc);
     public sealed record ScenarioSnapshot(int Version, DesignRequest Request, Workspace Workspace, DesignResult Result);

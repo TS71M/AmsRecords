@@ -4,6 +4,12 @@ namespace AmsRecords.Holes;
 
 public static class HoleDtos
 {
+    public static string ReviewStamp(HoleDto hole) => Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+        System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(new
+        {
+            hole.PubId, hole.FieldPubId, hole.HoleNumber, hole.HolShoNam, hole.HolDes, hole.Active, hole.ImagePubId
+        })));
+
     public sealed record HoleDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("active")] bool Active,

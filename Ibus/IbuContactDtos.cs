@@ -2,6 +2,9 @@ namespace AmsRecords.Ibus;
 
 public static class IbuContactDtos
 {
+    public static string ReviewStamp(IbuContactDto contact) => Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+        System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(contact)));
+
     public sealed record IbuContactDto(
         [property: JsonPropertyName("pubId")] Guid PubId,
         [property: JsonPropertyName("name")] string Name,
